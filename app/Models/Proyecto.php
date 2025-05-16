@@ -10,5 +10,11 @@ class Proyecto extends Model
     use HasFactory;
     //
     protected $table = 'proyectos';
+    protected $fillable = [
+        'nombre_proyecto', 
+        'dependencia_proyecto', 
+        'fecha_proyecto', 
+        // ... otros campos ...
+    ];
 
 }

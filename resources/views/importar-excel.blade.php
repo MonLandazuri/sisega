@@ -22,7 +22,7 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('import.process') }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ route('import.process',['id_proyecto' => $id_proyecto]) }}" enctype="multipart/form-data">
         @csrf
 
         <div>

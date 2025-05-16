@@ -22,14 +22,9 @@
             </li>
             
             <li class="menu-header">Usuarios</li>
-            <li class="dropdown">
-              <a href="#" class="nav-link has-dropdown"><i class="far fa-user"></i> <span>Usuarios</span></a>
-              <ul class="dropdown-menu">
-                <li><a href="{{ route('usuarios') }}">Usuarios</a></li> 
-                <li><a href="auth-register.html">Registrar Usuario</a></li> 
-                <li><a href="auth-reset-password.html">Reset Password</a></li> 
-              </ul>
-            </li>
+            <li><a href="{{ route('usuarios') }}">Usuarios</a></li> 
+            <li><a href="auth-register.html">Registrar Usuario</a></li> 
+            <li><a href="auth-reset-password.html">Reset Password</a></li> 
           </ul>
 
           <div class="mt-4 mb-4 p-3 hide-sidebar-mini">

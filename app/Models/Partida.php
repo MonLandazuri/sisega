@@ -15,6 +15,7 @@ class Partida extends Model
         'unidad_partida', 
         'cantidad_partida', 
         'pu_partida', 
+        'id_proyecto',
         // ... otros campos ...
     ];
 }

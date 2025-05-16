@@ -14,9 +14,9 @@ class ExcelImportController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function showImportForm()
+    public function showImportForm(Request $request, $id_proyecto)
     {
-        return view('importar-excel'); // Crea esta vista en el siguiente paso
+        return view('importar-excel',['id_proyecto'=>$id_proyecto]); // Crea esta vista en el siguiente paso
     }
 
     /**
@@ -25,14 +25,14 @@ class ExcelImportController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function importExcel(Request $request)
+    public function importExcel(Request $request, $id_proyecto)
     {
         $request->validate([
             'archivo_excel' => 'required|mimes:xlsx,xls', // Asegúrate de que sea un archivo Excel
         ]);
 
         try {
-            Excel::import(new TuImportadorDeExcel, $request->file('archivo_excel'));
+            Excel::import(new TuImportadorDeExcel($id_proyecto), $request->file('archivo_excel'));
 
             return Redirect::route('proyectos')->with('success', '¡Datos importados exitosamente!');
         } catch (\Maatwebsite\Excel\Exceptions\NoTypeDetectedException $e) {
