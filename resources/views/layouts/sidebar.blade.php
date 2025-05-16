@@ -4,7 +4,7 @@
             <a href="index.html">SISEGA</a>
           </div>
           <div class="sidebar-brand sidebar-brand-sm">
-            <a href="index.html">St</a>
+            <a href="index.html">S</a>
           </div>
           <ul class="sidebar-menu">
             <li class="menu-header">Dashboard</li>
@@ -33,8 +33,8 @@
           </ul>
 
           <div class="mt-4 mb-4 p-3 hide-sidebar-mini">
-            <a href="" class="btn btn-primary btn-lg btn-block btn-icon-split">
-              <i class="fas fa-window-close"></i> Cerrar Sesión
+            <a href="{{route('logout')}}" class="btn btn-dark btn-lg btn-block btn-icon-split">
+              <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
             </a>
           </div>        
         </aside>

@@ -14,6 +14,9 @@
   <link rel="stylesheet" href="{{asset('dashboard/assets/modules/weather-icon/css/weather-icons.min.css')}}">
   <link rel="stylesheet" href="{{asset('dashboard/assets/modules/weather-icon/css/weather-icons-wind.min.css')}}">
   <link rel="stylesheet" href="{{asset('dashboard/assets/modules/summernote/summernote-bs4.css')}}">
+  <link rel="stylesheet" href="{{asset('dashboard/assets/modules/datatables/datatables.min.css')}}">
+  <link rel="stylesheet" href="{{asset('dashboard/assets/modules/datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css')}}">
+  <link rel="stylesheet" href="{{asset('dashboard/assets/modules/datatables/Select-1.2.4/css/select.bootstrap4.min.css')}}">
 
   <!-- Template CSS -->
   <link rel="stylesheet" href="{{asset('dashboard/assets/css/style.css')}}">
@@ -71,9 +74,14 @@
   <script src="{{asset('dashboard/assets/modules/jqvmap/dist/maps/jquery.vmap.world.js')}}"></script>
   <script src="{{asset('dashboard/assets/modules/summernote/summernote-bs4.js')}}"></script>
   <script src="{{asset('dashboard/assets/modules/chocolat/dist/js/jquery.chocolat.min.js')}}"></script>
+  <script src="{{asset('dashboard/assets/modules/datatables/datatables.min.js')}}"></script>
+  <script src="{{asset('dashboard/assets/modules/datatables/DataTables-1.10.16/js/dataTables.bootstrap4.min.js')}}"></script>
+  <script src="{{asset('dashboard/assets/modules/datatables/Select-1.2.4/js/dataTables.select.min.js')}}"></script>
+  <script src="{{asset('dashboard/assets/modules/jquery-ui/jquery-ui.min.js')}}"></script>
 
   <!-- Page Specific JS File -->
   <script src="{{asset('dashboard/assets/js/page/index-0.js')}}"></script>
+  <script src="{{asset('dashboard/assets/js/page/modules-datatables.js')}}"></script>
   
   <!-- Template JS File -->
   <script src="{{asset('dashboard/assets/js/scripts.js')}}"></script>
