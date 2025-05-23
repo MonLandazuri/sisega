@@ -5,6 +5,7 @@ use App\Http\Controllers\InicioController;
 use App\Http\Controllers\ProyectosController;
 use App\Http\Controllers\PartidasController;
 use App\Http\Controllers\UsuariosController;
+use App\Http\Controllers\ContratistasController;
 use App\Http\Controllers\ExcelImportController; //Controlador Excel
 
 
@@ -12,7 +13,11 @@ use App\Http\Controllers\ExcelImportController; //Controlador Excel
 //Route::get('/',[InicioController::class, 'index'])->name('inicio');
 Route::get('/proyectos',[ProyectosController::class, 'mostrarProyectos'])->name('proyectos')->middleware('auth');
 Route::get('/nuevo-proyecto',[ProyectosController::class, 'nuevoProyecto'])->name('nuevo.proyecto')->middleware('auth');
-Route::post('/guardar-nuevo-proyecto', [ProyectosController::class, 'guardarNuevoProyecto'])->name('guardar.nuevo.proyecto')->middleware('auth');
+Route::post('/guardar-nuevo-proyecto', [ProyectosController::class, 'guardarNuevoProyecto'])->name('guardar.nuevoproyecto')->middleware('auth');
+
+Route::get('/contratistas',[ContratistasController::class, 'mostrarContratistas'])->name('contratistas')->middleware('auth');
+Route::get('/nuevo-contratista',[ContratistasController::class, 'nuevoContratista'])->name('nuevo.contratista')->middleware('auth');
+Route::post('/guardar-nuevo-contratista', [ContratistasController::class, 'guardarNuevoContratista'])->name('guardar.nuevocontratista')->middleware('auth');
 
 Route::get('/partidas/{id_proyecto}',[PartidasController::class, 'mostrarPartidasPorProyecto'])->name('proyecto.partidas')->middleware('auth');
 

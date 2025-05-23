@@ -21,9 +21,10 @@ class TuImportadorDeExcel implements ToModel, WithHeadingRow
     public function model(array $row)
     {        
         return new Partida([
-            'concepto_partida' => $row['concepto'], // Asocia la columna del Excel con la columna de la BD
-            'unidad_partida' => $row['unidad'],// Asocia la columna del Excel con la columna de la BD
-            'cantidad_partida' => $row['cantidad'],// Asocia la columna del Excel con la columna de la BD
+            'no_partida' => $row['no'],
+            'concepto_partida' => $row['concepto'], 
+            'unidad_partida' => $row['unidad'],
+            'cantidad_partida' => $row['cantidad'],
             'pu_partida' => $row['pu'],
             'id_proyecto' => $this->id_proyecto,
         ]);

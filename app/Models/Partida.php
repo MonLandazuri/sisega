@@ -11,6 +11,7 @@ class Partida extends Model
     //
     protected $table = 'partidas';
     protected $fillable = [
+        'no_partida',
         'concepto_partida', 
         'unidad_partida', 
         'cantidad_partida', 

@@ -32,6 +32,9 @@ class ProyectosController extends Controller
         // 3. Asignar los valores de los campos del formulario a las propiedades del modelo
         $nuevoProyecto->nombre_proyecto = $request->input('nombre_proyecto');
         $nuevoProyecto->dependencia_proyecto = $request->input('dependencia_proyecto');
+        $nuevoProyecto->constructora_proyecto = $request->input('constructora_proyecto');
+        $nuevoProyecto->fecha_proyecto = date('Y-m-d');
+        $nuevoProyecto->status_proyecto = 'activo';
 
         // 5. Guardar el nuevo proyecto en la base de datos
         $nuevoProyecto->save();
@@ -49,8 +52,13 @@ class ProyectosController extends Controller
         $proyectos = Proyecto::all();
         $totalProyectos = Proyecto::count();
 
+        $proyectosActivos = Proyecto::where('status_proyecto', 'activo')->get();
         $totalProyectosActivos = Proyecto::where('status_proyecto', 'activo')->count();
+        
+        $proyectosCancelados = Proyecto::where('status_proyecto', 'cancelado')->get();
         $totalProyectosCancelados = Proyecto::where('status_proyecto', 'cancelado')->count();
+        
+        $proyectosFinalizados = Proyecto::where('status_proyecto', 'finalizado')->get();
         $totalProyectosFinalizados = Proyecto::where('status_proyecto', 'finalizado')->count();
 
         // También puedes usar otras consultas de Eloquent
@@ -62,8 +70,11 @@ class ProyectosController extends Controller
         return view('proyectos', [
             'proyectos' => $proyectos,
             'totalProyectos'=>$totalProyectos,
+            'proyectosActivos'=>$proyectosActivos,
             'totalProyectosActivos'=>$totalProyectosActivos,
+            'proyectosCancelados'=>$proyectosCancelados,
             'totalProyectosCancelados'=>$totalProyectosCancelados,
+            'proyectosFinalizados'=>$proyectosFinalizados,
             'totalProyectosFinalizados'=>$totalProyectosFinalizados,
         ]);
     }

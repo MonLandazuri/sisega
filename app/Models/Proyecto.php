@@ -13,8 +13,12 @@ class Proyecto extends Model
     protected $fillable = [
         'nombre_proyecto', 
         'dependencia_proyecto', 
+        'constructora_proyecto', 
         'fecha_proyecto', 
+        'status_proyecto',
         // ... otros campos ...
     ];
+
+    public $timestamps = false; 
 
 }

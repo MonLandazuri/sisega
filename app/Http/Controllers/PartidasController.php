@@ -17,9 +17,13 @@ class PartidasController extends Controller
         //$proyecto = Proyecto::findOrFail($id_proyecto);
         $partidas = Partida::where('id_proyecto', $id_proyecto)->get();
 
+        $totalImporte = Partida::where('id_proyecto', $id_proyecto)
+                                ->get();
+
         return view('partidas', [
             'partidas' => $partidas,
-            'id_proyecto'=>$id_proyecto,]);
+            'id_proyecto'=>$id_proyecto,
+        ]);
         // O para una API:
         // return response()->json(['partidas' => $partidas]);
     }

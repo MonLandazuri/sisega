@@ -22,16 +22,19 @@
         </div>
     @endif
 
+    <div class="card">
     <form method="POST" action="{{ route('import.process',['id_proyecto' => $id_proyecto]) }}" enctype="multipart/form-data">
         @csrf
 
-        <div>
-            <label for="archivo_excel">Seleccionar Archivo Excel:</label>
-            <input type="file" name="archivo_excel" id="archivo_excel" required>
+        <div class="card-body">
+            <div class="form-group">
+                <label for="archivo_excel">Seleccionar Archivo Excel:</label><br>
+                <input type="file" name="archivo_excel" id="archivo_excel" required>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-dark">Importar</button>  |  
+                <a class="btn btn-warning" href="{{ route('inicio') }}">Volver al Inicio</a>
+            </div>
         </div>
-
-        <button type="submit">Importar</button>
     </form>
-
-    <p><a href="{{ route('inicio') }}">Volver al Inicio</a></p>
 @endsection()

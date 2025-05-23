@@ -3,13 +3,13 @@
 @section('content')
 <section class="section">
           <div class="section-header">
-            <h1>Nuevo Proyecto</h1>
+            <h1>Nuevo Contratista</h1>
           </div>
   <div class="row">
     <div class="col-12">
       <div class="card">
         <div class="card-header">
-          <h4>Agregar Nuevo Proyecto</h4>
+          <h4>Agregar Nuevo Contratista</h4>
         </div>
         <div class="card-body">
           <div class="row mt-4">
@@ -20,35 +20,44 @@
                     <i class="far fa-user"></i>
                   </div>
                   <div class="wizard-step-label">
-                    Proyecto
+                    Contratista
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <form method="POST" action="{{ route('guardar.nuevoproyecto')}}" class="wizard-content mt-2">
+          <form method="POST" action="{{ route('guardar.nuevocontratista')}}" class="wizard-content mt-2">
                 @csrf
             <div class="wizard-pane">
               <div class="form-group row align-items-center">
-                <label class="col-md-4 text-md-right text-left">Nombre del Proyecto</label>
+                <label class="col-md-4 text-md-right text-left">Nombre del Contratista</label>
                 <div class="col-lg-4 col-md-6">
-                  <input type="text" name="nombre_proyecto" class="form-control">
+                  <input type="text" name="nombre_contratista" class="form-control">
                 </div>
               </div>
               <div class="form-group row align-items-center">
-                <label class="col-md-4 text-md-right text-left">Dependencia</label>
+                <label class="col-md-4 text-md-right text-left">Dirección de Contratista</label>
                 <div class="col-lg-4 col-md-6">
-                  <input type="text" name="dependencia_proyecto" class="form-control">
+                  <textarea class="form-control" name="direccion_contratista"></textarea>
                 </div>
               </div>
               <div class="form-group row align-items-center">
-                <label class="col-md-4 text-md-right text-left">Constructora</label>
+                <label class="col-md-4 text-md-right text-left">Banco del Contratista</label>
                 <div class="col-lg-4 col-md-6">
-                  <select class="form-control" name="constructora">
-                    <option>SISEGA</option>
-                    <option>ANDALUZ</option>
-                  </select>
+                  <input type="text" name="banco_contratista" class="form-control">
+                </div>
+              </div>
+              <div class="form-group row align-items-center">
+                <label class="col-md-4 text-md-right text-left">CLABE del Contratista</label>
+                <div class="col-lg-4 col-md-6">
+                  <input type="text" name="clabe_contratista" class="form-control">
+                </div>
+              </div>
+              <div class="form-group row align-items-center">
+                <label class="col-md-4 text-md-right text-left">Cuenta del Contratista</label>
+                <div class="col-lg-4 col-md-6">
+                  <input type="text" name="cuenta_contratista" class="form-control">
                 </div>
               </div>
               <div class="form-group row">

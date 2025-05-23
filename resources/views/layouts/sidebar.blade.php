@@ -1,30 +1,29 @@
 <div class="main-sidebar sidebar-style-2">
         <aside id="sidebar-wrapper">
           <div class="sidebar-brand">
-            <a href="index.html">SISEGA</a>
+            <a href="index.html"><img src="{{asset('img/logosisega.png')}}" width="150px"/></a>
           </div>
           <div class="sidebar-brand sidebar-brand-sm">
             <a href="index.html">S</a>
           </div>
           <ul class="sidebar-menu">
             <li class="menu-header">Dashboard</li>
-            <li class="dropdown active">
-              <a href="{{ route('inicio') }}" class="nav-link"><i class="fas fa-fire"></i><span>General</span></a>
-            </li>
+            <li><a class="nav-link" href="{{ route('inicio') }}" ><i class="fas fa-building"></i><span>General</span></a></li>
             <li class="menu-header">Proyectos</li>
-            <li class="dropdown">
-              <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i class="fas fa-columns"></i> <span>Proyectos</span></a>
-              <ul class="dropdown-menu">
-                <li><a class="nav-link" href="{{ route('proyectos') }}">Listado</a></li>
-                <li><a class="nav-link" href="layout-transparent.html">Dependencias</a></li>
-                <li><a class="nav-link" href="layout-transparent.html">OC</a></li>
-              </ul>
+            {{-- Opción visible SOLO para administradores --}}
+            @auth
+                @if (Auth::user()->isAdmin())
+            <li><a class="nav-link" href="{{ route('nuevo.proyecto') }}"><i class="fas fa-file"></i><span>Nuevo</span></a></li>
+                @endif
+            @endauth
+            <li><a class="nav-link" href="{{ route('proyectos') }}"><i class="fas fa-list"></i><span>Listado</span></a></li>
+            <li><a class="nav-link" href="{{ route('contratistas') }}"><i class="fas fa-address-book"></i><span>Contratistas</span></a></li>
             </li>
             
             <li class="menu-header">Usuarios</li>
-            <li><a href="{{ route('usuarios') }}">Usuarios</a></li> 
-            <li><a href="auth-register.html">Registrar Usuario</a></li> 
-            <li><a href="auth-reset-password.html">Reset Password</a></li> 
+            <li><a href="{{ route('usuarios') }}"><i class="fas fa-user"></i><span>Usuarios</span></a></li> 
+            <li><a href="{{ route('usuarios') }}"><i class="fas fa-user-plus"></i><span>Registrar Usuario</span></a></li> 
+            <li><a href="{{ route('usuarios') }}"><i class="fas fa-user-lock"></i><span>Cambiar Contraseña</span></a></li> 
           </ul>
 
           <div class="mt-4 mb-4 p-3 hide-sidebar-mini">
