@@ -2,126 +2,151 @@
 
 @section('content')
 <section class="section">
-          <div class="section-header">
-            <h1>Catálogo</h1>
-          </div>
-          <div class="row">          
-            <div class="col-lg-3 col-md-6 col-sm-6 col-12">
-              <div class="card card-statistic-1">
-                <div class="card-icon bg-primary">
-                  <i class="far fa-user"></i>
-                </div>
-                <div class="card-wrap">
-                  <div class="card-header">
-                    <h4>Total Proyectos</h4>
-                  </div>
-                  <div class="card-body">
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-6 col-12">
-              <div class="card card-statistic-1">
-                <div class="card-icon bg-success">
-                  <i class="fas fa-circle"></i>
-                </div>
-                <div class="card-wrap">
-                  <div class="card-header">
-                    <h4>Proyectos Activos</h4>
-                  </div>
-                  <div class="card-body">
-                  </div>
-                </div>
-              </div>
-            </div> 
-            <div class="col-lg-3 col-md-6 col-sm-6 col-12">
-              <div class="card card-statistic-1">
-                <div class="card-icon bg-danger">
-                  <i class="far fa-newspaper"></i>
-                </div>
-                <div class="card-wrap">
-                  <div class="card-header">
-                    <h4>Cancelados</h4>
-                  </div>
-                  <div class="card-body">
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-6 col-12">
-              <div class="card card-statistic-1">
-                <div class="card-icon bg-dark">
-                  <i class="far fa-file"></i>
-                </div>
-                <div class="card-wrap">
-                  <div class="card-header">
-                    <h4>Finalizados</h4>
-                  </div>
-                  <div class="card-body">
-                  </div>
-                </div>
-              </div>
-            </div>       
-          </div>
+  <div class="section-header">
+    @foreach ($proyectos as $proyecto)       
+    <h1>{{ $proyecto->nombre_proyecto}}</h1>
+    @endforeach
+  </div>
 
   <div class="row">
+    <div class="mt-4 mb-4 p-1 buttons">
+      @if ($partidas->count() > 0) 
+      <a href="{{ route('import.form', ['id_proyecto' => $id_proyecto]) }}" class="btn disabled btn-info icon-left" data-toggle="tooltip" title="Importar Catalogo"><i class="far fa-file"></i> CATALOGO</a>
+      @else 
+      <a href="{{ route('import.form', ['id_proyecto' => $id_proyecto]) }}" class="btn btn-info icon-left" data-toggle="tooltip" title="Importar Catalogo"><i class="far fa-file"></i> CATALOGO</a>
+      @endif
+      <a href="{{ route('import.form', ['id_proyecto' => $id_proyecto]) }}" class="btn btn-icon icon-left btn-dark" data-toggle="tooltip" title="Importar Extraordinarios"><i class="far fa-file"></i> EXTRAS</a>
+    </div>
                   
     <div class="col-12">
-      <div class="card">
-        <div class="card-header">
-          <a href="{{ route('import.form', ['id_proyecto' => $id_proyecto]) }}" class="btn btn-icon icon-left btn-dark" data-toggle="tooltip" title=""><i class="far fa-file"></i> Importar Excel</a>
-          <a href="{{ route('import.form', ['id_proyecto' => $id_proyecto]) }}" class="btn btn-icon icon-left btn-dark" data-toggle="tooltip" title=""><i class="far fa-file"></i> Importar Excel</a>
-        </div>
-        <div class="card-body">
-          <div class="table-responsive">
-            <table class="table table-striped table-partidas" id="table-1">
-              <thead>                                 
-                <tr>
-                  <th class="text-center col-id">
-                    #
-                  </th>
-                  <th class="col-concepto">Concepto</th>
-                  <th class="col-unidad">Unidad</th>
-                  <th class="col-cantidad">Cantidad</th>
-                  <th class="col-pu">PU</th>
-                  <th class="col-importe">Importe</th>
-                </tr>
-              </thead>
-              <tbody>   
-              @if ($partidas->count() > 0)  
-                @foreach ($partidas as $partida)                              
-                <tr>
-                  <td data-order="{{$partida->id_partida}}">
-                    {{ $partida->no_partida }}
-                  </td>
-                  <td>
-                    {{ $partida->concepto_partida }}
-                  </td>
-                  <td>
-                    {{ $partida->unidad_partida }}
-                  </td>
-                  <!--<td class="align-middle">
-                    <div class="progress" data-height="4" data-toggle="tooltip" title="100%">
-                      <div class="progress-bar bg-success" data-width="100%"></div>
+      <ul class="nav nav-tabs" id="myTab2" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active show" id="home-tab2" data-toggle="tab" href="#catalogo" role="tab" aria-controls="home" aria-selected="true">CATALOGO</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="profile-tab2" data-toggle="tab" href="#extras" role="tab" aria-controls="profile" aria-selected="false">EXTRAORDINARIOS</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="contact-tab2" data-toggle="tab" href="#oc" role="tab" aria-controls="contact" aria-selected="false">O.C.</a>
+        </li>
+      </ul>
+      <div class="tab-content tab-bordered" id="myTab3Content">
+        <div class="tab-pane fade active show" id="catalogo" role="tabpanel" aria-labelledby="home-tab2">
+          <div class="card">
+            <div class="card-header">
+              <div class="row">
+                <div class="col-12">
+                  <div class="card card-statistic-1">
+                    <div class="card-wrap">
+                      <div class="card-header">
+                        <h4>SUBTOTAL</h4>
+                      </div>
+                      <div class="card-body">
+                        $<span id="totalImporte">{{ number_format($totalImporte, 2) }}</span>
+                      </div>
                     </div>
-                  </td>-->
-                  <td>
-                    {{ $partida->cantidad_partida }}
-                  </td>
-                  <td>
-                    ${{ number_format($partida->pu_partida,2) }}
-                  </td>
-                  <td>
-                    ${{ number_format($partida->cantidad_partida*$partida->pu_partida,2) }}
-                  </td>
-                </tr>
-                @endforeach 
-                @else
-                    <p>No hay partidas disponibles.</p>
-                @endif
-              </tbody>
-            </table>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="card card-statistic-1">
+                    <div class="card-wrap">
+                      <div class="card-header">
+                        <h4>I.V.A.</h4>
+                      </div>
+                      <div class="card-body">
+                        $<span id="totalImporte">{{ number_format(($totalImporte*0.16), 2) }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div> 
+                <div class="col-12">
+                  <div class="card card-statistic-1">
+                    <div class="card-wrap">
+                      <div class="card-header">
+                        <h4>TOTAL</h4>
+                      </div>
+                      <div class="card-body">
+                        $<span id="totalImporte">{{ number_format(($totalImporte*1.16), 2) }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!--<div class="col-lg-3 col-md-6 col-sm-6 col-12">
+                  <div class="card card-statistic-1">
+                    <div class="card-icon bg-dark">
+                      <i class="far fa-file"></i>
+                    </div>
+                    <div class="card-wrap">
+                      <div class="card-header">
+                        <h4>Finalizados</h4>
+                      </div>
+                      <div class="card-body">
+                      </div>
+                    </div>
+                  </div>
+                </div>-->       
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-striped table-partidas" id="table-1">
+                  <thead>                                 
+                    <tr>
+                      <th class="text-center col-id">
+                        #
+                      </th>
+                      <th class="col-concepto">Concepto</th>
+                      <th class="col-unidad">Unidad</th>
+                      <th class="col-cantidad">Cantidad</th>
+                      <th class="col-pu">PU</th>
+                      <th class="col-importe">Importe</th>
+                    </tr>
+                  </thead>
+                  <tbody>   
+                  @if ($partidas->count() > 0)  
+                    @foreach ($partidas as $partida)                              
+                    <tr>
+                      <td data-order="{{$partida->id_partida}}">
+                        {{ $partida->no_partida }}
+                      </td>
+                      <td>
+                        <div data-toggle="tooltip" title="{{ $concepto=$partida->concepto_partida}}">
+                          {{ substr($concepto,0,100) }}
+                        </div>
+                      </td>
+                      <td>
+                        {{ $partida->unidad_partida }}
+                      </td>
+                      <!--<td class="align-middle">
+                        <div class="progress" data-height="4" data-toggle="tooltip" title="100%">
+                          <div class="progress-bar bg-success" data-width="100%"></div>
+                        </div>
+                      </td>-->
+                      <td>
+                        {{ $partida->cantidad_partida }}
+                      </td>
+                      <td>
+                        ${{ number_format($partida->pu_partida,2) }}
+                      </td>
+                      <td>
+                        ${{ number_format($partida->cantidad_partida*$partida->pu_partida,2) }}
+                      </td>
+                    </tr>
+                    @endforeach 
+                    @else
+                        <p>No hay partidas disponibles.</p>
+                    @endif
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
+        </div>
+
+        <div class="tab-pane fade show" id="extras" role="tabpanel" aria-labelledby="home-tab2">
+        </div>
+
+        <div class="tab-pane fade show" id="oc" role="tabpanel" aria-labelledby="home-tab2">
         </div>
       </div>
     </div>

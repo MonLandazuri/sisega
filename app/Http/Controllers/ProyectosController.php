@@ -33,7 +33,7 @@ class ProyectosController extends Controller
         $nuevoProyecto->nombre_proyecto = $request->input('nombre_proyecto');
         $nuevoProyecto->dependencia_proyecto = $request->input('dependencia_proyecto');
         $nuevoProyecto->constructora_proyecto = $request->input('constructora_proyecto');
-        $nuevoProyecto->fecha_proyecto = date('Y-m-d');
+        $nuevoProyecto->fecha_proyecto = $request->input("fecha_proyecto");
         $nuevoProyecto->status_proyecto = 'activo';
 
         // 5. Guardar el nuevo proyecto en la base de datos

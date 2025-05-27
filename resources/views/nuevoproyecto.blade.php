@@ -45,10 +45,16 @@
               <div class="form-group row align-items-center">
                 <label class="col-md-4 text-md-right text-left">Constructora</label>
                 <div class="col-lg-4 col-md-6">
-                  <select class="form-control" name="constructora">
-                    <option>SISEGA</option>
-                    <option>ANDALUZ</option>
+                  <select class="form-control" name="constructora_proyecto">
+                    <option value="SISEGA">SISEGA</option>
+                    <option value="ANDALUZ">ANDALUZ</option>
                   </select>
+                </div>
+              </div>
+              <div class="form-group row align-items-center">
+                <label class="col-md-4 text-md-right text-left">Fecha Autorización</label>
+                <div class="col-lg-4 col-md-6">
+                  <input type="date" class="form-control" name="fecha_proyecto">
                 </div>
               </div>
               <div class="form-group row">
