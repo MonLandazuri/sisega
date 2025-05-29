@@ -7,6 +7,7 @@ use App\Http\Controllers\PartidasController;
 use App\Http\Controllers\UsuariosController;
 use App\Http\Controllers\ContratistasController;
 use App\Http\Controllers\ExcelImportController; //Controlador Excel
+use App\Http\Controllers\ExcelImportControllerExtra; //Controlador Excel
 
 
 //Route::get('/', function () {return view('dashboard');});
@@ -41,3 +42,9 @@ Route::get('/importar-excel/{id_proyecto}', [ExcelImportController::class, 'show
 
 // Ruta para procesar la subida y la importación del archivo Excel
 Route::post('/importar-excel/{id_proyecto}', [ExcelImportController::class, 'importExcel'])->name('import.process')->middleware('auth');
+
+// Ruta para mostrar el formulario de subida del archivo Excel
+Route::get('/importar-extra/{id_proyecto}', [ExcelImportControllerExtra::class, 'showImportFormExtra'])->name('import.form.extra')->middleware('auth');
+
+// Ruta para procesar la subida y la importación del archivo Excel
+Route::post('/importar-extra/{id_proyecto}', [ExcelImportControllerExtra::class, 'importExcelExtra'])->name('import.process.extra')->middleware('auth');
