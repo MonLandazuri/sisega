@@ -5,6 +5,7 @@ use App\Http\Controllers\InicioController;
 use App\Http\Controllers\ProyectosController;
 use App\Http\Controllers\PartidasController;
 use App\Http\Controllers\UsuariosController;
+use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\ContratistasController;
 use App\Http\Controllers\ExcelImportController; //Controlador Excel
 use App\Http\Controllers\ExcelImportControllerExtra; //Controlador Excel
@@ -48,3 +49,14 @@ Route::get('/importar-extra/{id_proyecto}', [ExcelImportControllerExtra::class, 
 
 // Ruta para procesar la subida y la importación del archivo Excel
 Route::post('/importar-extra/{id_proyecto}', [ExcelImportControllerExtra::class, 'importExcelExtra'])->name('import.process.extra')->middleware('auth');
+
+Route::middleware('auth')->group(function () {
+
+    Route::get('/usuarios',[UsuariosController::class, 'mostrarUsuarios'])->name('usuarios');
+
+    // Ruta para mostrar el formulario de cambio de contraseña
+    Route::get('/usuarios/password', [PerfilController::class, 'editPassword'])->name('usuarios.editar.password');
+
+    // Ruta para procesar el cambio de contraseña
+    Route::put('/usuarios/password', [PerfilController::class, 'updatePassword'])->name('usuarios.actualizar.password');
+});

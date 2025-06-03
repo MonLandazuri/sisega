@@ -23,7 +23,7 @@
             <li class="menu-header">Usuarios</li>
             <li><a href="{{ route('usuarios') }}"><i class="fas fa-user"></i><span>Usuarios</span></a></li> 
             <li><a href="{{ route('usuarios') }}"><i class="fas fa-user-plus"></i><span>Registrar Usuario</span></a></li> 
-            <li><a href="{{ route('usuarios') }}"><i class="fas fa-user-lock"></i><span>Cambiar Contraseña</span></a></li> 
+            <li><a href="{{ route('usuarios.editar.password') }}"><i class="fas fa-user-lock"></i><span>Cambiar Contraseña</span></a></li> 
           </ul>
 
           <div class="mt-4 mb-4 p-3 hide-sidebar-mini">
