@@ -7,12 +7,11 @@
 
   <div class="card">
     <div class="card-header">
-    @foreach ($proyectos as $proyecto)       
-    <h1>{{ $proyecto->nombre_proyecto}}</h1>
-    <div class="card-wrap">
-      <span>Dependencia: </span><span>{{$proyecto->dependencia_proyecto}}</span>
-    </div>
-    @endforeach
+      @foreach ($proyectos as $proyecto)       
+      <h1>{{ $proyecto->nombre_proyecto}}</h1>
+      @endforeach
+      <hr>
+      <h2>Dependencia: {{$proyecto->dependencia_proyecto}}</h2>
     </div>
     <div class="card-body">
       <ul class="nav nav-tabs" id="myTab2" role="tablist">

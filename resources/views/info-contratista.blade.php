@@ -16,7 +16,6 @@
                     <h4>Contratistas</h4>
                   </div>
                   <div class="card-body">
-                    {{ $totalContratistas}}
                   </div>
                 </div>
               </div>
@@ -45,26 +44,26 @@
                 </tr>
               </thead>
               <tbody>   
-              @if ($contratistas->count() > 0)  
-                @foreach ($contratistas as $contratista)                              
+              @if ($contratista->count() > 0)  
+                @foreach ($contratista as $contra)                              
                 <tr>
                   <td>
-                    {{ $contratista->id_contratista }}
+                    {{ $contra->id_contratista }}
                   </td>
                   <td>
-                    <a href="{{ route('info.contratista', ['id_contratista' => $contratista->id_contratista]) }}">{{ $contratista->nombre_contratista }}
+                    {{ $contra->nombre_contratista }}
                   </td>
                   <td>
-                    {{ $contratista->direccion_contratista }}
+                    {{ $contra->direccion_contratista }}
                   </td>
                   <td>
-                    {{ $contratista->banco_contratista }}
+                    {{ $contra->banco_contratista }}
                   </td>
                   <td>
-                        {{ strtoupper($contratista->clabe_contratista) }}
+                        {{ strtoupper($contra->clabe_contratista) }}
                   </td>
                   <td>
-                        {{ strtoupper($contratista->cuenta_contratista) }}
+                        {{ strtoupper($contra->cuenta_contratista) }}
                   </td>
                   <td>
                     <div class="btn-group">
@@ -73,7 +72,7 @@
                         <span class="sr-only">Toggle Dropdown</span>
                       </button>
                       <div class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(119px, -2px, 0px); top: 0px; left: 0px; will-change: transform;">
-                        <a class="dropdown-item" href="{{ route('info.contratista', ['id_contratista' => $contratista->id_contratista]) }}">Ver</a>
+                        <a class="dropdown-item" href="{{ route('info.contratista', ['id_contratista' => $contra->id_contratista]) }}">Ver</a>
                         <a class="dropdown-item" title="Eliminar" data-confirm="¿Quieres eliminar el Contratista?" data-confirm-yes="alert('Deleted')"  href="#">Eliminar</a>
                       </div>
                       <!--<div class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(119px, -2px, 0px); top: 0px; left: 0px; will-change: transform;">

@@ -51,19 +51,21 @@ class ContratistasController extends Controller
 
     public function mostrarContratistas()
     {
-        // Utilizando Eloquent para obtener todos los productos
         $contratistas = Contratista::all();
         $totalContratistas = Contratista::count();
 
-        // También puedes usar otras consultas de Eloquent
-        // $productos = Producto::where('activo', true)->orderBy('precio', 'desc')->get();
-        // $primerProducto = Producto::first();
-        // $productoPorId = Producto::find(1);
-
-        // Pasar los productos a la vista
         return view('contratistas', [
             'contratistas' => $contratistas,
             'totalContratistas'=>$totalContratistas,
+        ]);
+    }
+
+    public function infoContratista($id_contratista)
+    {
+        $contratista = Contratista::where('id_contratista',$id_contratista)->get();
+
+        return view('info-contratista', [
+            'contratista' => $contratista,
         ]);
     }
 }
