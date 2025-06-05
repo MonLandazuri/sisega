@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Proyecto extends Model
 {
     use HasFactory;
-    //
+    
     protected $table = 'proyectos';
     protected $fillable = [
         'nombre_proyecto', 
@@ -16,7 +16,6 @@ class Proyecto extends Model
         'constructora_proyecto', 
         'fecha_proyecto', 
         'status_proyecto',
-        // ... otros campos ...
     ];
 
     public $timestamps = false; 

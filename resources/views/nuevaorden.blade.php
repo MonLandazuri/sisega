@@ -29,17 +29,52 @@
 
           <form method="POST" action="{{ route('agregar.nuevaoc')}}" class="wizard-content mt-2">
                 @csrf
-            <div class="wizard-pane">
+            <div class="wizard-pane"> 
               <div class="form-group row align-items-center">
-                <label class="col-md-4 text-md-right text-left">Codigo</label>
+                <label class="col-md-4 text-md-right text-left">Contratista</label>
                 <div class="col-lg-4 col-md-6">
                   <select class="form-control" name="codigo_oc">
-                  @foreach ($partidas as $partida)
-                    <option value="{{ $partida->id_partida}}">
-                        {{ $partida->no_partida." - ".$partida->concepto_partida }} 
-                    </option>
-                  @endforeach
+                    <option value="">Selecciona un contratista</option>
+                    @foreach ($contratistas as $contratista)
+                      <option value="{{ $contratista->id_contratista}}">
+                          {{ $contratista->nombre_contratista }} 
+                      </option>
+                    @endforeach
                   </select>
+                </div>
+              </div>
+              <div class="form-group row align-items-center">
+                <label class="col-md-4 text-md-right text-left">Opción</label>
+                <div class="col-lg-4 col-md-6">
+                  <button class="btn btn-warning collapsed" type="button" data-toggle="collapse" data-target="#multiCollapseExample1" aria-expanded="false" aria-controls="multiCollapseExample1">Catalogo</button>
+                  <button class="btn btn-warning collapsed" type="button" data-toggle="collapse" data-target="#multiCollapseExample2" aria-expanded="false" aria-controls="multiCollapseExample2">Extraordinarios</button>
+                </div>
+              </div>
+              <div class="form-group row align-items-center multi-collapse collapse" id="multiCollapseExample1">
+                  <label class="col-md-4 text-md-right text-left">Catalogo</label>
+                  <div class="col-lg-4 col-md-6">
+                    <select class="form-control" name="codigo_oc">
+                      <option value="">Selecciona un elemento</option>
+                      @foreach ($partidas as $partida)
+                        <option value="{{ $partida->id_partida}}">
+                            {{ $partida->no_partida." - ".$partida->concepto_partida }} 
+                        </option>
+                      @endforeach
+                    </select>
+                  </div>
+              </div>
+              <div class="form-group row align-items-center multi-collapse collapse" id="multiCollapseExample2">
+                  <label class="col-md-4 text-md-right text-left">Extraordinarios</label>
+                  <div class="col-lg-4 col-md-6">
+                    <select class="form-control" name="codigo_oc">
+                      <option value="">Selecciona un elemento</option>
+                    @foreach ($extras as $extra)
+                      <option value="{{ $extra->id_extra}}">
+                          {{ $extra->no_extra." - ".$extra->concepto_extra }} 
+                      </option>
+                    @endforeach
+                    </select>
+                  </div>
                 </div>
               </div>
               <div class="form-group row align-items-center">
