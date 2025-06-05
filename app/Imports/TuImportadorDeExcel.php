@@ -13,11 +13,7 @@ class TuImportadorDeExcel implements ToModel, WithHeadingRow
     {
         $this->id_proyecto = $id_proyecto;
     }
-    /**
-     * @param array $row
-     *
-     * @return \Illuminate\Database\Eloquent\Model|null
-     */
+    
     public function model(array $row)
     {        
         return new Partida([
@@ -30,11 +26,6 @@ class TuImportadorDeExcel implements ToModel, WithHeadingRow
         ]);
     }
 
-    /**
-     * Define la fila de encabezado.
-     *
-     * @return int
-     */
     public function headingRow(): int
     {
         return 1; // Asume que la primera fila de tu Excel contiene los encabezados

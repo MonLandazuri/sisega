@@ -7,6 +7,7 @@ use App\Http\Controllers\PartidasController;
 use App\Http\Controllers\UsuariosController;
 use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\ContratistasController;
+use App\Http\Controllers\OrdenDeCompraController;
 use App\Http\Controllers\ExcelImportController; //Controlador Excel
 use App\Http\Controllers\ExcelImportControllerExtra; //Controlador Excel
 
@@ -23,6 +24,8 @@ Route::get('/nuevo-contratista',[ContratistasController::class, 'nuevoContratist
 Route::post('/guardar-nuevo-contratista', [ContratistasController::class, 'guardarNuevoContratista'])->name('guardar.nuevocontratista')->middleware('auth');
 
 Route::get('/partidas/{id_proyecto}',[PartidasController::class, 'mostrarPartidasPorProyecto'])->name('proyecto.partidas')->middleware('auth');
+Route::get('/partidas/nueva-oc/{id_proyecto}',[OrdenDeCompraController::class, 'nuevaOC'])->name('nueva.oc')->middleware('auth');
+Route::post('/partidas/nueva-oc/',[OrdenDeCompraController::class, 'agregarNuevaOC'])->name('agregar.nuevaoc')->middleware('auth');
 
 Route::get('/usuarios',[UsuariosController::class, 'index'])->name('usuarios');
 

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Extra extends Model
 {
     use HasFactory;
-    //
+    
     protected $table = 'extras';
     protected $fillable = [
         'no_extra',
@@ -17,6 +17,5 @@ class Extra extends Model
         'cantidad_extra', 
         'pu_extra', 
         'id_proyecto',
-        // ... otros campos ...
     ];
 }

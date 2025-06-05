@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Contratista extends Model
 {
      use HasFactory;
-    //
+
     protected $table = 'contratistas';
     protected $fillable = [
         'nombre_contratista', 
@@ -16,6 +16,5 @@ class Contratista extends Model
         'banco_contratista', 
         'clabe_contratista',
         'cuenta_contratista',
-        // ... otros campos ...
     ];
 }

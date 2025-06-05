@@ -36,6 +36,7 @@
             @else 
             <a href="{{ route('import.form', ['id_proyecto' => $id_proyecto]) }}" class="btn btn-info icon-left" data-toggle="tooltip" title="Importar Catalogo"><i class="far fa-file"></i> CATALOGO</a>
             @endif
+            <a href="{{ route('nueva.oc', ['id_proyecto' => $id_proyecto]) }}" class="btn btn-info icon-left" data-toggle="tooltip" title="Nueva OC"><i class="far fa-file"></i> NUEVA OC</a>
           </div>
           <div class="row col-12">
             <div class="col-lg-4 col-md-4 col-sm-12">
@@ -140,7 +141,7 @@
         <div class="tab-pane fade show" id="extras" role="tabpanel" aria-labelledby="home-tab2">
           <div class="row col-12"> 
             <div class="mt-4 mb-4 p-1 buttons">
-              <a href="{{ route('import.form', ['id_proyecto' => $id_proyecto]) }}" class="btn btn-icon icon-left btn-dark" data-toggle="tooltip" title="Importar Extraordinarios"><i class="far fa-file"></i> EXTRAS</a>
+              <a href="{{ route('import.form.extra', ['id_proyecto' => $id_proyecto]) }}" class="btn btn-icon icon-left btn-dark" data-toggle="tooltip" title="Importar Extraordinarios"><i class="far fa-file"></i> EXTRAS</a>
             </div>
           </div>
           <div class="row col-12">
@@ -191,7 +192,7 @@
             </div>
           </div>
           <div class="table-responsive">
-            <table class="table table-striped table-partidas" id="table-1">
+            <table class="table table-striped table-extras" id="table-2">
               <thead>                                 
                 <tr>
                   <th class="text-center col-id">
@@ -262,6 +263,24 @@
     width: 10% !important;
   }
   .table-partidas .col-importe{
+    width: 20% !important;
+  }
+  .table-extras .col-id{
+    width: 5% !important;
+  }
+  .table-extras .col-concepto{
+    width: 60% !important;
+  }
+  .table-extras .col-unidad{
+    width: 5% !important;
+  }
+  .table-extras .col-cantidad{
+    width: 10% !important;
+  }
+  .table-extras .col-pu{
+    width: 10% !important;
+  }
+  .table-extras .col-importe{
     width: 20% !important;
   }
 </style>
