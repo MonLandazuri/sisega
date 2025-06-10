@@ -49,6 +49,7 @@ class OrdenDeCompraController extends Controller
                 'partidas'=>$partidas,
                 'extras'=>$extras,
                 'id_orden'=>$id_orden,
+                'detalles'=>null,
         ]);     
     }
 
@@ -65,16 +66,35 @@ class OrdenDeCompraController extends Controller
         $ordenCompraDetalle->cantidad_orden_detalle = $request->input("cantidad_oc");
 
         $ordenCompraDetalle->save();
+        $id_orden_detalle=$ordenCompraDetalle->id;
 
         $partidas = Partida::where('id_proyecto', $id_proyecto)->get();
         $extras = Extra::where('id_proyecto', $id_proyecto)->get();
-        $ordenDetalleListado = OrdenesDetalles::where('id_orden', $id_orden)->get();
+        //$ordenDetalleListado = OrdenesDetalles::where('id_orden', $id_orden)->get();
 
-        return view('listado-nuevaorden',[
-                'id_proyecto'=>$id_proyecto,
-                'partidas'=>$partidas,
-                'extras'=>$extras,
-                'id_orden'=>$id_orden,
-        ]);         
+        $detalles = DB::table('ordenes_detalles as od') // Alias 'od' para ordenes_detalle
+            ->select(
+                'od.*', // Selecciona todas las columnas de ordenes_detalle
+                'p.no_partida',
+                'p.id_partida',
+                'p.concepto_partida',
+                'e.no_extra',
+                'e.id_extra',
+                'e.concepto_extra'
+            )
+            ->leftJoin('partidas as p', function ($join) {
+                $join->on('od.id_partida', '=', 'p.id_partida')
+                     ->whereNotNull('od.id_partida'); // Solo une si partida_id no es nulo
+            })
+            ->leftJoin('extras as e', function ($join) {
+                $join->on('od.id_extra', '=', 'e.id_extra')
+                     ->whereNotNull('od.id_extra'); // Solo une si extra_id no es nulo
+            })
+            ->where('od.id_orden', $id_orden_detalle) // Filtra por la orden de compra específica
+            ->get();
+
+        return view('listado-nuevaorden',
+                compact("detalles","id_proyecto","partidas","extras","id_orden")
+        );         
     }
 }

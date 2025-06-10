@@ -8,25 +8,27 @@
   <div class="card">
     <div class="card-header">
       @foreach ($proyectos as $proyecto)       
-      <h1>{{ $proyecto->nombre_proyecto}}</h1>
+      <h2>{{ $proyecto->nombre_proyecto}}</h2>
+      <hr><br>
+      <p>Dependencia: {{$proyecto->dependencia_proyecto}}</p>
       @endforeach
-      <hr>
-      <h2>Dependencia: {{$proyecto->dependencia_proyecto}}</h2>
     </div>
     <div class="card-body">
       <ul class="nav nav-tabs" id="myTab2" role="tablist">
         <li class="nav-item">
-          <a class="nav-link active show" id="home-tab2" data-toggle="tab" href="#catalogo" role="tab" aria-controls="home" aria-selected="true">CATALOGO</a>
+          <a class="nav-link active show" id="catalogo-tab2" data-toggle="tab" href="#catalogo" role="tab" aria-controls="catalogo" aria-selected="true">CATALOGO</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" id="profile-tab2" data-toggle="tab" href="#extras" role="tab" aria-controls="profile" aria-selected="false">EXTRAORDINARIOS</a>
+          <a class="nav-link" id="extra-tab2" data-toggle="tab" href="#extras" role="tab" aria-controls="extraordinarios" aria-selected="false">EXTRAORDINARIOS</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" id="contact-tab2" data-toggle="tab" href="#oc" role="tab" aria-controls="contact" aria-selected="false">ACUMULADO</a>
+          <a class="nav-link" id="acumulado-tab2" data-toggle="tab" href="#acumulado" role="tab" aria-controls="acumulado" aria-selected="false">ACUMULADO</a>
         </li>
+        @foreach ($ordenes as $orden)     
         <li class="nav-item">
-          <a class="nav-link" id="contact-tab2" data-toggle="tab" href="#oc" role="tab" aria-controls="contact" aria-selected="false">O.C.</a>
+          <a class="nav-link" id="oc{{$orden->id_orden}}-tab2" data-toggle="tab" href="#oc{{ $orden->id_orden}}" role="tab" aria-controls="oc{{$orden->id_orden}}" aria-selected="false">O.C. {{ $orden->id_orden}}</a>
         </li>
+        @endforeach
       </ul>
       <div class="tab-content tab-bordered" id="myTab3Content">
         <div class="tab-pane fade active show" id="catalogo" role="tabpanel" aria-labelledby="home-tab2">
@@ -239,8 +241,15 @@
           </div>
         </div>
 
-        <div class="tab-pane fade show" id="oc" role="tabpanel" aria-labelledby="home-tab2">
+        <div class="tab-pane fade show" id="acumulado" role="tabpanel" aria-labelledby="home-tab2">
+          Acumulado
         </div>
+
+        @foreach ($ordenes as $orden)  
+        <div class="tab-pane fade show" id="oc{{$orden->id_orden}}" role="tabpanel" aria-labelledby="home-tab2">
+          {{$orden->id_orden}}
+        </div>
+        @endforeach
       </div>
     </div>
   </div>

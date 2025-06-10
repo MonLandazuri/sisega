@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Proyecto;
 use App\Models\Partida;
 use App\Models\Extra;
+use App\Models\Ordenes;
 use App\Http\Controllers\Controller;
 
 
@@ -20,6 +21,7 @@ class PartidasController extends Controller
         $partidas = Partida::where('id_proyecto', $id_proyecto)->get();
         $extras = Extra::where('id_proyecto', $id_proyecto)->get();
         $proyecto = Proyecto::where('id_proyecto', $id_proyecto)->get();
+        $ordenes = Ordenes::where('id_proyecto', $id_proyecto)->get();
 
         $totalImporte = Partida::where('id_proyecto', $id_proyecto)
                                ->select(DB::raw('SUM(cantidad_partida * pu_partida) as total_importe'))
@@ -39,6 +41,7 @@ class PartidasController extends Controller
             'partidas' => $partidas,
             'extras' => $extras,
             'proyectos' => $proyecto,
+            'ordenes' => $ordenes,
             'totalImporte' => $totalImporte,
             'totalImporteExtra' => $totalImporteExtra,
             'id_proyecto'=>$id_proyecto,

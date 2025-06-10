@@ -8,6 +8,47 @@
   <div class="row">
     <div class="col-12">
       <div class="card">
+        <table class="table table-striped table-extras" id="table-2">
+              <thead>                                 
+                <tr>
+                  <th class="text-center col-id">
+                    #
+                  </th>
+                  <th class="col-concepto">Concepto</th>
+                  <th class="col-unidad">Unidad</th>
+                  <th class="col-cantidad">Cantidad</th>
+                  <th class="col-pu">PU</th>
+                  <th class="col-importe">Importe</th>
+                </tr>
+              </thead>
+              <tbody>   
+                @foreach($detalles as $detalle)
+                <tr>
+                  <td>
+                    @if($detalle->id_partida)
+                    {{ $detalle->no_partida}}
+                    @elseif ($detalle->id_extra)
+                    {{ $detalle->no_extra}}
+                    @else
+                      sin numero
+                    @endif
+                  </td>
+                  <td>
+                    @if($detalle->id_partida)
+                    {{ $detalle->concepto_partida}}
+                    @elseif ($detalle_id_extra)
+                    {{ $detalle->concepto_extra}}
+                    @else
+                      sin Concepto
+                    @endif
+                  </td>
+                </tr>
+                @endforeach
+              </tbody>
+        </table>
+      </div>
+
+      <div class="card">
         <div class="card-header">
           <h4></h4>
         </div>
