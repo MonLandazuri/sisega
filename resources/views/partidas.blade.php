@@ -247,7 +247,77 @@
 
         @foreach ($ordenes as $orden)  
         <div class="tab-pane fade show" id="oc{{$orden->id_orden}}" role="tabpanel" aria-labelledby="home-tab2">
-          {{$orden->id_orden}}
+          @php
+              // Filtrar los detalles que corresponden a esta orden específica
+              $detallesDeEstaOrden = $todosLosDetallesDeOrdenes->where('id_orden', $orden->id_orden);
+          @endphp
+          <table class="table table-striped table-oc dataTable" id="table-2">
+            <thead>                                 
+              <tr>
+                <th class="text-center col-id">
+                  #
+                </th>
+                <th class="sorting">Tipo</th>
+                <th class="sorting">Concepto</th>
+                <th class="">Unidad</th>
+                <th class="">Cantidad</th>
+                <th class="">PU</th>
+                <th class="">Importe</th>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach($detallesDeEstaOrden as $detalle)
+              <tr>
+                  <td>
+                      @if ($detalle->id_partida)
+                          {{ $detalle->no_partida }}
+                      @elseif ($detalle->id_extra)
+                          {{ $detalle->no_extra }}
+                      @else
+                          -
+                      @endif
+                  </td>
+                  <td>
+                      @if ($detalle->id_partida)
+                          Catálogo
+                      @elseif ($detalle->id_extra)
+                          Extra
+                      @else
+                          N/A
+                      @endif
+                  </td>
+                  <td>
+                      @if ($detalle->id_partida)
+                          {{ $detalle->concepto_partida }}
+                      @elseif ($detalle->id_extra)
+                          {{ $detalle->concepto_extra }}
+                      @else
+                          -
+                      @endif
+                  </td>
+                  <td>{{ $detalle->cantidad_orden_detalle }}</td>
+                  <td>
+                    @if ($detalle->id_partida)
+                          {{ number_format($detalle->pu_partida, 2) }}
+                    @elseif ($detalle->id_extra)
+                        {{ number_format($detalle->pu_extra, 2) }}
+                    @else
+                        -
+                    @endif 
+                  </td>
+                  <td> 
+                    @if ($detalle->id_partida)
+                        {{ number_format($detalle->cantidad_orden_detalle * $detalle->pu_partida, 2) }}
+                    @elseif ($detalle->id_extra)
+                        {{ number_format($detalle->cantidad_orden_detalle * $detalle->pu_extra, 2) }}
+                    @else
+                        -
+                    @endif
+                  </td>
+              </tr>
+              @endforeach
+            </tbody>
+          </table>
         </div>
         @endforeach
       </div>

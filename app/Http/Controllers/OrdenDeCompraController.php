@@ -90,7 +90,7 @@ class OrdenDeCompraController extends Controller
                 $join->on('od.id_extra', '=', 'e.id_extra')
                      ->whereNotNull('od.id_extra'); // Solo une si extra_id no es nulo
             })
-            ->where('od.id_orden', $id_orden_detalle) // Filtra por la orden de compra específica
+            ->where('od.id_orden', $id_orden) // Filtra por la orden de compra específica
             ->get();
 
         return view('listado-nuevaorden',

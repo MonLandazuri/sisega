@@ -7,7 +7,7 @@
     </div>
     @foreach ($usuarios as $usuario)
     <div class="row">    
-      <div class="col-12 col-sm-12 col-lg-7">
+      <div class="col-12">
         <div class="card author-box card-primary">
           <div class="card-body">
             <div class="author-box-left">

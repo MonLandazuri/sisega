@@ -7,6 +7,7 @@
           </div>
   <div class="row">
     <div class="col-12">
+      @if ($detalles)
       <div class="card">
         <table class="table table-striped table-extras" id="table-2">
               <thead>                                 
@@ -47,6 +48,7 @@
               </tbody>
         </table>
       </div>
+      @endif
 
       <div class="card">
         <div class="card-header">
