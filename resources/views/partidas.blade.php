@@ -6,14 +6,37 @@
   </div>
 
   <div class="card">
-    <div class="card-header">
-      @foreach ($proyectos as $proyecto)       
-      <h2>{{ $proyecto->nombre_proyecto}}</h2>
-      <hr><br>
-      <p>Dependencia: {{$proyecto->dependencia_proyecto}}</p>
+    <div class="">
+      @foreach ($proyectos as $proyecto)  
+      <table>
+        <tr>
+          <td class="card-header"><h4>Proyecto:</h4></td>
+          <td><span class="card-body">{{ $proyecto->nombre_proyecto}}</span></td>
+        </tr>     
+        <tr>
+          <td class="card-header"><h4>Dependencia:</h4></td>
+          <td><span class="card-body"> {{$proyecto->dependencia_proyecto}}</span></td>
+        </tr>
+        <tr>
+          <td class="card-header"><h4>Fecha:</h4></td>
+          <td><span class="card-body"> {{$proyecto->fecha_proyecto}}</span></td>
+        </tr>
+      </table>
       @endforeach
     </div>
     <div class="card-body">
+      <div class="mt-4 mb-4 p-1 buttons"> 
+        @php
+        $contadorOC=0;
+        @endphp
+        @if ($partidas->count() > 0) 
+        <a href="{{ route('import.form', ['id_proyecto' => $id_proyecto]) }}" class="btn disabled btn-info icon-left" title="Importar Catalogo">IMPORTAR CATALOGO</a>
+        @else 
+        <a href="{{ route('import.form', ['id_proyecto' => $id_proyecto]) }}" class="btn btn-info icon-left" title="Importar Catalogo">IMPORTAR CATALOGO</a>
+        @endif
+        <a href="{{ route('import.form.extra', ['id_proyecto' => $id_proyecto]) }}" class="btn btn-icon icon-left btn-dark"  title="Importar Extraordinarios">IMPORTAR EXTRAS</a>
+        <a href="{{ route('nueva.oc', ['id_proyecto' => $id_proyecto]) }}" class="btn btn-info icon-left" title="Nueva OC">NUEVA OC</a>
+      </div>
       <ul class="nav nav-tabs" id="myTab2" role="tablist">
         <li class="nav-item">
           <a class="nav-link active show" id="catalogo-tab2" data-toggle="tab" href="#catalogo" role="tab" aria-controls="catalogo" aria-selected="true">CATALOGO</a>
@@ -24,79 +47,76 @@
         <li class="nav-item">
           <a class="nav-link" id="acumulado-tab2" data-toggle="tab" href="#acumulado" role="tab" aria-controls="acumulado" aria-selected="false">ACUMULADO</a>
         </li>
-        @foreach ($ordenes as $orden)     
+        @foreach ($ordenes as $orden)  
         <li class="nav-item">
-          <a class="nav-link" id="oc{{$orden->id_orden}}-tab2" data-toggle="tab" href="#oc{{ $orden->id_orden}}" role="tab" aria-controls="oc{{$orden->id_orden}}" aria-selected="false">O.C. {{ $orden->id_orden}}</a>
+          <a class="nav-link" id="oc{{$orden->id_orden}}-tab2" data-toggle="tab" href="#oc{{ $orden->id_orden}}" role="tab" aria-controls="oc{{$orden->id_orden}}" aria-selected="false">O.C. {{$contadorOC+=1}}</a>
         </li>
         @endforeach
       </ul>
       <div class="tab-content tab-bordered" id="myTab3Content">
         <div class="tab-pane fade active show" id="catalogo" role="tabpanel" aria-labelledby="home-tab2">
-          <div class="mt-4 mb-4 p-1 buttons"> 
-            @if ($partidas->count() > 0) 
-            <a href="{{ route('import.form', ['id_proyecto' => $id_proyecto]) }}" class="btn disabled btn-info icon-left" data-toggle="tooltip" title="Importar Catalogo"><i class="far fa-file"></i> CATALOGO</a>
-            @else 
-            <a href="{{ route('import.form', ['id_proyecto' => $id_proyecto]) }}" class="btn btn-info icon-left" data-toggle="tooltip" title="Importar Catalogo"><i class="far fa-file"></i> CATALOGO</a>
-            @endif
-            <a href="{{ route('nueva.oc', ['id_proyecto' => $id_proyecto]) }}" class="btn btn-info icon-left" data-toggle="tooltip" title="Nueva OC"><i class="far fa-file"></i> NUEVA OC</a>
-          </div>
-          <div class="row col-12">
-            <div class="col-lg-4 col-md-4 col-sm-12">
-              <div class="card card-statistic-2">
-                <div class="card-icon shadow-primary bg-primary">
-                  <i class="fas fa-dollar-sign"></i>
-                </div>
-                <div class="card-wrap">
-                  <div class="card-header">
-                    <h4>Subtotal</h4>
-                  </div>
-                  <div class="card-body">
-                    $<span id="totalImporte">{{ number_format($totalImporte, 2) }}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-4 col-md-4 col-sm-12">
-              <div class="card card-statistic-2">
-                <div class="card-icon shadow-primary bg-primary">
-                  <i class="fas fa-dollar-sign"></i>
-                </div>
-                <div class="card-wrap">
-                  <div class="card-header">
+          <div class="row col-12 justify-content-end">
+            <div class="">
+              <table class="table table-striped">
+                <tr>
+                  <th></th>
+                  <th class="text-center">{{$proyecto->constructora_proyecto}}</th>
+                  <th></th>
+                  <th class="text-center">CONTRATISTA</th>
+                </tr>
+                <tr>
+                  <td>
+                    <h4>SUBTOTAL</h4>
+                  </td>
+                  <td>
+                    <span class="card-body"  id="totalImporte">$ {{ number_format($totalImporte, 2) }}</span>
+                  </td>
+                  <td></td>
+                  <td>
+                    <span class="card-body" id="totalImporte">$ {{ number_format($totalContratistaImporte, 2) }}</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
                     <h4>I.V.A.</h4>
-                  </div>
-                  <div class="card-body">
-                    $<span id="totalImporte">{{ number_format(($totalImporte*0.16), 2) }}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-4 col-md-4 col-sm-12">
-              <div class="card card-statistic-2">
-                <div class="card-icon shadow-primary bg-primary">
-                  <i class="fas fa-dollar-sign"></i>
-                </div>
-                <div class="card-wrap">
-                  <div class="card-header">
-                    <h4>Total</h4>
-                  </div>
-                  <div class="card-body">
-                    $<span id="totalImporte">{{ number_format(($totalImporte*1.16), 2) }}</span>
-                  </div>
-                </div>
-              </div>
+                  </td>
+                  <td>
+                    <span class="card-body"  id="totalImporte">$ {{ number_format(($totalImporte*0.16), 2) }}</span>
+                  </td>
+                  <td></td>
+                  <td>
+                    <span class="card-body"  id="totalImporte">$ {{ number_format(($totalContratistaImporte*0.16), 2) }}</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <h4>TOTAL</h4>
+                  </td>
+                  <td>
+                    <span class="card-body" id="totalImporte">$ {{ number_format(($totalImporte*1.16), 2) }}</span>
+                  </td>
+                  <td></td>
+                  <td>
+                    <span class="card-body" id="totalImporte">$ {{ number_format(($totalContratistaImporte*1.16), 2) }}</span>
+                  </td>
+                </tr>
+              </table>
             </div>
           </div>
-          <div class="table-responsive">
-            <table class="table table-striped table-partidas" id="table-1">
+          <div class="col-12">
+            <table class="table table-bordered table-partidas" id="table-partidas">
               <thead>                                 
                 <tr>
-                  <th class="text-center col-id">
-                    #
-                  </th>
-                  <th class="col-concepto">Concepto</th>
-                  <th class="col-unidad">Unidad</th>
-                  <th class="col-cantidad">Cantidad</th>
+                  <th rowspan="2" class="text-center col-id">No</th>
+                  <th rowspan="2" class="col-concepto">Concepto</th>
+                  <th rowspan="2" class="col-unidad">Unidad</th>
+                  <th rowspan="2" class="col-cantidad">Cantidad</th>
+                  <th colspan="2" class="col-pu text-center">{{$proyecto->constructora_proyecto}}</th>
+                  <th colspan="2" class="col-importe text-center">NOMBRE CONTRATISTA</th>
+                </tr>
+                <tr>
+                  <th class="col-pu">PU</th>
+                  <th class="col-importe">Importe</th>
                   <th class="col-pu">PU</th>
                   <th class="col-importe">Importe</th>
                 </tr>
@@ -110,7 +130,7 @@
                   </td>
                   <td>
                     <div data-toggle="tooltip" title="{{ $concepto=$partida->concepto_partida}}">
-                      {{ substr($concepto,0,100) }}
+                      {{ substr($concepto,0,150) }}...
                     </div>
                   </td>
                   <td>
@@ -130,6 +150,12 @@
                   <td>
                     ${{ number_format($partida->cantidad_partida*$partida->pu_partida,2) }}
                   </td>
+                  <td>
+                    ${{ number_format($partida->pu_contratista_partida,2) }}
+                  </td>
+                  <td>
+                    ${{ number_format($partida->cantidad_partida*$partida->pu_contratista_partida,2) }}
+                  </td>
                 </tr>
                 @endforeach 
                 @else
@@ -141,68 +167,68 @@
         </div>
 
         <div class="tab-pane fade show" id="extras" role="tabpanel" aria-labelledby="home-tab2">
-          <div class="row col-12"> 
-            <div class="mt-4 mb-4 p-1 buttons">
-              <a href="{{ route('import.form.extra', ['id_proyecto' => $id_proyecto]) }}" class="btn btn-icon icon-left btn-dark" data-toggle="tooltip" title="Importar Extraordinarios"><i class="far fa-file"></i> EXTRAS</a>
-            </div>
-          </div>
-          <div class="row col-12">
-            <div class="col-lg-4 col-md-4 col-sm-12">
-              <div class="card card-statistic-2">
-                <div class="card-icon shadow-primary bg-primary">
-                  <i class="fas fa-dollar-sign"></i>
-                </div>
-                <div class="card-wrap">
-                  <div class="card-header">
-                    <h4>Subtotal</h4>
-                  </div>
-                  <div class="card-body">
-                    $<span id="totalImporte">{{ number_format($totalImporteExtra, 2) }}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-4 col-md-4 col-sm-12">
-              <div class="card card-statistic-2">
-                <div class="card-icon shadow-primary bg-primary">
-                  <i class="fas fa-dollar-sign"></i>
-                </div>
-                <div class="card-wrap">
-                  <div class="card-header">
-                    <h4>I.V.A.</h4>
-                  </div>
-                  <div class="card-body">
-                    $<span id="totalImporte">{{ number_format(($totalImporteExtra*0.16), 2) }}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-4 col-md-4 col-sm-12">
-              <div class="card card-statistic-2">
-                <div class="card-icon shadow-primary bg-primary">
-                  <i class="fas fa-dollar-sign"></i>
-                </div>
-                <div class="card-wrap">
-                  <div class="card-header">
-                    <h4>Total</h4>
-                  </div>
-                  <div class="card-body">
-                    $<span id="totalImporte">{{ number_format(($totalImporteExtra*1.16), 2) }}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="table-responsive">
-            <table class="table table-striped table-extras" id="table-2">
-              <thead>                                 
+          <div class="row col-12 justify-content-end">
+            <div class="">
+              <table class="table table-bordered">
                 <tr>
-                  <th class="text-center col-id">
-                    #
-                  </th>
-                  <th class="col-concepto">Concepto</th>
-                  <th class="col-unidad">Unidad</th>
-                  <th class="col-cantidad">Cantidad</th>
+                  <th></th>
+                  <th class="text-center">{{$proyecto->constructora_proyecto}}</th>
+                  <th></th>
+                  <th class="text-center">CONTRATISTA</th>
+                </tr>
+                <tr>
+                  <td>
+                    <h4>SUBTOTAL</h4>
+                  </td>
+                  <td>
+                    <span class="card-body"  id="totalImporte">$ {{ number_format($totalImporteExtra, 2) }}</span>
+                  </td>
+                  <td></td>
+                  <td>
+                    <span class="card-body" id="totalImporte">$ {{ number_format($totalContratistaImporteExtra, 2) }}</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <h4>I.V.A.</h4>
+                  </td>
+                  <td>
+                    <span class="card-body"  id="totalImporte">$ {{ number_format(($totalImporteExtra*0.16), 2) }}</span>
+                  </td>
+                  <td></td>
+                  <td>
+                    <span class="card-body"  id="totalImporte">$ {{ number_format(($totalContratistaImporteExtra*0.16), 2) }}</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <h4>TOTAL</h4>
+                  </td>
+                  <td>
+                    <span class="card-body" id="totalImporte">$ {{ number_format(($totalImporteExtra*1.16), 2) }}</span>
+                  </td>
+                  <td></td>
+                  <td>
+                    <span class="card-body" id="totalImporte">$ {{ number_format(($totalContratistaImporteExtra*1.16), 2) }}</span>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <div class="col-12">
+            <table class="table table-bordered table-extras" id="table-extras">
+              <thead>                              
+                <tr>
+                  <th rowspan="2" class="text-center col-id">No</th>
+                  <th rowspan="2" class="col-concepto">Concepto</th>
+                  <th rowspan="2" class="col-unidad">Unidad</th>
+                  <th rowspan="2" class="col-cantidad">Cantidad</th>
+                  <th colspan="2" class="col-pu text-center">{{$proyecto->constructora_proyecto}}</th>
+                  <th colspan="2" class="col-importe text-center">NOMBRE CONTRATISTA</th>
+                </tr>
+                <tr>
+                  <th class="col-pu">PU</th>
+                  <th class="col-importe">Importe</th>
                   <th class="col-pu">PU</th>
                   <th class="col-importe">Importe</th>
                 </tr>
@@ -216,7 +242,7 @@
                   </td>
                   <td>
                     <div data-toggle="tooltip" title="{{ $conceptoExtra=$extra->concepto_extra}}">
-                      {{ substr($conceptoExtra,0,100) }}
+                      {{ substr($conceptoExtra,0,150) }}...
                     </div>
                   </td>
                   <td>
@@ -231,6 +257,12 @@
                   <td>
                     ${{ number_format($extra->cantidad_extra*$extra->pu_extra,2) }}
                   </td>
+                  <td>
+                    ${{ number_format($extra->pu_contratista_extra,2) }}
+                  </td>
+                  <td>
+                    ${{ number_format($extra->cantidad_extra*$extra->pu_contratista_extra,2) }}
+                  </td>
                 </tr>
                 @endforeach 
                 @else
@@ -242,7 +274,51 @@
         </div>
 
         <div class="tab-pane fade show" id="acumulado" role="tabpanel" aria-labelledby="home-tab2">
-          Acumulado
+          @if($acumulados->isEmpty())
+              <p>No se encontraron partidas o extras en órdenes de compra para este proyecto.</p>
+          @else
+              <table class="table table-bordered" id="tablaAcumulados">
+                  <thead>
+                      <tr>
+                          <th class="col-tipo">Tipo</th>
+                          <th class="col-id">No.</th>
+                          <th class="col-concepto">Concepto</th>
+                          <th class="col-unidad">Unidad</th>
+                          <th class="col-cantidad">Cantidad</th>
+                          <th class="col-pu">P.U.</th>
+                          <th class="col-pu">P.U. Contratista</th>
+                          <th class="col-importe">Importe</th>
+                          <th class="col-importe">Contratista</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      @foreach($acumulados as $item)
+                          <tr>
+                              <td>{{ $item->tipo_referencia }}</td>
+                              <td>{{ $item->numero_referencia }}</td>
+                              <td>
+                                <div data-toggle="tooltip" title="{{ $concepto=$item->concepto_referencia}}">
+                                {{ substr($concepto,0,150) }}...
+                                </div>
+                              </td>
+                              <td>{{ $item->unidad_referencia }}</td>
+                              <td>{{ $item->cantidad_acumulada }}</td>
+                              <td>$ {{ number_format($item->precio_unitario_base, 2) }}</td>
+                              <td>$ {{ number_format($item->precio_unitario_contratista_base, 2) }}</td>
+                              <td>$ {{ number_format($item->importe_acumulado, 2) }}</td>
+                              <td>$ {{ number_format($item->importe_contratista_acumulado, 2) }}</td>
+                          </tr>
+                      @endforeach
+                  </tbody>
+                  <tfoot>
+                      <tr class="total-row">
+                          <th colspan="5" class="text-end">Total General de Importes:</th>
+                          <th>$ {{ number_format($totalGeneralProyecto, 2) }}</th>
+                          <th>$ {{ number_format($totalContratistaProyecto, 2) }}</th>
+                      </tr>
+                  </tfoot>
+              </table>
+          @endif
         </div>
 
         @foreach ($ordenes as $orden)  
@@ -251,11 +327,11 @@
               // Filtrar los detalles que corresponden a esta orden específica
               $detallesDeEstaOrden = $todosLosDetallesDeOrdenes->where('id_orden', $orden->id_orden);
           @endphp
-          <table class="table table-striped table-oc dataTable" id="table-2">
+          <table class="table table-bordered table-oc" id="table-2">
             <thead>                                 
               <tr>
                 <th class="text-center col-id">
-                  #
+                  No.
                 </th>
                 <th class="sorting">Tipo</th>
                 <th class="sorting">Concepto</th>
@@ -288,9 +364,22 @@
                   </td>
                   <td>
                       @if ($detalle->id_partida)
-                          {{ $detalle->concepto_partida }}
+                          <div data-toggle="tooltip" title="{{ $concepto=$detalle->concepto_partida}}">
+                            {{ substr($concepto,0,150) }}...
+                          </div>
                       @elseif ($detalle->id_extra)
-                          {{ $detalle->concepto_extra }}
+                          <div data-toggle="tooltip" title="{{ $concepto=$detalle->concepto_extra}}">
+                            {{ substr($concepto,0,150) }}...
+                          </div>
+                      @else
+                          -
+                      @endif
+                  </td>
+                  <td>
+                      @if ($detalle->id_partida)
+                          {{ $detalle->unidad_partida }}
+                      @elseif ($detalle->id_extra)
+                          {{ $detalle->unidad_extra }}
                       @else
                           -
                       @endif
@@ -326,41 +415,23 @@
 </section>
 
 <style>
-  .table-partidas .col-id{
+  .table .col-id{
     width: 5% !important;
   }
-  .table-partidas .col-concepto{
+  .table .col-concepto{
     width: 60% !important;
   }
-  .table-partidas .col-unidad{
+  .table .col-unidad{
     width: 5% !important;
   }
-  .table-partidas .col-cantidad{
-    width: 10% !important;
-  }
-  .table-partidas .col-pu{
-    width: 10% !important;
-  }
-  .table-partidas .col-importe{
-    width: 20% !important;
-  }
-  .table-extras .col-id{
+  .table .col-cantidad{
     width: 5% !important;
   }
-  .table-extras .col-concepto{
-    width: 60% !important;
-  }
-  .table-extras .col-unidad{
-    width: 5% !important;
-  }
-  .table-extras .col-cantidad{
+  .table .col-pu{
     width: 10% !important;
   }
-  .table-extras .col-pu{
-    width: 10% !important;
-  }
-  .table-extras .col-importe{
+  .table .col-importe{
     width: 20% !important;
   }
 </style>
-@endsection()
+@endsection

@@ -27,7 +27,7 @@
             </div>
           </div>
 
-          <form method="POST" action="{{ route('listado.nueva.oc')}}" class="wizard-content mt-2">
+          <form method="POST" action="{{ route('listado.nuevaoc')}}" class="wizard-content mt-2">
                 @csrf
             <div class="wizard-pane"> 
               <div class="form-group row align-items-center">

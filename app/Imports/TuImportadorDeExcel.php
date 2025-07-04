@@ -22,6 +22,7 @@ class TuImportadorDeExcel implements ToModel, WithHeadingRow
             'unidad_partida' => $row['unidad'],
             'cantidad_partida' => $row['cantidad'],
             'pu_partida' => $row['pu'],
+            'pu_contratista_partida' => $row['pu_contratista'],
             'id_proyecto' => $this->id_proyecto,
         ]);
     }

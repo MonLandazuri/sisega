@@ -22,6 +22,7 @@ class TuImportadorDeExtras implements ToModel, WithHeadingRow
             'unidad_extra' => $row['unidad'],
             'cantidad_extra' => $row['cantidad'],
             'pu_extra' => $row['pu'],
+            'pu_contratista_extra' => $row['pu_contratista'],
             'id_proyecto' => $this->id_proyecto,
         ]);
     }

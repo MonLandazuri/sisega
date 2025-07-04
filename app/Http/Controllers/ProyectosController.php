@@ -55,9 +55,6 @@ class ProyectosController extends Controller
         $proyectosActivos = Proyecto::where('status_proyecto', 'activo')->get();
         $totalProyectosActivos = Proyecto::where('status_proyecto', 'activo')->count();
         
-        $proyectosCancelados = Proyecto::where('status_proyecto', 'cancelado')->get();
-        $totalProyectosCancelados = Proyecto::where('status_proyecto', 'cancelado')->count();
-        
         $proyectosFinalizados = Proyecto::where('status_proyecto', 'finalizado')->get();
         $totalProyectosFinalizados = Proyecto::where('status_proyecto', 'finalizado')->count();
 
@@ -72,8 +69,6 @@ class ProyectosController extends Controller
             'totalProyectos'=>$totalProyectos,
             'proyectosActivos'=>$proyectosActivos,
             'totalProyectosActivos'=>$totalProyectosActivos,
-            'proyectosCancelados'=>$proyectosCancelados,
-            'totalProyectosCancelados'=>$totalProyectosCancelados,
             'proyectosFinalizados'=>$proyectosFinalizados,
             'totalProyectosFinalizados'=>$totalProyectosFinalizados,
         ]);

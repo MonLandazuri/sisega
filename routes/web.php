@@ -23,10 +23,11 @@ Route::get('/info-contratista/{id_contratista}',[ContratistasController::class, 
 Route::get('/nuevo-contratista',[ContratistasController::class, 'nuevoContratista'])->name('nuevo.contratista')->middleware('auth');
 Route::post('/guardar-nuevo-contratista', [ContratistasController::class, 'guardarNuevoContratista'])->name('guardar.nuevocontratista')->middleware('auth');
 
-Route::get('/partidas/{id_proyecto}',[PartidasController::class, 'mostrarPartidasPorProyecto'])->name('proyecto.partidas')->middleware('auth');
-Route::get('/partidas/nueva-oc/{id_proyecto}',[OrdenDeCompraController::class, 'nuevaOC'])->name('nueva.oc')->middleware('auth');
-Route::post('/partidas/listado-nueva-oc/',[OrdenDeCompraController::class, 'listadoNuevaOC'])->name('listado.nueva.oc')->middleware('auth');
-Route::post('/partidas/agregar-nueva-oc/',[OrdenDeCompraController::class, 'agregarNuevaOC'])->name('agregar.nuevaoc')->middleware('auth');
+Route::get('/partidas/{id_proyecto}',[PartidasController::class, 'mostrarPartidasPorProyecto'])->name('proyecto.partidas')->middleware('auth');                             //enlista todos los proyectos registrados
+Route::get('/partidas/nueva-oc/{id_proyecto}',[OrdenDeCompraController::class, 'nuevaOC'])->name('nueva.oc')->middleware('auth');                                           //muestra pantalla para agregar contratista y fecha
+Route::post('/partidas/listado-nueva-oc/',[OrdenDeCompraController::class, 'listadoNuevaOC'])->name('listado.nuevaoc')->middleware('auth');                                //muestra listado de Partidas y Extraordinarios
+Route::post('/partidas/previsualizar-orden/',[OrdenDeCompraController::class, 'revisionNuevaOC'])->name('revision.nuevaoc')->middleware('auth');                                 
+Route::post('/partidas/agregar-nueva-oc/',[OrdenDeCompraController::class, 'agregarNuevaOC'])->name('agregar.nuevaoc')->middleware('auth');                                 
 
 Route::get('/usuarios',[UsuariosController::class, 'index'])->name('usuarios');
 

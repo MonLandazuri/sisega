@@ -25,11 +25,12 @@
 
   <div class="row">
     <div class="col-12">
-      <div class="card">
-        <div class="card-header">
-          <h4></h4>
+      <div class="row col-12"> 
+        <div class="mt-4 mb-4 p-1 buttons">
           <a href="{{ route('nuevo.contratista') }}" class="btn btn-icon btn btn-dark btn-action mr-1" data-toggle="tooltip" title=""><i class="far fa-id-card"></i> Nuevo</a>
         </div>
+      </div>
+      <div class="card">  
         <div class="card-body">
           <div class="table-responsive">
             <table class="table table-striped table-proyectos" id="table-1">
