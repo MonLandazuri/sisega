@@ -38,7 +38,6 @@
                 <tr>
                   <th class="text-center col-no">#</th>
                   <th class="col-nombre">NOMBRE</th>
-                  <th class="col-direccion">DIRECCIÓN</th>
                   <th class="col-banco">BANCO</th>
                   <th class="col-clabe">CLABE</th>
                   <th class="col-cuenta">CUENTA</th>
@@ -54,9 +53,6 @@
                   </td>
                   <td>
                     <a href="{{ route('info.contratista', ['id_contratista' => $contratista->id_contratista]) }}">{{ $contratista->nombre_contratista }}
-                  </td>
-                  <td>
-                    {{ $contratista->direccion_contratista }}
                   </td>
                   <td>
                     {{ $contratista->banco_contratista }}

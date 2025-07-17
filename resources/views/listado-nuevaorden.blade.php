@@ -55,18 +55,18 @@
                   <td>{{ $detalle->cantidad_orden_detalle }}</td>
                   <td>
                     @if ($detalle->id_partida)
-                          {{ number_format($detalle->pu_partida, 2) }}
+                        $ {{ number_format($detalle->pu_partida, 2) }}
                     @elseif ($detalle->id_extra)
-                        {{ number_format($detalle->pu_extra, 2) }}
+                        $ {{ number_format($detalle->pu_extra, 2) }}
                     @else
                         -
                     @endif 
                   </td>
                   <td> 
                     @if ($detalle->id_partida)
-                        {{ number_format($detalle->cantidad_orden_detalle * $detalle->pu_partida, 2) }}
+                        $ {{ number_format($detalle->cantidad_orden_detalle * $detalle->pu_partida, 2) }}
                     @elseif ($detalle->id_extra)
-                        {{ number_format($detalle->cantidad_orden_detalle * $detalle->pu_extra, 2) }}
+                        $ {{ number_format($detalle->cantidad_orden_detalle * $detalle->pu_extra, 2) }}
                     @else
                         -
                     @endif
@@ -141,7 +141,7 @@
                                        value="0"
                                        step="any">
                             </td>
-                            <td>{{ $partida->pu_partida }}<input type="hidden"
+                            <td>$ {{ $partida->pu_partida }}<input type="hidden"
                                        name="pu_partida"
                                        id="pu_partida_{{ $partida->id_partida }}"
                                        class="form-control precio-input"
@@ -181,7 +181,7 @@
                                        value="0"
                                        step="any">
                             </td>
-                            <td><input type="text"
+                            <td>$ {{ $extra->pu_extra }}<input type="hidden"
                                        name="pu_extra"
                                        id="pu_extra_{{ $extra->id_extra }}"
                                        class="form-control precio-input"

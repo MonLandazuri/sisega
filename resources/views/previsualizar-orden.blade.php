@@ -8,16 +8,15 @@
   <div class="row">
     <div class="col-12">
       <div class="card">
-        <p>No has seleccionado cantidades para ninguna partida.</p>
-        <table class="table table-bordered">
+        <table class="table table-bordered table-striped">
             <thead>
                 <tr>
-                    <th>Tipo</th>
-                    <th>No.</th>
-                    <th>Concepto</th>
-                    <th>Cantidad</th>
-                    <th>Precio Unitario</th>
-                    <th>Importe</th>
+                    <th>TIPO</th>
+                    <th>NO.</th>
+                    <th>CONCEPTO</th>
+                    <th>CANTIDAD</th>
+                    <th>P.U.</th>
+                    <th>IMPORTE</th>
                 </tr>
             </thead>
             <tbody>
@@ -25,7 +24,10 @@
                     <tr>
                         <td>{{ $detalle->tipo }}</td>
                         <td>{{ $detalle->no_partida }}</td>
-                        <td>{{ $detalle->concepto_partida ?? $detalle->concepto_extra }}</td>
+                        <td>
+                            <div data-toggle="tooltip" title="{{ $concepto=$detalle->concepto_partida}}">
+                            {{ substr($concepto,0,110) }}...
+                        </td>
                         <td>{{ $detalle->cantidad }}</td>
                         <td>$ {{ number_format($detalle->precio_unitario, 2) }}</td>
                         <td>$ {{ number_format($detalle->importe, 2) }}</td>
@@ -35,7 +37,10 @@
                     <tr>
                         <td>{{ $detalle->tipo }}</td>
                         <td>{{ $detalle->no_extra}}</td>
-                        <td>{{ $detalle->concepto_extra }}</td>
+                        <td>
+                            <div data-toggle="tooltip" title="{{ $conceptoExtra=$detalle->concepto_extra}}">
+                            {{ substr($conceptoExtra,0,110) }}...
+                        </td>
                         <td>{{ $detalle->cantidad }}</td>
                         <td>$ {{ number_format($detalle->precio_unitario, 2) }}</td>
                         <td>$ {{ number_format($detalle->importe, 2) }}</td>
@@ -44,13 +49,21 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <th colspan="5" class="text-right">Total General:</th>
-                    <th>$ {{ number_format($totalGeneral, 2) }}</th>
+                    <th colspan="5" class="text-right">SUBTOTAL:</th>
+                    <th>$ {{ number_format(($totalGeneral+$totalGeneralExtra), 2) }}</th>
+                </tr>
+                <tr>
+                    <th colspan="5" class="text-right">IVA:</th>
+                    <th>$ {{ number_format(($totalGeneral+$totalGeneralExtra)*0.16, 2) }}</th>
+                </tr>
+                <tr>
+                    <th colspan="5" class="text-right">TOTAL:</th>
+                    <th>$ {{ number_format(($totalGeneral+$totalGeneralExtra)*1.16, 2) }}</th>
                 </tr>
             </tfoot>
         </table>
 
-        <div class="mt-6">
+        <div class="col-12 text-right">
             {{-- Formulario para confirmar la orden --}}
             <form action="{{ route('agregar.nuevaoc') }}" method="POST">
                 @csrf
@@ -70,12 +83,12 @@
                     
                 <input type="hidden" name="id_proyecto" value="{{ $id_proyecto }}">
 
-                <button type="submit" class="btn btn-success">
-                    Guardar Orden
+                <button type="button" class="btn btn-secondary ms-2" onclick="history.back()">
+                    <i class="fas fa-arrow-left"></i> Volver
                 </button>
-                <a href="{{ route('listado.nuevaoc') }}" class="btn btn-secondary ms-2">
-                    Volver
-                </a>
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-save"></i> Guardar Orden
+                </button>
             </form>
         </div>
       </div>

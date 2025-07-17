@@ -17,4 +17,9 @@ class Contratista extends Model
         'clabe_contratista',
         'cuenta_contratista',
     ];
+    
+    public function archivos()
+    {
+        return $this->hasMany(ContratistaArchivo::class);
+    }
 }

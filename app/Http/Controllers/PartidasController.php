@@ -107,6 +107,7 @@ class PartidasController extends Controller
                 'p.no_partida AS numero_referencia',
                 'p.concepto_partida AS concepto_referencia',
                 'p.unidad_partida AS unidad_referencia',
+                'p.cantidad_partida AS cantidad_referencia',
                 'p.pu_partida AS precio_unitario_base',
                 'p.pu_contratista_partida AS precio_unitario_contratista_base',
                 DB::raw('SUM(od.cantidad_orden_detalle) AS cantidad_acumulada'),
@@ -123,49 +124,52 @@ class PartidasController extends Controller
                 'p.no_partida',
                 'p.concepto_partida',
                 'p.unidad_partida',
+                'p.cantidad_partida',
                 'p.pu_partida',
                 'p.pu_contratista_partida'
-            );
+            )
+            ->orderBy('numero_referencia');
 
-            // Segunda parte: Acumulado de Extras
-            $extrasAcumulados = DB::table('ordenes_detalles as od')
-                ->select(
-                    DB::raw("'Extra' AS tipo_referencia"),
-                    'e.id_extra AS id_referencia',
-                    'e.no_extra AS numero_referencia',
-                    'e.concepto_extra AS concepto_referencia',
-                    'e.unidad_extra AS unidad_referencia',
-                    'e.pu_extra AS precio_unitario_base',
-                    'e.pu_contratista_extra AS precio_unitario_contratista_base',
-                    DB::raw('SUM(od.cantidad_orden_detalle) AS cantidad_acumulada'),
-                    DB::raw('SUM(od.cantidad_orden_detalle * e.pu_extra) AS importe_acumulado'),
-                    DB::raw('SUM(od.cantidad_orden_detalle * e.pu_contratista_extra) AS importe_contratista_acumulado') // Asumo pu_contratista_extra
-                )
-                ->join('extras as e', 'od.id_extra', '=', 'e.id_extra')
-                // Filtra por órdenes de compra asociadas a este proyecto
-                ->join('ordenes as oc', 'od.id_orden', '=', 'oc.id_orden')
-                ->where('oc.id_proyecto', $id_proyecto)
-                ->whereNotNull('od.id_extra')
-                ->groupBy(
-                    'e.id_extra',
-                    'e.no_extra',
-                    'e.concepto_extra',
-                    'e.unidad_extra',
-                    'e.pu_extra',
-                    'e.pu_contratista_extra'
-                );
+        // Segunda parte: Acumulado de Extras
+        $extrasAcumulados = DB::table('ordenes_detalles as od')
+            ->select(
+                DB::raw("'Extra' AS tipo_referencia"),
+                'e.id_extra AS id_referencia',
+                'e.no_extra AS numero_referencia',
+                'e.concepto_extra AS concepto_referencia',
+                'e.unidad_extra AS unidad_referencia',
+                'e.cantidad_extra AS cantidad_referencia',
+                'e.pu_extra AS precio_unitario_base',
+                'e.pu_contratista_extra AS precio_unitario_contratista_base',
+                DB::raw('SUM(od.cantidad_orden_detalle) AS cantidad_acumulada'),
+                DB::raw('SUM(od.cantidad_orden_detalle * e.pu_extra) AS importe_acumulado'),
+                DB::raw('SUM(od.cantidad_orden_detalle * e.pu_contratista_extra) AS importe_contratista_acumulado') // Asumo pu_contratista_extra
+            )
+            ->join('extras as e', 'od.id_extra', '=', 'e.id_extra')
+            // Filtra por órdenes de compra asociadas a este proyecto
+            ->join('ordenes as oc', 'od.id_orden', '=', 'oc.id_orden')
+            ->where('oc.id_proyecto', $id_proyecto)
+            ->whereNotNull('od.id_extra')
+            ->groupBy(
+                'e.id_extra',
+                'e.no_extra',
+                'e.concepto_extra',
+                'e.unidad_extra',
+                'e.cantidad_extra',
+                'e.pu_extra',
+                'e.pu_contratista_extra'
+            )
+            ->orderBy('numero_referencia');
 
-            // Combinar los resultados y ordenar
-            $acumulados = $partidasAcumuladas
-                            ->unionAll($extrasAcumulados)
-                            ->orderBy('tipo_referencia')
-                            ->orderBy('numero_referencia')
-                            ->get();
-                            
+        // Combinar los resultados y ordenar
+        $acumulados = $partidasAcumuladas
+            ->unionAll($extrasAcumulados)
+            ->get();
+                        
 
-            // Calcular totales generales si los necesitas
-            $totalGeneralProyecto = $acumulados->sum('importe_acumulado');
-            $totalContratistaProyecto = $acumulados->sum('importe_contratista_acumulado');
+        // Calcular totales generales si los necesitas
+        $totalGeneralProyecto = $acumulados->sum('importe_acumulado');
+        $totalContratistaProyecto = $acumulados->sum('importe_contratista_acumulado');
 
         /*return view('partidas', [
             'partidas' => $partidas,
@@ -176,7 +180,22 @@ class PartidasController extends Controller
             'totalImporteExtra' => $totalImporteExtra,
             'id_proyecto'=>$id_proyecto,
         ]);*/
-        return view('partidas', compact('acumulados','totalGeneralProyecto','totalContratistaProyecto','partidas','extras','proyectos','ordenes','totalImporte','totalContratistaImporte','totalImporteExtra','totalContratistaImporteExtra','id_proyecto','todosLosDetallesDeOrdenes'));
+
+        return view('partidas', 
+        compact('acumulados',
+                'partidas',
+                'extras',
+                'proyectos',
+                'ordenes',
+                'totalImporte',
+                'totalContratistaImporte',
+                'totalImporteExtra',
+                'totalContratistaImporteExtra',
+                'totalContratistaProyecto',
+                'totalGeneralProyecto',
+                'id_proyecto',
+                'todosLosDetallesDeOrdenes'
+            ));
         // O para una API:
         // return response()->json(['partidas' => $partidas]);
     }

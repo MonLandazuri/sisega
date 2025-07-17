@@ -23,6 +23,14 @@
   <!-- Template CSS -->
   <link rel="stylesheet" href="{{asset('dashboard/assets/css/style.css')}}">
   <link rel="stylesheet" href="{{asset('dashboard/assets/css/components.css')}}">
+
+  <style>
+    .table:not(.table-sm):not(.table-md):not(.dataTable) td,.table:not(.table-sm):not(.table-md):not(.dataTable) th{
+      padding: 0 5px !important;
+      height: 35px !important;
+      vertical-align: middle;
+    }
+  </style>
 <!-- Start GA -->
 
 <!-- /END GA -->
@@ -76,7 +84,6 @@
   <script src="{{asset('dashboard/assets/modules/jquery-ui/jquery-ui.min.js')}}"></script>
   <script src="{{asset('dashboard/assets/modules/dropzonejs/min/dropzone.min.js')}}"></script>
   <script src="{{asset('dashboard/assets/js/page/components-multiple-upload.js')}}"></script>
-  <script src="{{asset('dashboard/assets/modules/dropzonejs/dropzone.min.js') }}"></script>
 
 
   <!-- Page Specific JS File -->

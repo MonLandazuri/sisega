@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use App\Models\Contratista;
+use Illuminate\Support\Facades\Storage;
+
 
 class ContratistasController extends Controller
 {

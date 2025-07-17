@@ -8,12 +8,10 @@ use App\Http\Controllers\UsuariosController;
 use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\ContratistasController;
 use App\Http\Controllers\OrdenDeCompraController;
-use App\Http\Controllers\ExcelImportController; //Controlador Excel
-use App\Http\Controllers\ExcelImportControllerExtra; //Controlador Excel
+use App\Http\Controllers\ExcelImportController;
+use App\Http\Controllers\ExcelImportControllerExtra;
+use App\Http\Controllers\ContratistaArchivoController;
 
-
-//Route::get('/', function () {return view('dashboard');});
-//Route::get('/',[InicioController::class, 'index'])->name('inicio');
 Route::get('/proyectos',[ProyectosController::class, 'mostrarProyectos'])->name('proyectos')->middleware('auth');
 Route::get('/nuevo-proyecto',[ProyectosController::class, 'nuevoProyecto'])->name('nuevo.proyecto')->middleware('auth');
 Route::post('/guardar-nuevo-proyecto', [ProyectosController::class, 'guardarNuevoProyecto'])->name('guardar.nuevoproyecto')->middleware('auth');
@@ -23,11 +21,15 @@ Route::get('/info-contratista/{id_contratista}',[ContratistasController::class, 
 Route::get('/nuevo-contratista',[ContratistasController::class, 'nuevoContratista'])->name('nuevo.contratista')->middleware('auth');
 Route::post('/guardar-nuevo-contratista', [ContratistasController::class, 'guardarNuevoContratista'])->name('guardar.nuevocontratista')->middleware('auth');
 
-Route::get('/partidas/{id_proyecto}',[PartidasController::class, 'mostrarPartidasPorProyecto'])->name('proyecto.partidas')->middleware('auth');                             //enlista todos los proyectos registrados
-Route::get('/partidas/nueva-oc/{id_proyecto}',[OrdenDeCompraController::class, 'nuevaOC'])->name('nueva.oc')->middleware('auth');                                           //muestra pantalla para agregar contratista y fecha
-Route::post('/partidas/listado-nueva-oc/',[OrdenDeCompraController::class, 'listadoNuevaOC'])->name('listado.nuevaoc')->middleware('auth');                                //muestra listado de Partidas y Extraordinarios
-Route::post('/partidas/previsualizar-orden/',[OrdenDeCompraController::class, 'revisionNuevaOC'])->name('revision.nuevaoc')->middleware('auth');                                 
-Route::post('/partidas/agregar-nueva-oc/',[OrdenDeCompraController::class, 'agregarNuevaOC'])->name('agregar.nuevaoc')->middleware('auth');                                 
+Route::post('/contratistas/{contratista}/archivos', [ContratistaArchivoController::class, 'store'])->name('contratistas.archivos.store');
+Route::get('/contratistas/{contratista}/archivos', [ContratistaArchivoController::class, 'index'])->name('contratistas.archivos.index'); 
+Route::delete('/archivos/{contratistaArchivo}', [ContratistaArchivoController::class, 'destroy'])->name('contratistas.archivos.destroy');
+
+Route::get('/partidas/{id_proyecto}',[PartidasController::class, 'mostrarPartidasPorProyecto'])->name('proyecto.partidas')->middleware('auth');
+Route::get('/partidas/nueva-oc/{id_proyecto}',[OrdenDeCompraController::class, 'nuevaOC'])->name('nueva.oc')->middleware('auth');
+Route::post('/partidas/listado-nueva-oc/',[OrdenDeCompraController::class, 'listadoNuevaOC'])->name('listado.nuevaoc')->middleware('auth');
+Route::post('/partidas/previsualizar-orden/',[OrdenDeCompraController::class, 'revisionNuevaOC'])->name('revision.nuevaoc')->middleware('auth');
+Route::post('/partidas/agregar-nueva-oc/',[OrdenDeCompraController::class, 'agregarNuevaOC'])->name('agregar.nuevaoc')->middleware('auth');
 
 Route::get('/usuarios',[UsuariosController::class, 'index'])->name('usuarios');
 
