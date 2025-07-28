@@ -213,4 +213,52 @@ class OrdenDeCompraController extends Controller
 
         //return view('partidas', compact("detalles","id_proyecto","partidas","extras"));         
     }
+
+    public function showDetailsForModal(Ordenes $ordenDeCompra)
+    {
+        // Tu consulta existente para obtener los detalles de una orden de compra específica.
+        // Asegúrate de que selecciona 'id_partida' o 'id_extra' para saber si es partida o extra
+        // y que selecciona todos los campos necesarios para mostrar.
+        $detalles = DB::table('ordenes_detalles as od')
+            ->select(
+                    'od.id_orden_detalle as detalle_id',
+                    'od.id_orden', // Es importante seleccionar el ID de la orden para agrupar en la vista
+                    'od.id_partida',
+                    'od.id_extra',
+                    'od.cantidad_orden_detalle',
+                    'o.id_orden',
+                    'o.fecha_orden',
+                    'o.id_contratista',
+                    'p.id_partida as partida_real_id',
+                    'p.no_partida',
+                    'p.concepto_partida',
+                    'p.unidad_partida',
+                    'p.cantidad_partida as cantidad_referencia_partida',
+                    'p.pu_partida',
+                    'p.pu_contratista_partida',
+                    'e.id_extra as extra_real_id',
+                    'e.no_extra',
+                    'e.concepto_extra',
+                    'e.unidad_extra',
+                    'e.cantidad_extra as cantidad_referencia_extra',
+                    'e.pu_extra',
+                    'e.pu_contratista_extra',
+                )
+                ->join('ordenes as o', 'od.id_orden', '=', 'o.id_orden')
+                ->leftJoin('partidas as p', function ($join) {
+                    $join->on('od.id_partida', '=', 'p.id_partida')
+                        ->whereNotNull('od.id_partida'); // Solo une si partida_id no es nulo
+                })
+                ->leftJoin('extras as e', function ($join) {
+                    $join->on('od.id_extra', '=', 'e.id_extra')
+                        ->whereNotNull('od.id_extra'); // Solo une si extra_id no es nulo
+                })
+                ->where('od.id_orden', $ordenDeCompra->id_orden) // Filtra por la orden de compra específica
+                ->orderBy('p.no_partida','asc')
+                ->orderBy('e.no_extra','asc')
+                ->get();
+
+        // Puedes pasar la instancia de la orden de compra si necesitas su número o concepto en el modal
+        return view('detalles_modal', compact('ordenDeCompra', 'detalles'));
+    }
 }

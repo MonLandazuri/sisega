@@ -18,6 +18,7 @@
   <link rel="stylesheet" href="{{asset('dashboard/assets/modules/datatables/DataTables-1.10.16/css/dataTables.bootstrap4.min.css')}}">
   <link rel="stylesheet" href="{{asset('dashboard/assets/modules/datatables/Select-1.2.4/css/select.bootstrap4.min.css')}}">
   <link rel="stylesheet" href="{{asset('dashboard/assets/modules/dropzonejs/dropzone.css')}}">
+  
 
 
   <!-- Template CSS -->
@@ -84,6 +85,8 @@
   <script src="{{asset('dashboard/assets/modules/jquery-ui/jquery-ui.min.js')}}"></script>
   <script src="{{asset('dashboard/assets/modules/dropzonejs/min/dropzone.min.js')}}"></script>
   <script src="{{asset('dashboard/assets/js/page/components-multiple-upload.js')}}"></script>
+  <script src="{{asset('dashboard/assets/js/page/bootstrap-modal.js')}}"></script>
+  
 
 
   <!-- Page Specific JS File -->

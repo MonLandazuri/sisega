@@ -30,6 +30,8 @@ Route::get('/partidas/nueva-oc/{id_proyecto}',[OrdenDeCompraController::class, '
 Route::post('/partidas/listado-nueva-oc/',[OrdenDeCompraController::class, 'listadoNuevaOC'])->name('listado.nuevaoc')->middleware('auth');
 Route::post('/partidas/previsualizar-orden/',[OrdenDeCompraController::class, 'revisionNuevaOC'])->name('revision.nuevaoc')->middleware('auth');
 Route::post('/partidas/agregar-nueva-oc/',[OrdenDeCompraController::class, 'agregarNuevaOC'])->name('agregar.nuevaoc')->middleware('auth');
+Route::get('/partidas/nuevo-partida/{id_proyecto}',[PartidasController::class, 'nuevoPartida'])->name('nuevo.partida')->middleware('auth');
+Route::post('/partidas-nuevo-partida', [PartidasController::class, 'guardarNuevoPartida'])->name('guardar.nuevopartida')->middleware('auth');
 
 Route::get('/usuarios',[UsuariosController::class, 'index'])->name('usuarios');
 
@@ -68,3 +70,5 @@ Route::middleware('auth')->group(function () {
     // Ruta para procesar el cambio de contraseña
     Route::put('/usuarios/password', [PerfilController::class, 'updatePassword'])->name('usuarios.actualizar.password');
 });
+
+Route::get('/ordenes/{ordenDeCompra}/detalles-modal', [OrdenDeCompraController::class, 'showDetailsForModal'])->name('ordenes.detalles.modal');

@@ -8,15 +8,15 @@
   <div class="row">
     <div class="col-12">
       <div class="card">
-        <table class="table table-bordered table-striped">
+        <table class="table table-bordered table-striped datos-revision">
             <thead>
                 <tr>
-                    <th>TIPO</th>
-                    <th>NO.</th>
-                    <th>CONCEPTO</th>
-                    <th>CANTIDAD</th>
-                    <th>P.U.</th>
-                    <th>IMPORTE</th>
+                    <th class="col-id">TIPO</th>
+                    <th class="col-id">NO.</th>
+                    <th class="col-concepto">CONCEPTO</th>
+                    <th class="col-cantidad">CANTIDAD</th>
+                    <th class="col-pu">P.U.</th>
+                    <th class="col-importe">IMPORTE</th>
                 </tr>
             </thead>
             <tbody>
@@ -95,4 +95,36 @@
     </div>
   </div>
 </section>
+
+<style>
+  .table .col-id{
+    width: 5% !important;
+  }
+  .table .col-concepto{
+    width: 40% !important;
+  }
+  .table .col-unidad{
+    width: 5% !important;
+  }
+  .table .col-cantidad{
+    width: 5% !important;
+  }
+  .table .col-pu{
+    width: 5% !important;
+  }
+  .table .col-importe{
+    width: 10% !important;
+  }
+
+  .datos-revision .titulo{
+    font-weight: bold;
+    font-size: 16px;
+    padding: 5px 0 5px 10px;
+  }
+
+  .datos-revision .dato{
+    font-size: 16px;
+    padding: 5px 0 5px 10px;
+  }
+</style>
 @endsection()

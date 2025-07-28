@@ -9,6 +9,7 @@ use App\Models\Proyecto;
 use App\Models\Partida;
 use App\Models\Extra;
 use App\Models\Ordenes;
+use App\Models\Contratista;
 use App\Models\OrdenesDetalles;
 use App\Http\Controllers\Controller;
 
@@ -73,19 +74,25 @@ class PartidasController extends Controller
                     'od.id_partida',
                     'od.id_extra',
                     'od.cantidad_orden_detalle',
+                    'o.id_orden',
+                    'o.fecha_orden',
+                    'o.id_contratista',
                     'p.id_partida as partida_real_id',
                     'p.no_partida',
                     'p.concepto_partida',
                     'p.unidad_partida',
+                    'p.cantidad_partida as cantidad_referencia_partida',
                     'p.pu_partida',
                     'p.pu_contratista_partida',
                     'e.id_extra as extra_real_id',
                     'e.no_extra',
                     'e.concepto_extra',
                     'e.unidad_extra',
+                    'e.cantidad_extra as cantidad_referencia_extra',
                     'e.pu_extra',
                     'e.pu_contratista_extra',
                 )
+                ->join('ordenes as o', 'od.id_orden', '=', 'o.id_orden')
                 ->leftJoin('partidas as p', function ($join) {
                     $join->on('od.id_partida', '=', 'p.id_partida')
                         ->whereNotNull('od.id_partida'); // Solo une si partida_id no es nulo
@@ -171,6 +178,16 @@ class PartidasController extends Controller
         $totalGeneralProyecto = $acumulados->sum('importe_acumulado');
         $totalContratistaProyecto = $acumulados->sum('importe_contratista_acumulado');
 
+        $totalContratistas = Contratista::whereHas('ordenesDeCompra', function ($query) use ($id_proyecto) {
+                                $query->where('id_proyecto', $id_proyecto);
+                            })
+                            ->with(['ordenesDeCompra' => function ($query) use ($id_proyecto) {
+                                $query->where('id_proyecto', $id_proyecto)
+                                      ->orderBy('ordenes.fecha_orden', 'desc')
+                                      ->with('detalles');
+                            }])
+                            ->get();
+
         /*return view('partidas', [
             'partidas' => $partidas,
             'extras' => $extras,
@@ -194,9 +211,17 @@ class PartidasController extends Controller
                 'totalContratistaProyecto',
                 'totalGeneralProyecto',
                 'id_proyecto',
-                'todosLosDetallesDeOrdenes'
+                'todosLosDetallesDeOrdenes',
+                'totalContratistas',
             ));
         // O para una API:
         // return response()->json(['partidas' => $partidas]);
+    }
+
+    public function nuevoPartida($id_proyecto){
+        
+        return view('nuevopartida',[
+                'id_proyecto'=>$id_proyecto,
+        ]);
     }
 }

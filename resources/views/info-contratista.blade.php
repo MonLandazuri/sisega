@@ -49,7 +49,13 @@
                   <td>
                     <textarea cols="50" rows="3">{{ $contra->banco_contratista }}</textarea>
                   </td>  
-                </tr>                        
+                </tr>                           
+                <tr>
+                  <td>NO. TARJETA</td>
+                  <td>
+                    <textarea cols="50" rows="3">{{ $contra->tarjeta_contratista }}</textarea>
+                  </td>  
+                </tr>                   
                 <tr>
                   <td>CLABE</td>
                   <td>
