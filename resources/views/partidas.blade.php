@@ -7,6 +7,17 @@
 
   <div class="card">
     <div class="">
+      @if (session('success'))
+          <div class="alert alert-success">
+              {{ session('success') }}
+          </div>
+      @endif
+
+      @if (session('error'))
+          <div class="alert alert-danger">
+              {{ session('error') }}
+          </div>
+      @endif
       @foreach ($proyectos as $proyecto)  
       <table class="datos-proyecto">
         <tr>
@@ -29,12 +40,6 @@
         @php
         $contadorOC=0;
         @endphp
-        @if ($partidas->count() > 0) 
-        <a href="{{ route('import.form', ['id_proyecto' => $id_proyecto]) }}" class="btn disabled btn-info icon-left" title="Importar Catalogo">IMPORTAR CATALOGO</a>
-        @else 
-        <a href="{{ route('import.form', ['id_proyecto' => $id_proyecto]) }}" class="btn btn-info icon-left" title="Importar Catalogo">IMPORTAR CATALOGO</a>
-        @endif
-        <a href="{{ route('import.form.extra', ['id_proyecto' => $id_proyecto]) }}" class="btn btn-icon icon-left btn-dark"  title="Importar Extraordinarios">IMPORTAR EXTRAS</a>
         <a href="{{ route('nueva.oc', ['id_proyecto' => $id_proyecto]) }}" class="btn btn-info icon-left" title="Nueva OC">NUEVA OC</a>
       </div>
       <ul class="nav nav-tabs" id="tabsProyecto" role="tablist">
@@ -62,9 +67,16 @@
 
         <!--  Catalogo-->
         <div class="tab-pane fade active show" id="catalogo" role="tabpanel" aria-labelledby="catalogo-tab">
-          <a href="{{ route('nuevo.partida', ['id_proyecto' => $id_proyecto]) }}" class="btn btn-danger icon-left" title="Nuevo Elemento Catalogo"><i class="fas fa-plus"></i> NUEVO ELEMENTO</a> 
-          <div class="row col-12 justify-content-end">
-            <div class="">
+          <div class="row">
+            <div class="col-6 d-flex align-items-center justify-content-center">
+              <a href="{{ route('nuevo.partida', ['id_proyecto' => $id_proyecto]) }}" class="btn btn-danger icon-left" title="Nueva Partida"><i class="fas fa-plus"></i> NUEVO ELEMENTO</a> 
+              @if ($partidas->count() > 0) 
+              <a href="{{ route('import.form', ['id_proyecto' => $id_proyecto]) }}" class="btn disabled btn-info icon-left ml-3" title="Importar Catalogo">IMPORTAR CATALOGO</a>
+              @else 
+              <a href="{{ route('import.form', ['id_proyecto' => $id_proyecto]) }}" class="btn btn-info icon-left ml-3" title="Importar Catalogo">IMPORTAR CATALOGO</a>
+              @endif
+            </div>
+            <div class="col-6 justify-content-end">
               <table class="table table-striped">
                 <tr>
                   <th></th>
@@ -140,7 +152,7 @@
                   </td>
                   <td>
                     <div data-toggle="tooltip" title="{{ $concepto=$partida->concepto_partida}}">
-                      {{ substr($concepto,0,110) }}...
+                      {{ substr($concepto,0,90) }}...
                     </div>
                   </td>
                   <td>
@@ -167,18 +179,26 @@
                     ${{ number_format($partida->cantidad_partida*$partida->pu_contratista_partida,2) }}
                   </td>
                   <td class="text-center">
-                    <button type="button" class="btn btn-sm btn-info view-details-btn"
-                            data-toggle="modal" data-target="#ocDetailsModal"
-                            data-id="{{ $partida->id_partida }}"
-                            title="Editar">
-                        <i class="fas fa-pen"></i> 
-                    </button>
-                    <button type="button" class="btn btn-sm btn-info view-details-btn"
-                            data-toggle="modal" data-target="#ocDetailsModal"
+                    <a href="{{ route('editar.partida', ['id_partida' => $partida->id_partida]) }}" class="btn btn-info icon-left" title="Editar Partida"><i class="fas fa-pen"></i></a>  
+                    <!--<button type="button" class="btn btn-danger icon-left view-details-btn"
+                            data-toggle="modal" data-target="#eliminarPartidaModal"
                             data-id="{{ $partida->id_partida }}"
                             title="Eliminar">
                         <i class="fas fa-trash"></i> 
+                    </button>-->
+                    <button class="btn btn-danger"
+                            data-confirm="¿Realmente deseas eliminar la Partida No: {{ $partida->no_partida }}?"
+                            data-confirm-yes="document.getElementById('delete-form-{{ $partida->id_partida }}').submit();"
+                            title="Eliminar Partida">
+                        <i class="fas fa-trash"></i>
                     </button>
+
+                    <form id="delete-form-{{ $partida->id_partida }}"
+                          action="{{ route('partidas.destroy', $partida->id_partida) }}"
+                          method="POST"
+                          style="display: none;">
+                        @csrf
+                        @method('DELETE') </form>
                   </td>
                 </tr>
                 @endforeach 
@@ -192,8 +212,12 @@
 
         <!-- Extraordinarios-->
         <div class="tab-pane fade show" id="extra" role="tabpanel" aria-labelledby="extra-tab">
-          <div class="row col-12 justify-content-end">
-            <div class="">
+          <div class="row">
+            <div class="col-6 d-flex align-items-center justify-content-center">
+              <a href="{{ route('nuevo.extra', ['id_proyecto' => $id_proyecto]) }}" class="btn btn-danger icon-left" title="Nuevo Extraordinario"><i class="fas fa-plus"></i> NUEVO ELEMENTO</a> 
+              <a href="{{ route('import.form.extra', ['id_proyecto' => $id_proyecto]) }}" class="btn btn-icon icon-left btn-dark ml-3"  title="Importar Extraordinarios">IMPORTAR EXTRAS</a>
+            </div>
+            <div class="col-6 justify-content-end">
               <table class="table table-striped">
                 <tr>
                   <th></th>
@@ -269,7 +293,7 @@
                   </td>
                   <td>
                     <div data-toggle="tooltip" title="{{ $conceptoExtra=$extra->concepto_extra}}">
-                      {{ substr($conceptoExtra,0,110) }}...
+                      {{ substr($conceptoExtra,0,90) }}...
                     </div>
                   </td>
                   <td class="text-center">
@@ -291,18 +315,20 @@
                     ${{ number_format($extra->cantidad_extra*$extra->pu_contratista_extra,2) }}
                   </td>
                   <td class="text-center">
-                    <button type="button" class="btn btn-sm btn-info view-details-btn"
-                            data-toggle="modal" data-target="#ocDetailsModal"
-                            data-id="{{ $partida->id_extra }}"
-                            title="Editar">
-                        <i class="fas fa-pen"></i> 
+                    <a href="{{ route('editar.extra', ['id_extra' => $extra->id_extra]) }}" class="btn btn-info icon-left" title="Editar Extraordinario"><i class="fas fa-pen"></i></a> 
+                    <button class="btn btn-danger"
+                            data-confirm="¿Realmente deseas eliminar el Extraordinario No: {{ $extra->no_extra }}?"
+                            data-confirm-yes="document.getElementById('delete-form-{{ $extra->id_extra }}-extra').submit();"
+                            title="Eliminar Extraordinario">
+                        <i class="fas fa-trash"></i>
                     </button>
-                    <button type="button" class="btn btn-sm btn-info view-details-btn"
-                            data-toggle="modal" data-target="#ocDetailsModal"
-                            data-id="{{ $partida->id_extra }}"
-                            title="Eliminar">
-                        <i class="fas fa-trash"></i> 
-                    </button>
+
+                    <form id="delete-form-{{ $extra->id_extra }}-extra"
+                          action="{{ route('extra.destroy', $extra->id_extra) }}"
+                          method="POST"
+                          style="display: none;">
+                        @csrf
+                        @method('DELETE') </form>
                   </td>
                 </tr>
                 @endforeach 
@@ -346,7 +372,7 @@
                               <td>{{ $item->numero_referencia }}</td>
                               <td>
                                 <div data-toggle="tooltip" title="{{ $concepto=$item->concepto_referencia}}">
-                                {{ substr($concepto,0,110) }}...
+                                {{ substr($concepto,0,90) }}...
                                 </div>
                               </td>
                               <td>{{ $item->unidad_referencia }}</td>

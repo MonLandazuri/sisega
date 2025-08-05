@@ -26,6 +26,16 @@
               </div>
             </div>
           </div>
+                  
+          @if ($errors->any())
+              <div class="alert alert-danger">
+                  <ul>
+                      @foreach ($errors->all() as $error)
+                          <li>{{ $error }}</li>
+                      @endforeach
+                  </ul>
+              </div>
+          @endif
 
           <form method="POST" action="{{ route('listado.nuevaoc')}}" class="wizard-content mt-2">
                 @csrf
@@ -52,7 +62,10 @@
               <div class="form-group row align-items-center text-right">
                 <div class="col-lg-8 col-md-6">
                   <input type="hidden" class="form-control" name="id_proyecto" value="{{ $id_proyecto }}">
-                  <button type="submit" class="btn btn-icon icon-right btn-dark">Siguiente <i class="fa fa-angle-right"></i></button>
+                  <button type="button" class="btn btn-secondary ms-2" onclick="history.back()">
+                      <i class="fas fa-arrow-left"></i> Volver
+                  </button>
+                  <button type="submit" class="btn btn-icon icon-right btn-dark">Siguiente <i class="fas fa-arrow-right"></i></button>
                 </div>
               </div>
             </div>

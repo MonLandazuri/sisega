@@ -60,7 +60,9 @@
               <div class="form-group row">
                 <div class="col-md-4"></div>
                 <div class="col-lg-4 col-md-6 text-right">
-                  <input type="submit" class="btn btn-icon icon-right btn-primary" value="Guardar">
+                  <button type="submit" class="btn btn-danger ms-2">
+                      <i class="fas fa-save"></i> Guardar
+                  </button>
                 </div>
               </div>
             </div>

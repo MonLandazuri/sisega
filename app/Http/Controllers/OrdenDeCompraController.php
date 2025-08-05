@@ -31,6 +31,12 @@ class OrdenDeCompraController extends Controller
 
     public function listadoNuevaOC(Request $request)
     {
+        $validatedData = $request->validate([
+            'id_proyecto'    => 'required|exists:proyectos,id_proyecto', 
+            'fecha_oc'       => 'required|date',
+            'contratista_oc' => 'required|exists:contratistas,id_contratista', 
+        ]);
+
         $id_proyecto=$request->input("id_proyecto");
         //$contadorOC=$request->input("contadorOC");
 
@@ -40,7 +46,7 @@ class OrdenDeCompraController extends Controller
         $ordenCompra->id_contratista = $request->input("contratista_oc");
 
         $ordenCompra->save();
-        $id_orden=$ordenCompra->id;
+        $id_orden=$ordenCompra->id_orden;
 
         $partidas = Partida::where('id_proyecto', $id_proyecto)->get();
         $extras = Extra::where('id_proyecto', $id_proyecto)->get();

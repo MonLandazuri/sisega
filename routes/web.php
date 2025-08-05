@@ -31,7 +31,17 @@ Route::post('/partidas/listado-nueva-oc/',[OrdenDeCompraController::class, 'list
 Route::post('/partidas/previsualizar-orden/',[OrdenDeCompraController::class, 'revisionNuevaOC'])->name('revision.nuevaoc')->middleware('auth');
 Route::post('/partidas/agregar-nueva-oc/',[OrdenDeCompraController::class, 'agregarNuevaOC'])->name('agregar.nuevaoc')->middleware('auth');
 Route::get('/partidas/nuevo-partida/{id_proyecto}',[PartidasController::class, 'nuevoPartida'])->name('nuevo.partida')->middleware('auth');
-Route::post('/partidas-nuevo-partida', [PartidasController::class, 'guardarNuevoPartida'])->name('guardar.nuevopartida')->middleware('auth');
+Route::post('/guardar-nuevo-partida', [PartidasController::class, 'guardarNuevoPartida'])->name('guardar.nuevopartida')->middleware('auth');
+Route::get('/editar-partida/{id_partida}',[PartidasController::class, 'editarPartida'])->name('editar.partida')->middleware('auth');
+Route::post('/guardar-editar-partida', [PartidasController::class, 'guardarEditarPartida'])->name('guardar.editarpartida')->middleware('auth');
+Route::delete('/partidas/eliminar-partida/{partida}', [PartidasController::class, 'eliminarPartida'])->name('partidas.destroy')->middleware('auth');
+
+
+Route::get('/partidas/nuevo-extra/{id_proyecto}',[PartidasController::class, 'nuevoExtra'])->name('nuevo.extra')->middleware('auth');
+Route::post('/guardar-nuevo-extra', [PartidasController::class, 'guardarNuevoExtra'])->name('guardar.nuevoextra')->middleware('auth');
+Route::get('/editar-extra/{id_extra}', [PartidasController::class, 'editarExtra'])->name('editar.extra')->middleware('auth');
+Route::post('/guardar-editar-extra', [PartidasController::class, 'guardarEditarExtra'])->name('guardar.editarextra')->middleware('auth');
+Route::delete('/partidas/eliminar-extra/{extra}', [PartidasController::class, 'eliminarExtra'])->name('extra.destroy')->middleware('auth');
 
 Route::get('/usuarios',[UsuariosController::class, 'index'])->name('usuarios');
 
