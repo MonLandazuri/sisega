@@ -85,7 +85,7 @@
                 </tr>
                 @endforeach 
                 @else
-                    <p>No hay proyectos disponibles.</p>
+                    <p>No hay contratista disponibles.</p>
                 @endif
               </tbody>
             </table>
@@ -99,6 +99,40 @@
               <h4>Archivos de Contratista</h4>
             </div>
             <div class="card-body">
+              <div>Listado de Archivos</div>
+              <div class="table-responsive">
+                  <table class="table table-striped table-sm" id="archivosContratistaTable">
+                      <thead>
+                          <tr>
+                              <th>Nombre del Archivo</th>
+                              <th>Tamaño</th>
+                              <th>Tipo</th>
+                              <th>Subido</th>
+                              <th>Acciones</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          @foreach ($contratistaArchivos as $archivo) {{-- Asumiendo que $archivos es la colección que pasas a la vista --}}
+                              <tr>
+                                  <td>{{ $archivo->nombre_original }}</td>
+                                  <td>{{ number_format($archivo->tamano_archivo / 1024, 2) }} KB</td>
+                                  <td>{{ $archivo->tipo_archivo }}</td>
+                                  <td>{{ $archivo->created_at->format('Y-m-d H:i:s') }}</td>
+                                  <td>
+                                      <a href="{{ asset('storage/' . $archivo->ruta_archivo) }}" class="btn btn-sm btn-info" target="_blank">
+                                          <i class="fas fa-eye"></i> Abrir
+                                      </a>
+
+                                      {{-- <a href="{{ Storage::url($archivo->ruta_archivo) }}" class="btn btn-sm btn-info" target="_blank">
+                                          <i class="fas fa-eye"></i> Abrir
+                                      </a> --}}
+
+                                      </td>
+                              </tr>
+                          @endforeach
+                      </tbody>
+                  </table>
+              </div>
               <form action="{{ route('contratistas.archivos.store', $contra->id_contratista) }}" class="dropzone dz-clickable" id="documentUploadDropzone">
                 @csrf
                 <div class="dz-default dz-message"><span>Arrastra documentos aquí o haz clic para subir.</span></div>
@@ -161,12 +195,12 @@
             var newRow = `
                 <tr id="file-row-${fileData.id}">
                     <td>${fileData.name}</td>
+                    <td>${(fileData.size / 1024).toFixed(2)} KB</td>
                     <td>${fileData.type}</td>
-                    <td>${(fileData.size / 1024 / 1024).toFixed(2)} MB</td>
                     <td>${fileData.created_at}</td>
                     <td>
-                        <a href="${fileData.url}" class="btn btn-sm btn-info" target="_blank" title="Ver"><i class="fas fa-eye"></i></a>
-                        <button class="btn btn-sm btn-danger delete-file-btn" data-id="${fileData.id}" title="Eliminar"><i class="fas fa-trash"></i></button>
+                        <a href="${fileData.url}" class="btn btn-sm btn-info" target="_blank" title="Ver"><i class="fas fa-eye"></i> Abrir</a>
+                        <!--<button class="btn btn-sm btn-danger delete-file-btn" data-id="${fileData.id}" title="Eliminar"><i class="fas fa-trash"></i></button>-->
                     </td>
                 </tr>
             `;

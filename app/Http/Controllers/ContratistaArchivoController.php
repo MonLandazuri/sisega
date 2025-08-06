@@ -14,35 +14,36 @@ class ContratistaArchivoController extends Controller
     public function store(Request $request, Contratista $contratista)
     {
         $request->validate([
-            'file' => 'required|file|max:20480', // 'file' es más genérico, 20480 KB = 20 MB
+            'file' => 'required|mimetypes:application/pdf,image/jpeg,image/png|max:20480', // 'file' es más genérico, 20480 KB = 20 MB
             // Considera tipos MIME específicos si solo quieres ciertos tipos de archivo:
             // 'file' => 'required|file|mimes:pdf,doc,docx,jpg,jpeg,png|max:20480',
         ]);
 
         if ($request->hasFile('file')) {
-            $uploadedFile = $request->file('file');
-            $originalName = $uploadedFile->getClientOriginalName();
-            $mimeType = $uploadedFile->getMimeType();
-            $fileSize = $uploadedFile->getSize(); // Tamaño en bytes
+            $archivo = $request->file('file');
+            $nombreOriginal = $archivo->getClientOriginalName();
+            $mimeType = $archivo->getMimeType();
+            $fileSize = $archivo->getSize(); // Tamaño en bytes
 
             // Genera un nombre de archivo único para el almacenamiento
             // Usamos time() para unicidad y Str::slug para limpiar el nombre original
-            $uniqueFileName = time() . '_' . Str::slug(pathinfo($originalName, PATHINFO_FILENAME)) . '.' . $uploadedFile->getClientOriginalExtension();
+            $uniqueFileName = time() . '_' . Str::slug(pathinfo($nombreOriginal, PATHINFO_FILENAME)) . '.' . $archivo->getClientOriginalExtension();
 
             // Define la ruta de almacenamiento específica para el contratista
             // Ejemplo: 'contratistas/1/documentos'
-            $storageFolder = 'contratistas/' . $contratista->id . '/documentos';
+            $storageFolder = 'contratistas/' . $contratista->id_contratista . '/documentos';
 
             // Guarda el archivo
             // storeAs() te permite especificar el nombre de la carpeta y el nombre del archivo
-            $path = $uploadedFile->storeAs($storageFolder, $uniqueFileName, 'public');
+            $path = $archivo->storeAs($storageFolder, $uniqueFileName, 'public');
 
+            try{
             // Guarda la información del archivo en la base de datos
             $contratistaArchivo = ContratistaArchivo::create([
-                'contratista_id' => $contratista->id,
-                'nombre_original' => $originalName,
+                'contratista_id' => $contratista->id_contratista,
+                'nombre_original' => $nombreOriginal,
                 'nombre_guardado' => $uniqueFileName,
-                'ruta_archivo' => $storageFolder, // Solo la carpeta, el nombre_guardado va aparte
+                'ruta_archivo' => $path, // Solo la carpeta, el nombre_guardado va aparte
                 'tipo_archivo' => $mimeType,
                 'tamano_archivo' => $fileSize,
             ]);
@@ -52,17 +53,20 @@ class ContratistaArchivoController extends Controller
                 'success' => true,
                 'message' => 'Archivo subido correctamente.',
                 'file' => [
-                    'id' => $contratistaArchivo->id,
+                    'id' => $contratistaArchivo->id_contratista,
                     'name' => $contratistaArchivo->nombre_original,
                     'size' => $contratistaArchivo->tamano_archivo,
                     'type' => $contratistaArchivo->tipo_archivo,      
-                    'url' => $contratistaArchivo->url,  
+                    'url' => $contratistaArchivo->ruta_archivo,  
                     'created_at' => $contratistaArchivo->created_at->format('Y-m-d H:i:s'),
                 ]
             ], 200);
+            }catch(\Exception $e){
+                \Log::error('Error al guardar archivo en BD: ' . $e->getMessage());
+                return response()->json(['success' => false, 'message' => 'No se pudo subir el archivo.'], 400);
+            }
         }
 
-        return response()->json(['success' => false, 'message' => 'No se pudo subir el archivo.'], 400);
     }
 
     // Método para listar archivos (necesitarías crear la vista correspondiente)

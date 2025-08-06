@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use App\Models\Contratista;
+use App\Models\ContratistaArchivo;
 use Illuminate\Support\Facades\Storage;
 
 
@@ -67,9 +68,11 @@ class ContratistasController extends Controller
     public function infoContratista($id_contratista)
     {
         $contratista = Contratista::where('id_contratista',$id_contratista)->get();
+        $contratistaArchivos = ContratistaArchivo::where('contratista_id',$id_contratista)->get();
 
         return view('info-contratista', [
             'contratista' => $contratista,
+            'contratistaArchivos' => $contratistaArchivos,
         ]);
     }
 }
