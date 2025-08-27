@@ -1,8 +1,8 @@
 "use strict";
 
-var statistics_chart = document.getElementById("myChart").getContext('2d');
+// var statistics_chart = document.getElementById("myChart").getContext('2d');
 
-var myChart = new Chart(statistics_chart, {
+/*var myChart = new Chart(statistics_chart, {
   type: 'line',
   data: {
     labels: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
@@ -39,9 +39,9 @@ var myChart = new Chart(statistics_chart, {
       }]
     },
   }
-});
+});*/
 
-$('#visitorMap').vectorMap(
+/*$('#visitorMap').vectorMap(
 {
   map: 'world_en',
   backgroundColor: '#ffffff',
@@ -98,4 +98,4 @@ function getWeather() {
     $("#myWeather").html('<div class="alert alert-danger">'+error+'</div>');
   }
   });
-}
+}*/

@@ -73,4 +73,14 @@ class ProyectosController extends Controller
             'totalProyectosFinalizados'=>$totalProyectosFinalizados,
         ]);
     }
+
+    public function finalizarProyecto(Proyecto $proyecto)
+    {
+        $proyecto->status_proyecto="finalizado";
+
+        $proyecto->save();
+                
+        return redirect()->back()->with('success', 'El proyecto ha sido finalizado correctamente.');
+
+    }
 }

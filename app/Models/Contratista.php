@@ -28,6 +28,11 @@ class Contratista extends Model
 
     public function ordenesDeCompra()
     {
-        return $this->hasMany(Ordenes::class, 'id_contratista'); // Asegúrate que 'id_contratista' es la FK en tu tabla de OCs
+        return $this->hasMany(Ordenes::class, 'id_contratista'); 
+    }
+
+    public function anticipos()
+    {
+        return $this->hasMany(Anticipo::class, 'id_contratista');
     }
 }

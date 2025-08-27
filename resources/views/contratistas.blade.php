@@ -9,7 +9,7 @@
             <div class="col-lg-3 col-md-6 col-sm-6 col-12">
               <div class="card card-statistic-1">
                 <div class="card-icon bg-primary">
-                  <i class="far fa-user"></i>
+                  <i class="far fa-address-book"></i>
                 </div>
                 <div class="card-wrap">
                   <div class="card-header">
@@ -26,9 +26,9 @@
   <div class="row">
     <div class="col-12">
       <div class="row col-12"> 
-        <div class="mt-4 mb-4 p-1 buttons">
+        <!--<div class="mt-4 mb-4 p-1 buttons">
           <a href="{{ route('nuevo.contratista') }}" class="btn btn-icon btn btn-dark btn-action mr-1" data-toggle="tooltip" title=""><i class="far fa-id-card"></i> Nuevo</a>
-        </div>
+        </div>-->
       </div>
       <div class="card">  
         <div class="card-body">

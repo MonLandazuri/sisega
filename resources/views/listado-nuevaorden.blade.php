@@ -199,6 +199,7 @@
                 <div class="col-md-4">
                   <input type="hidden" name="id_proyecto" class="form-control" value="{{$id_proyecto}}">
                   <input type="hidden" name="id_orden" class="form-control" value="{{$id_orden}}">
+                  <input type="hidden" name="id_contratista" class="form-control" value="{{$id_contratista}}">
                 </div>
                 <div class="col-lg-4 col-md-6 text-right">
                   <button type="submit" class="btn btn-icon icon-right btn-dark">Siguiente <i class="fa fa-angle-right"></i></button>

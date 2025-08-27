@@ -10,6 +10,7 @@ class Proyecto extends Model
     use HasFactory;
     
     protected $table = 'proyectos';
+    protected $primaryKey = 'id_proyecto';
     protected $fillable = [
         'nombre_proyecto', 
         'dependencia_proyecto', 
@@ -18,6 +19,13 @@ class Proyecto extends Model
         'status_proyecto',
     ];
 
+    protected $casts = [
+        'fecha_proyecto' => 'datetime',
+    ];
     public $timestamps = false; 
 
+    public function anticipos()
+    {
+        return $this->hasMany(Anticipo::class, 'id_proyecto');
+    }
 }

@@ -185,7 +185,11 @@ class PartidasController extends Controller
                                 $query->where('id_proyecto', $id_proyecto)
                                       ->orderBy('ordenes.fecha_orden', 'desc')
                                       ->with('detalles');
-                            }])
+                            },
+                            'anticipos' => function ($query) use ($id_proyecto) {
+                                    $query->where('id_proyecto', $id_proyecto);
+                                }
+                            ])
                             ->get();
 
         /*return view('partidas', [

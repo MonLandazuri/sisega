@@ -1,30 +1,20 @@
-@if($detalles->isEmpty())
+
+    <style>
+        body { font-family: 'Arial', sans-serif; font-size: 12px; }
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h1 { margin: 0; font-size: 24px; }
+        .details-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .details-table th, .details-table td { padding: 8px; border: 1px solid #ddd; text-align: left; }
+        .items-table { width: 100%; border-collapse: collapse; }
+        .items-table th, .items-table td { padding: 8px; border: 1px solid #ddd; text-align: left; }
+        .items-table th { background-color: #f2f2f2; }
+    </style>
+
+@if($ordenDetalle->isEmpty())
     <div class="alert alert-info">No se encontraron detalles para esta orden de compra.</div>
 @else
-    <h4>Orden de Compra {{ $ordenDeCompra->fecha_orden->format('d/m/Y') }}</h4>
-    <table class="table table-striped table-bordered">
-                  <tr>
-                    <td><strong>Contratista:</strong></td>
-                    <td colspan="3">{{ $contratista->nombre_contratista}}</td>
-                  </tr>
-                  <tr>
-                    <td><strong>Dirección:</strong></td>
-                    <td colspan="3">{{ $contratista->direccion_contratista}}</td>
-                  </tr>
-                  <tr>
-                    <td><strong>Banco:</strong></td>
-                    <td>{{ $contratista->banco_contratista}}</td>
-                    <td><strong>CLABE:</strong></td>
-                    <td>{{ $contratista->clabe_contratista}}</td>
-                  </tr>
-                  <tr>
-                    <td><strong>Cuenta:</strong></td>
-                    <td>{{ $contratista->cuenta_contratista}}</td>
-                    <td><strong>Tarjeta:</strong></td>
-                    <td>{{ $contratista->tarjeta_contratista}}</td>
-                  </tr>
-                </table>
-    <table class="table table-bordered table-oc">
+    <h4 class="header">Orden de Compra </h4>
+    <table class="items-table">
         <thead>                                 
             <tr>
             <th class="text-center col-id">NO</th>
@@ -46,7 +36,7 @@
             $acumuladoOrdenDetalleDiferencia=0;
             $acumuladoOrdenDetalleImporte=0;
             @endphp
-            @foreach($detalles as $detalle)
+            @foreach($ordenDetalle as $detalle)
             <tr>
                 <td>
                     @if ($detalle->id_partida)
@@ -60,11 +50,11 @@
                 <td>
                     @if ($detalle->id_partida)
                         <div data-toggle="tooltip" title="{{ $concepto=$detalle->concepto_partida}}">
-                        {{ substr($concepto,0,60) }}...
+                        {{ substr($concepto,0,110) }}...
                         </div>
                     @elseif ($detalle->id_extra)
                         <div data-toggle="tooltip" title="{{ $concepto=$detalle->concepto_extra}}">
-                        {{ substr($concepto,0,60) }}...
+                        {{ substr($concepto,0,110) }}...
                         </div>
                     @else
                         -
@@ -174,18 +164,20 @@
                 <th colspan="10"></th>
             </tr>
             <tr>
-                <th colspan="8" rowspan="3"><div class="text-center"><strong>COMENTARIO:</strong> @if($ordenDeCompra->comentario_orden=="") No hay comentario @else {{$ordenDeCompra->comentario_orden}} @endif</div></th>
+                <th colspan="8"></th>
                 <th>SUBTOTAL</th>
                 <th>${{ number_format($acumuladoOrdenDetalleImporte,2) }}</th>
             </tr>
             <tr>
+                <th colspan="8"></th>
                 <th>IVA</th>
                 <th>${{ number_format($acumuladoOrdenDetalleImporte*0.16,2) }}</th>
             </tr>
             <tr>
+                <th colspan="8"></th>
                 <th>TOTAL</th>
                 <th>${{ number_format($acumuladoOrdenDetalleImporte*1.16,2) }}</th>
             </tr>
         </tfoot>
-        </table>  
+        </table>
 @endif

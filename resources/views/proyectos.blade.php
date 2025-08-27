@@ -9,7 +9,7 @@
             <div class="col-lg-3 col-md-6 col-sm-6 col-12">
               <div class="card card-statistic-1">
                 <div class="card-icon bg-primary">
-                  <i class="far fa-user"></i>
+                  <i class="far fa-building"></i>
                 </div>
                 <div class="card-wrap">
                   <div class="card-header">
@@ -62,14 +62,14 @@
                 <div class="card-body">
                   <ul class="nav nav-tabs" id="myTab2" role="tablist">
                     <li class="nav-item">
-                      <a class="nav-link active show" id="home-tab2" data-toggle="tab" href="#home2" role="tab" aria-controls="home" aria-selected="true">ACTIVOS</a>
+                      <a class="nav-link active show" id="proyectos-activos" data-toggle="tab" href="#activos" role="tab" aria-controls="activos" aria-selected="true">ACTIVOS</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" id="profile-tab2" data-toggle="tab" href="#profile2" role="tab" aria-controls="profile" aria-selected="false">FINALIZADOS</a>
+                      <a class="nav-link" id="proyectos-finalizados" data-toggle="tab" href="#finalizados" role="tab" aria-controls="finalizados" aria-selected="false">FINALIZADOS</a>
                     </li>
                   </ul>
                   <div class="tab-content tab-bordered" id="myTab3Content">
-                    <div class="tab-pane fade active show" id="home2" role="tabpanel" aria-labelledby="home-tab2">
+                    <div class="tab-pane fade active show" id="activos" role="tabpanel" aria-labelledby="activos">
                       <div class="table-responsive">
                         <table class="table table-striped table-proyectos" id="table-1">
                           <thead>                                 
@@ -104,7 +104,7 @@
                                 </div>
                               </td>-->
                               <td>
-                                {{ $proyecto->fecha_proyecto }}
+                                {{ \Carbon\Carbon::parse($proyecto->fecha_proyecto)->format('d/m/Y') }}
                               </td>
                               <td>
                                 <div class="btn-group">
@@ -114,7 +114,25 @@
                                   </button>
                                   <div class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(119px, -2px, 0px); top: 0px; left: 0px; will-change: transform;">
                                     <a class="dropdown-item" href="{{ route('proyecto.partidas', ['id_proyecto' => $proyecto->id_proyecto]) }}">Ver</a>
-                                    <a class="dropdown-item" title="Finalizar" data-confirm="¿Quieres finalizar el Proyecto?" data-confirm-yes="alert('Deleted')" href="#">Finalizar</a>
+                                    <a href="#" class="dropdown-item" title="Finalizar" onclick="event.preventDefault(); confirmarFinalizar({{ $proyecto->id_proyecto }});">
+                                        Finalizar
+                                    </a>
+
+                                    <form id="finalizar-form-{{ $proyecto->id_proyecto }}" action="{{ route('proyectos.finalizar', $proyecto->id_proyecto) }}" method="POST" style="display: none;">
+                                        @csrf
+                                        @method('PATCH')
+                                    </form>
+
+                                    <script>
+                                        function confirmarFinalizar(proyectoId) {
+                                            // Muestra una ventana de confirmación
+                                            if (confirm('¿Quieres finalizar el Proyecto? Esta acción no se puede deshacer.')) {
+                                                // Si el usuario confirma, envía el formulario
+                                                document.getElementById('finalizar-form-' + proyectoId).submit();
+                                            }
+                                        }
+                                    </script>
+
                                   </div>
                                 </div>
                                 <!--<a href="{{ route('proyecto.partidas', ['id_proyecto' => $proyecto->id_proyecto]) }}" class="btn btn-dark btn-action mr-1" data-toggle="tooltip" title="Ver"><i class="fas fa-eye"></i></a>
@@ -130,9 +148,9 @@
                         </table>
                       </div>
                     </div>
-                    <div class="tab-pane fade" id="profile2" role="tabpanel" aria-labelledby="profile-tab2">
+                    <div class="tab-pane fade" id="finalizados" role="tabpanel" aria-labelledby="finalizados">
                       <div class="table-responsive">
-                        <table class="table table-striped table-proyectos" id="table-1">
+                        <table class="table table-striped table-proyectos-finalizados" id="table-1">
                           <thead>                                 
                             <tr>
                               <th class="text-center col-no">#</th>
@@ -160,18 +178,12 @@
                                 {{ $proyecto->constructora_proyecto }}
                               </td>
                               <td>
-                                {{ $proyecto->fecha_proyecto }}
+                                {{ $proyecto->fecha_proyecto->format('d/m/Y') }}
                               </td>
                               <td>
                                 <div class="btn-group">
-                                  <button type="button" class="btn btn-danger">Acciones</button>
-                                  <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-expanded="false">
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                  </button>
-                                  <div class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(119px, -2px, 0px); top: 0px; left: 0px; will-change: transform;">
-                                    <a class="dropdown-item" href="{{ route('proyecto.partidas', ['id_proyecto' => $proyecto->id_proyecto]) }}">Ver</a>
-                                    <a class="dropdown-item" title="Finalizar" data-confirm="¿Quieres finalizar el Proyecto?" data-confirm-yes="alert('Deleted')" href="#">Finalizar</a>
-                                  </div>
+                                    <a class="btn btn-info icon-left" href="{{ route('proyecto.partidas', ['id_proyecto' => $proyecto->id_proyecto]) }}"><i class="fas fa-eye"></i> Ver</a>
+                                    <!--<a class="dropdown-item" title="Finalizar" data-confirm="¿Quieres finalizar el Proyecto?" data-confirm-yes="alert('Deleted')" href="#">Finalizar</a>-->
                                 </div>
                                 <!--<a href="{{ route('proyecto.partidas', ['id_proyecto' => $proyecto->id_proyecto]) }}" class="btn btn-dark btn-action mr-1" data-toggle="tooltip" title="Ver"><i class="fas fa-eye"></i></a>
                                 <a class="btn btn-danger btn-action mr-1" data-toggle="tooltip" title="Cancelar" data-confirm="¿Quieres Cancelar el Proyecto?" data-confirm-yes="alert('Deleted')"><i class="fas fa-trash"></i></a>

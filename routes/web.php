@@ -11,10 +11,16 @@ use App\Http\Controllers\OrdenDeCompraController;
 use App\Http\Controllers\ExcelImportController;
 use App\Http\Controllers\ExcelImportControllerExtra;
 use App\Http\Controllers\ContratistaArchivoController;
+use App\Http\Controllers\PdfController;
+use App\Http\Controllers\AnticipoController;
+
+
 
 Route::get('/proyectos',[ProyectosController::class, 'mostrarProyectos'])->name('proyectos')->middleware('auth');
 Route::get('/nuevo-proyecto',[ProyectosController::class, 'nuevoProyecto'])->name('nuevo.proyecto')->middleware('auth');
 Route::post('/guardar-nuevo-proyecto', [ProyectosController::class, 'guardarNuevoProyecto'])->name('guardar.nuevoproyecto')->middleware('auth');
+Route::patch('/proyectos/{proyecto}/finalizar', [ProyectosController::class, 'finalizarProyecto'])->name('proyectos.finalizar');
+
 
 Route::get('/contratistas',[ContratistasController::class, 'mostrarContratistas'])->name('contratistas')->middleware('auth');
 Route::get('/info-contratista/{id_contratista}',[ContratistasController::class, 'infoContratista'])->name('info.contratista')->middleware('auth');
@@ -42,6 +48,10 @@ Route::post('/guardar-nuevo-extra', [PartidasController::class, 'guardarNuevoExt
 Route::get('/editar-extra/{id_extra}', [PartidasController::class, 'editarExtra'])->name('editar.extra')->middleware('auth');
 Route::post('/guardar-editar-extra', [PartidasController::class, 'guardarEditarExtra'])->name('guardar.editarextra')->middleware('auth');
 Route::delete('/partidas/eliminar-extra/{extra}', [PartidasController::class, 'eliminarExtra'])->name('extra.destroy')->middleware('auth');
+
+Route::get('/ordenes/{orden}/pdf', [PdfController::class, 'exportarPDF'])->name('ordenes.pdf');
+
+Route::post('/anticipos', [AnticipoController::class, 'store'])->name('anticipos.store');
 
 Route::get('/usuarios',[UsuariosController::class, 'index'])->name('usuarios');
 

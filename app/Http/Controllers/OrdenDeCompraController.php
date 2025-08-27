@@ -56,6 +56,7 @@ class OrdenDeCompraController extends Controller
                 'partidas'=>$partidas,
                 'extras'=>$extras,
                 'id_orden'=>$id_orden,
+                'id_contratista'=>$request->input("contratista_oc"),
                 'detalles'=>null,
         ]);     
     }
@@ -65,6 +66,8 @@ class OrdenDeCompraController extends Controller
 
         $id_proyecto = $request->input("id_proyecto");
         $id_orden = $request->input("id_orden");
+        $id_contratista = $request->input("id_contratista");
+
 
         $cantidadesPartida = $request->input('cantidades_partida',[]);
         $preciosPartida = $request->input('pu_partida', []);
@@ -141,6 +144,7 @@ class OrdenDeCompraController extends Controller
             'originalRequest' => $request->all(),
             // 'orden' => $orden, // Si ya estabas editando una orden
             'id_proyecto' => $id_proyecto,
+            'id_contratista' => $id_contratista,
             'id_orden' => $id_orden,
         ]);
     }
@@ -152,6 +156,14 @@ class OrdenDeCompraController extends Controller
         $id_orden=$request->input("id_orden");
         $cantidadesPartida=$request->input('cantidades_partida',[]);
         $cantidadesExtra=$request->input('cantidades_extra',[]);
+        $comentario_orden=$request->input("comentario_orden");
+        $id_contratista=$request->input("id_contratista");
+
+        $ordenMod = Ordenes::find($id_orden);
+
+        $ordenMod->comentario_orden=$comentario_orden;
+
+        $ordenMod->save();
         
         foreach ($cantidadesPartida as $partidaId => $cantidad) {
             // Solo procesa las cantidades si son mayores que 0 (o algún otro criterio)
@@ -215,7 +227,7 @@ class OrdenDeCompraController extends Controller
             ->orderBy('e.no_extra','asc')
             ->get();
 
-        return redirect()->route('proyecto.partidas', ["id_proyecto" => $id_proyecto])->with('success', 'Orden guardada exitosamente.');
+        return redirect()->route('proyecto.partidas', ["id_proyecto" => $id_proyecto, 'id_contratista' => $id_contratista])->with('success', 'Orden guardada exitosamente.');
 
         //return view('partidas', compact("detalles","id_proyecto","partidas","extras"));         
     }
@@ -264,7 +276,14 @@ class OrdenDeCompraController extends Controller
                 ->orderBy('e.no_extra','asc')
                 ->get();
 
+                // 1. Obtener la Orden de Compra por su ID
+                $orden = Ordenes::findOrFail($ordenDeCompra->id_orden); // Usamos findOrFail para un error 404 si no existe
+
+                // 2. Acceder a la relación del contratista a través de la orden
+                $contratista = $orden->contratista; // Asume que tienes una relación 'contratista' en tu modelo Ordenes
+
+
         // Puedes pasar la instancia de la orden de compra si necesitas su número o concepto en el modal
-        return view('detalles_modal', compact('ordenDeCompra', 'detalles'));
+        return view('detalles_modal', compact('ordenDeCompra', 'detalles', 'contratista'));
     }
 }

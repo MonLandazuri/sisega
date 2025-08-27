@@ -8,15 +8,21 @@
           </div>
           <ul class="sidebar-menu">
             <li class="menu-header">Dashboard</li>
-            <li><a class="nav-link" href="{{ route('inicio') }}" ><i class="fas fa-building"></i><span>General</span></a></li>
+            <li><a class="nav-link" href="{{ route('inicio') }}" ><i class="fas fa-tachometer-alt"></i><span>General</span></a></li>
             <li class="menu-header">Proyectos</li>
-            {{-- Opción visible SOLO para administradores --}}
             @auth
                 @if (Auth::user()->isAdmin())
-            <li><a class="nav-link" href="{{ route('nuevo.proyecto') }}"><i class="fas fa-file"></i><span>Nuevo</span></a></li>
+            <li><a class="nav-link" href="{{ route('nuevo.proyecto') }}"><i class="fas fa-folder-plus"></i><span>Nuevo</span></a></li>
                 @endif
             @endauth
-            <li><a class="nav-link" href="{{ route('proyectos') }}"><i class="fas fa-list"></i><span>Listado</span></a></li>
+            <li><a class="nav-link" href="{{ route('proyectos') }}"><i class="fas fa-building"></i><span>Proyectos</span></a></li>
+
+            <li class="menu-header">Contratistas</li>
+            @auth
+              @if (Auth::user()->isAdmin())
+            <li><a class="nav-link" href="{{ route('nuevo.contratista') }}"><i class="fas fa-handshake"></i><span>Nuevo</span></a></li>
+                @endif
+            @endauth
             <li><a class="nav-link" href="{{ route('contratistas') }}"><i class="fas fa-address-book"></i><span>Contratistas</span></a></li>
             </li>
             

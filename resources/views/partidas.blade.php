@@ -8,18 +8,22 @@
   <div class="card">
     <div class="">
       @if (session('success'))
-          <div class="alert alert-success">
+          <div class="alert alert-success"  role="alert" id="success-alert">
               {{ session('success') }}
           </div>
       @endif
 
       @if (session('error'))
-          <div class="alert alert-danger">
+          <div class="alert alert-danger" role="alert" id="danger-alert">
               {{ session('error') }}
           </div>
       @endif
       @foreach ($proyectos as $proyecto)  
       <table class="datos-proyecto">
+        <tr>
+          <td class="titulo">Razón Social</td>
+          <td><span class="dato">{{ $proyecto->constructora_proyecto}}</span></td>
+        </tr>   
         <tr>
           <td class="titulo">Proyecto:</td>
           <td><span class="dato">{{ $proyecto->nombre_proyecto}}</span></td>
@@ -30,7 +34,7 @@
         </tr>
         <tr>
           <td class="titulo">Fecha:</td>
-          <td><span class="dato"> {{$proyecto->fecha_proyecto}}</span></td>
+          <td><span class="dato"> {{$proyecto->fecha_proyecto->format('d/m/Y')}}</span></td>
         </tr>
       </table>
       @endforeach
@@ -52,16 +56,28 @@
         <li class="nav-item negro">
           <a class="nav-link" id="acumulado-tab" data-toggle="tab" href="#acumulado" role="tab" aria-controls="acumulado" aria-selected="false">ACUMULADO</a>
         </li>
-        @foreach ($totalContratistas as $contratista)
+        {{-- @foreach ($totalContratistas as $contratista)
           <li class="nav-item naranja">
-            <a class="nav-link" id="{{ $contratista->id_contratista}}-tab" data-toggle="tab" href="#contratista{{ $contratista->id_contratista}}" role="tab" aria-controls="acumulado" aria-selected="false">{{ $contratista->nombre_contratista }} <a>
-          </li>
+            <a class="nav-link" id="{{ $contratista->id_contratista}}-tab" data-toggle="tab" href="#contratista-{{ $contratista->id_contratista}}" role="tab" aria-controls="acumulado" aria-selected="false">{{ $contratista->nombre_contratista }} <a>
+          </li> 
         @endforeach
         @foreach ($ordenes as $orden)  
-        <!--<li class="nav-item">
+        <li class="nav-item">
           <a class="nav-link" id="oc{{$orden->id_orden}}-tab" data-toggle="tab" href="#oc{{ $orden->id_orden}}" role="tab" aria-controls="oc{{$orden->id_orden}}" aria-selected="false">O.C. {{$contadorOC+=1}}</a>
-        </li>-->
-        @endforeach
+        </li>
+        @endforeach --}}
+        <li class="nav-item">
+            <a class="nav-link" id="contratistas-tab" data-toggle="tab" href="#contratistas-content" role="tab">
+                <select class="form-control" id="contratistaSelector">
+                    <option value="" disabled selected>Selecciona un Contratista</option>
+                    @foreach ($totalContratistas as $contratista)
+                        <option value="contratista-{{ $contratista->id_contratista }}">
+                            {{ $contratista->nombre_contratista }}
+                        </option>
+                    @endforeach
+                </select>
+            </a>
+        </li>
       </ul>
       <div class="tab-content tab-bordered" id="tabProyectoContenido">
 
@@ -70,10 +86,10 @@
           <div class="row">
             <div class="col-6 d-flex align-items-center justify-content-center">
               <a href="{{ route('nuevo.partida', ['id_proyecto' => $id_proyecto]) }}" class="btn btn-danger icon-left" title="Nueva Partida"><i class="fas fa-plus"></i> NUEVO ELEMENTO</a> 
-              @if ($partidas->count() > 0) 
-              <a href="{{ route('import.form', ['id_proyecto' => $id_proyecto]) }}" class="btn disabled btn-info icon-left ml-3" title="Importar Catalogo">IMPORTAR CATALOGO</a>
-              @else 
               <a href="{{ route('import.form', ['id_proyecto' => $id_proyecto]) }}" class="btn btn-info icon-left ml-3" title="Importar Catalogo">IMPORTAR CATALOGO</a>
+              @if ($partidas->count() > 0) 
+              <!--<a href="{{ route('import.form', ['id_proyecto' => $id_proyecto]) }}" class="btn disabled btn-info icon-left ml-3" title="Importar Catalogo">IMPORTAR CATALOGO</a>-->
+              @else 
               @endif
             </div>
             <div class="col-6 justify-content-end">
@@ -128,18 +144,18 @@
               <thead>                                 
                 <tr>
                   <th rowspan="2" class="text-center col-id">NO</th>
-                  <th rowspan="2" class="col-concepto">CONCEPTO</th>
-                  <th rowspan="2" class="col-unidad">UNIDAD</th>
-                  <th rowspan="2" class="col-cantidad">CANTIDAD</th>
+                  <th rowspan="2" class="text-center col-concepto">CONCEPTO</th>
+                  <th rowspan="2" class="text-center col-unidad">UNIDAD</th>
+                  <th rowspan="2" class="text-center col-cantidad">CANTIDAD</th>
                   <th colspan="2" class="text-center">{{$proyecto->constructora_proyecto}}</th>
                   <th colspan="2" class="text-center">CONTRATISTA</th>
                   <th></th> 
                 </tr>
                 <tr>
-                  <th class="col-importe">PU</th>
-                  <th class="col-importe">TOTAL</th>
-                  <th class="col-importe">PU</th>
-                  <th class="col-importe">TOTAL</th>
+                  <th class="text-center col-importe">PU</th>
+                  <th class="text-center col-importe">TOTAL</th>
+                  <th class="text-center col-importe">PU</th>
+                  <th class="text-center col-importe">TOTAL</th>
                   <th class="col-pu"></th>
                 </tr>
               </thead>
@@ -152,7 +168,7 @@
                   </td>
                   <td>
                     <div data-toggle="tooltip" title="{{ $concepto=$partida->concepto_partida}}">
-                      {{ substr($concepto,0,90) }}...
+                      {{ substr($concepto,0,60) }}...
                     </div>
                   </td>
                   <td>
@@ -164,7 +180,7 @@
                     </div>
                   </td>-->
                   <td class="text-right">
-                    {{ $partida->cantidad_partida }}
+                    {{ number_format($partida->cantidad_partida,2) }}
                   </td>
                   <td class="text-right">
                     ${{ number_format($partida->pu_partida,2) }}
@@ -179,26 +195,31 @@
                     ${{ number_format($partida->cantidad_partida*$partida->pu_contratista_partida,2) }}
                   </td>
                   <td class="text-center">
-                    <a href="{{ route('editar.partida', ['id_partida' => $partida->id_partida]) }}" class="btn btn-info icon-left" title="Editar Partida"><i class="fas fa-pen"></i></a>  
-                    <!--<button type="button" class="btn btn-danger icon-left view-details-btn"
-                            data-toggle="modal" data-target="#eliminarPartidaModal"
-                            data-id="{{ $partida->id_partida }}"
-                            title="Eliminar">
-                        <i class="fas fa-trash"></i> 
-                    </button>-->
-                    <button class="btn btn-danger"
-                            data-confirm="¿Realmente deseas eliminar la Partida No: {{ $partida->no_partida }}?"
-                            data-confirm-yes="document.getElementById('delete-form-{{ $partida->id_partida }}').submit();"
-                            title="Eliminar Partida">
-                        <i class="fas fa-trash"></i>
-                    </button>
+                    @auth
+                      @if (Auth::user()->isAdmin())
+                      <a href="{{ route('editar.partida', ['id_partida' => $partida->id_partida]) }}" class="btn btn-info icon-left" title="Editar Partida"><i class="fas fa-pen"></i></a>  
+                      <!--<button type="button" class="btn btn-danger icon-left view-details-btn"
+                              data-toggle="modal" data-target="#eliminarPartidaModal"
+                              data-id="{{ $partida->id_partida }}"
+                              title="Eliminar">
+                          <i class="fas fa-trash"></i> 
+                      </button>-->
+                      <button class="btn btn-danger"
+                              data-confirm="¿Realmente deseas eliminar la Partida No: {{ $partida->no_partida }}?"
+                              data-confirm-yes="document.getElementById('delete-form-{{ $partida->id_partida }}').submit();"
+                              title="Eliminar Partida">
+                          <i class="fas fa-trash"></i>
+                      </button>
 
-                    <form id="delete-form-{{ $partida->id_partida }}"
-                          action="{{ route('partidas.destroy', $partida->id_partida) }}"
-                          method="POST"
-                          style="display: none;">
-                        @csrf
-                        @method('DELETE') </form>
+                      <form id="delete-form-{{ $partida->id_partida }}"
+                            action="{{ route('partidas.destroy', $partida->id_partida) }}"
+                            method="POST"
+                            style="display: none;">
+                          @csrf
+                          @method('DELETE') 
+                      </form>
+                      @endif
+                    @endauth
                   </td>
                 </tr>
                 @endforeach 
@@ -293,14 +314,14 @@
                   </td>
                   <td>
                     <div data-toggle="tooltip" title="{{ $conceptoExtra=$extra->concepto_extra}}">
-                      {{ substr($conceptoExtra,0,90) }}...
+                      {{ substr($conceptoExtra,0,60) }}...
                     </div>
                   </td>
                   <td class="text-center">
                     {{ $extra->unidad_extra }}
                   </td>
                   <td class="text-right">
-                    {{ $extra->cantidad_extra }}
+                    {{ number_format($extra->cantidad_extra,2) }}
                   </td>
                   <td class="text-right">
                     ${{ number_format($extra->pu_extra,2) }}
@@ -315,20 +336,25 @@
                     ${{ number_format($extra->cantidad_extra*$extra->pu_contratista_extra,2) }}
                   </td>
                   <td class="text-center">
-                    <a href="{{ route('editar.extra', ['id_extra' => $extra->id_extra]) }}" class="btn btn-info icon-left" title="Editar Extraordinario"><i class="fas fa-pen"></i></a> 
-                    <button class="btn btn-danger"
-                            data-confirm="¿Realmente deseas eliminar el Extraordinario No: {{ $extra->no_extra }}?"
-                            data-confirm-yes="document.getElementById('delete-form-{{ $extra->id_extra }}-extra').submit();"
-                            title="Eliminar Extraordinario">
-                        <i class="fas fa-trash"></i>
-                    </button>
+                    @auth
+                      @if (Auth::user()->isAdmin())
+                        <a href="{{ route('editar.extra', ['id_extra' => $extra->id_extra]) }}" class="btn btn-info icon-left" title="Editar Extraordinario"><i class="fas fa-pen"></i></a> 
+                        <button class="btn btn-danger"
+                                data-confirm="¿Realmente deseas eliminar el Extraordinario No: {{ $extra->no_extra }}?"
+                                data-confirm-yes="document.getElementById('delete-form-{{ $extra->id_extra }}-extra').submit();"
+                                title="Eliminar Extraordinario">
+                            <i class="fas fa-trash"></i>
+                        </button>
 
-                    <form id="delete-form-{{ $extra->id_extra }}-extra"
-                          action="{{ route('extra.destroy', $extra->id_extra) }}"
-                          method="POST"
-                          style="display: none;">
-                        @csrf
-                        @method('DELETE') </form>
+                        <form id="delete-form-{{ $extra->id_extra }}-extra"
+                              action="{{ route('extra.destroy', $extra->id_extra) }}"
+                              method="POST"
+                              style="display: none;">
+                            @csrf
+                            @method('DELETE') 
+                          </form>
+                      @endif
+                    @endauth
                   </td>
                 </tr>
                 @endforeach 
@@ -372,22 +398,22 @@
                               <td>{{ $item->numero_referencia }}</td>
                               <td>
                                 <div data-toggle="tooltip" title="{{ $concepto=$item->concepto_referencia}}">
-                                {{ substr($concepto,0,90) }}...
+                                {{ substr($concepto,0,60) }}...
                                 </div>
                               </td>
                               <td>{{ $item->unidad_referencia }}</td>
-                              <td>{{ $item->cantidad_referencia }}</td>
+                              <td class="text-right">{{ number_format($item->cantidad_referencia,2) }}</td>
                               <td>$ {{ number_format($item->precio_unitario_base, 2) }}</td>
                               <td>$ {{ number_format($item->cantidad_referencia*$item->precio_unitario_base, 2) }}</td>
-                              <td>{{ $item->cantidad_acumulada }}</td>
+                              <td class="text-right">{{ number_format($item->cantidad_acumulada,2) }}</td>
                               <td>$ {{ number_format($item->cantidad_acumulada*$item->precio_unitario_base,2) }}</td>
-                              <td>
+                              <td class="text-right col-pu">
                                 @if(( $item->cantidad_referencia - $item->cantidad_acumulada) < 0 )
                                 <span style="color: red">
                                 @else
                                   <span>
                                 @endif
-                                {{ $item->cantidad_referencia - $item->cantidad_acumulada }}
+                                {{ number_format($item->cantidad_referencia - $item->cantidad_acumulada,2)  }}
                                   </span>
                               </td>
                               <td>
@@ -443,188 +469,304 @@
 
         <!--Contratistas-->
         @if($totalContratistas->isEmpty())
-              <p>No se encontraron partidas o extras en órdenes de compra para este proyecto.</p>
+              <p>No se encontraron órdenes de compra para este proyecto.</p>
           @else
+            @php
+            $superTotal=0;
+            $totalAmortizacion=0;
+            $totalAPagar=0;
+            @endphp
             @foreach ($totalContratistas as $contratista)
               @php
               $detallesContratista=$todosLosDetallesDeOrdenes->where('id_contratista',$contratista->id_contratista)->sortBy('id_orden');  
               $idsDeOrdenUnicos =$detallesContratista->pluck('id_orden')->unique();
               @endphp
-              <div class="tab-pane fade show" id="contratista{{$contratista->id_contratista}}" role="tabpanel" aria-labelledby="contratista{{$contratista->id_contratista}}-tab">
+              <div class="contratista-tab-pane tab-pane fade show" id="contratista-{{$contratista->id_contratista}}" role="tabpanel" aria-labelledby="contratista{{$contratista->id_contratista}}-tab">
+                <table class="table table-striped table-bordered">
+                  <tr>
+                    <td><strong>Contratista:</strong></td>
+                    <td colspan="3">{{ $contratista->nombre_contratista}}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Dirección:</strong></td>
+                    <td colspan="3">{{ $contratista->direccion_contratista}}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Banco:</strong></td>
+                    <td>{{ $contratista->banco_contratista}}</td>
+                    <td><strong>CLABE:</strong></td>
+                    <td>{{ $contratista->clabe_contratista}}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Cuenta:</strong></td>
+                    <td>{{ $contratista->cuenta_contratista}}</td>
+                    <td><strong>Tarjeta:</strong></td>
+                    <td>{{ $contratista->tarjeta_contratista}}</td>
+                  </tr>
+                  <tr>
+                    <td colspan="2">
+                      @if ($contratista->anticipos->isNotEmpty())
+                          @php
+                              // 2. Si no está vacía, se toma el primer elemento de la colección
+                              $anticipo = $contratista->anticipos->first();
+                          @endphp
+                          <p>
+                              ANTICIPO:
+                              <strong>{{ $anticipo->porcentaje }}%</strong>
+                          </p>
+                      @else
+                          {{-- 3. Si la colección está vacía, se muestra este mensaje --}}
+                          <p>No se ha registrado un anticipo para este contratista en este proyecto.</p>
+                          <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" 
+                                  data-target="#anticipoModal"
+                                  data-id-contratista="{{ $contratista->id_contratista }}"
+                                  data-nombre-contratista="{{ $contratista->nombre_contratista }}">
+                              <i class="fas fa-plus-circle"></i> Agregar Anticipo
+                          </button>
+                      @endif
+                    </td>
+                  </tr>
+                </table>
               <table class="table contratistas table-bordered">
                 <thead>
                   <tr>
-                    <th class="col-orden">ORDEN</th>
-                    <th>FECHA</th>
-                    <th class="col-total">SUBTOTAL</th>
-                    <th>IVA</th>
-                    <th>TOTAL</th>
-                    <th>ACCIONES</th>
+                    <th class="col-orden text-center">ORDEN</th>
+                    <th class="text-center">FECHA</th>
+                    <!--<th class="col-total text-center">SUBTOTAL</th>
+                    <th class="text-center">IVA</th>-->
+                    <th class="text-center">TOTAL</th>
+                    <th class="text-center">AMORTIZACION</th>
+                    <th class="text-center">A PAGAR</th>
+                    <th class="text-center">ACCIONES</th>
                   </tr>
                 </thead>
                 @foreach($idsDeOrdenUnicos as $idDeOrden)
-                @php
-                $detalleDeContratista=$detallesContratista->where('id_orden',$idDeOrden);
-                @endphp
-                <tr>
-                  <td class="multi-collapse collapse" id="contenido{{$idDeOrden}}" colspan="4">
-                    <table class="table table-bordered table-oc">
-                      <thead>                                 
-                        <tr>
-                          <th class="text-center col-id">NO</th>
-                          <th class="">CONCEPTO</th>
-                          <th class="">UNIDAD</th>
-                          <th class="">CANTIDAD</th>
-                          <th class="">COSTO SISEGA</th>
-                          <th class="">TOTAL</th>
-                          <th class="">COSTO COMPRA</th>
-                          <th class="">TOTAL</th>
-                          <th class="">DIFERENCIA</th>
-                          <th class="">IMPORTE</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        @php
-                        $acumuladoOrdenDetalle=0;
-                        $acumuladoOrdenDetalleContratista=0;
-                        $acumuladoOrdenDetalleDiferencia=0;
-                        @endphp
-                        @foreach($detalleDeContratista as $detalle)
-                        <tr>
-                            <td>
+                  @php
+                  $detalleDeContratista=$detallesContratista->where('id_orden',$idDeOrden);
+                  @endphp
+                  <tr>
+                    <td class="multi-collapse collapse" id="contenido{{$idDeOrden}}" colspan="4">
+                      <table class="table table-bordered table-oc">
+                        <thead>                                 
+                          <tr>
+                            <th class="text-center col-id">NO</th>
+                            <th class="">CONCEPTO</th>
+                            <th class="">UNIDAD</th>
+                            <th class="">CANTIDAD</th>
+                            <th class="">COSTO SISEGA</th>
+                            <th class="">TOTAL</th>
+                            <th class="">COSTO COMPRA</th>
+                            <th class="">TOTAL</th>
+                            <th class="">DIFERENCIA</th>
+                            <th class="">IMPORTE</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          @php
+                          $acumuladoOrdenDetalle=0;
+                          $acumuladoOrdenDetalleContratista=0;
+                          $acumuladoOrdenDetalleDiferencia=0;
+                          @endphp
+                          @foreach($detalleDeContratista as $detalle)
+                          <tr>
+                              <td>
+                                  @if ($detalle->id_partida)
+                                      {{ $detalle->no_partida }}
+                                  @elseif ($detalle->id_extra)
+                                      {{ $detalle->no_extra }}
+                                  @else
+                                      -
+                                  @endif
+                              </td>
+                              <td>
+                                  @if ($detalle->id_partida)
+                                      <div data-toggle="tooltip" title="{{ $concepto=$detalle->concepto_partida}}">
+                                        {{ substr($concepto,0,60) }}...
+                                      </div>
+                                  @elseif ($detalle->id_extra)
+                                      <div data-toggle="tooltip" title="{{ $concepto=$detalle->concepto_extra}}">
+                                        {{ substr($concepto,0,60) }}...
+                                      </div>
+                                  @else
+                                      -
+                                  @endif
+                              </td>
+                              <td>
+                                  @if ($detalle->id_partida)
+                                      {{ $detalle->unidad_partida }}
+                                  @elseif ($detalle->id_extra)
+                                      {{ $detalle->unidad_extra }}
+                                  @else
+                                      -
+                                  @endif
+                              </td>
+                              <td>{{ $detalle->cantidad_orden_detalle }}</td>
+                              <td>
                                 @if ($detalle->id_partida)
-                                    {{ $detalle->no_partida }}
+                                    $ {{ number_format($detalle->pu_partida, 2) }}
                                 @elseif ($detalle->id_extra)
-                                    {{ $detalle->no_extra }}
+                                    $ {{ number_format($detalle->pu_extra, 2) }}
+                                @else
+                                    -
+                                @endif 
+                              </td>
+                              <td> 
+                                @if ($detalle->id_partida)
+                                    @php
+                                    $acumuladoOrdenDetalle+=$detalle->cantidad_orden_detalle * $detalle->pu_partida;
+                                    @endphp
+                                    $ {{ number_format($detalle->cantidad_orden_detalle * $detalle->pu_partida, 2) }}
+                                @elseif ($detalle->id_extra)
+                                    @php
+                                    $acumuladoOrdenDetalle+=$detalle->cantidad_orden_detalle * $detalle->pu_extra;
+                                    @endphp
+                                    $ {{ number_format($detalle->cantidad_orden_detalle * $detalle->pu_extra, 2) }}
                                 @else
                                     -
                                 @endif
-                            </td>
-                            <td>
+                              </td>
+                              <td>
                                 @if ($detalle->id_partida)
-                                    <div data-toggle="tooltip" title="{{ $concepto=$detalle->concepto_partida}}">
-                                      {{ substr($concepto,0,110) }}...
-                                    </div>
+                                    $ {{ number_format($detalle->pu_contratista_partida, 2) }}
                                 @elseif ($detalle->id_extra)
-                                    <div data-toggle="tooltip" title="{{ $concepto=$detalle->concepto_extra}}">
-                                      {{ substr($concepto,0,110) }}...
-                                    </div>
+                                    $ {{ number_format($detalle->pu_contratista_extra, 2) }}
+                                @else
+                                    -
+                                @endif 
+                              </td>
+                              <td> 
+                                @if ($detalle->id_partida)
+                                    @php
+                                    $acumuladoOrdenDetalleContratista+=$detalle->cantidad_orden_detalle * $detalle->pu_contratista_partida;
+                                    @endphp
+                                    $ {{ number_format($detalle->cantidad_orden_detalle * $detalle->pu_contratista_partida, 2) }}
+                                @elseif ($detalle->id_extra)
+                                    @php
+                                    $acumuladoOrdenDetalleContratista+=$detalle->cantidad_orden_detalle * $detalle->pu_contratista_extra;
+                                    @endphp
+                                    $ {{ number_format($detalle->cantidad_orden_detalle * $detalle->pu_contratista_extra, 2) }}
                                 @else
                                     -
                                 @endif
-                            </td>
-                            <td>
+                              </td>
+                              <td> 
                                 @if ($detalle->id_partida)
-                                    {{ $detalle->unidad_partida }}
+                                    @php
+                                    $acumuladoOrdenDetalleDiferencia+=($detalle->cantidad_orden_detalle * $detalle->pu_partida)-($detalle->cantidad_orden_detalle * $detalle->pu_contratista_partida);
+                                    @endphp
+                                    $ {{ number_format(($detalle->cantidad_orden_detalle * $detalle->pu_partida)-($detalle->cantidad_orden_detalle * $detalle->pu_contratista_partida), 2) }}
                                 @elseif ($detalle->id_extra)
-                                    {{ $detalle->unidad_extra }}
+                                    @php
+                                    $acumuladoOrdenDetalleDiferencia+=($detalle->cantidad_orden_detalle * $detalle->pu_extra)-($detalle->cantidad_orden_detalle * $detalle->pu_contratista_extra);
+                                    @endphp
+                                    $ {{ number_format(($detalle->cantidad_orden_detalle * $detalle->pu_extra)-($detalle->cantidad_orden_detalle * $detalle->pu_contratista_extra), 2) }}
                                 @else
                                     -
                                 @endif
-                            </td>
-                            <td>{{ $detalle->cantidad_orden_detalle }}</td>
-                            <td>
-                              @if ($detalle->id_partida)
-                                  $ {{ number_format($detalle->pu_partida, 2) }}
-                              @elseif ($detalle->id_extra)
-                                  $ {{ number_format($detalle->pu_extra, 2) }}
-                              @else
-                                  -
-                              @endif 
-                            </td>
-                            <td> 
-                              @if ($detalle->id_partida)
-                                  @php
-                                  $acumuladoOrdenDetalle+=$detalle->cantidad_orden_detalle * $detalle->pu_partida;
-                                  @endphp
-                                  $ {{ number_format($detalle->cantidad_orden_detalle * $detalle->pu_partida, 2) }}
-                              @elseif ($detalle->id_extra)
-                                  @php
-                                  $acumuladoOrdenDetalle+=$detalle->cantidad_orden_detalle * $detalle->pu_extra;
-                                  @endphp
-                                  $ {{ number_format($detalle->cantidad_orden_detalle * $detalle->pu_extra, 2) }}
-                              @else
-                                  -
-                              @endif
-                            </td>
-                            <td>
-                              @if ($detalle->id_partida)
-                                  $ {{ number_format($detalle->pu_contratista_partida, 2) }}
-                              @elseif ($detalle->id_extra)
-                                  $ {{ number_format($detalle->pu_contratista_extra, 2) }}
-                              @else
-                                  -
-                              @endif 
-                            </td>
-                            <td> 
-                              @if ($detalle->id_partida)
-                                  @php
-                                  $acumuladoOrdenDetalleContratista+=$detalle->cantidad_orden_detalle * $detalle->pu_contratista_partida;
-                                  @endphp
-                                  $ {{ number_format($detalle->cantidad_orden_detalle * $detalle->pu_contratista_partida, 2) }}
-                              @elseif ($detalle->id_extra)
-                                  @php
-                                  $acumuladoOrdenDetalleContratista+=$detalle->cantidad_orden_detalle * $detalle->pu_contratista_extra;
-                                  @endphp
-                                  $ {{ number_format($detalle->cantidad_orden_detalle * $detalle->pu_contratista_extra, 2) }}
-                              @else
-                                  -
-                              @endif
-                            </td>
-                            <td> 
-                              @if ($detalle->id_partida)
-                                  @php
-                                  $acumuladoOrdenDetalleDiferencia+=($detalle->cantidad_orden_detalle * $detalle->pu_partida)-($detalle->cantidad_orden_detalle * $detalle->pu_contratista_partida);
-                                  @endphp
-                                  $ {{ number_format(($detalle->cantidad_orden_detalle * $detalle->pu_partida)-($detalle->cantidad_orden_detalle * $detalle->pu_contratista_partida), 2) }}
-                              @elseif ($detalle->id_extra)
-                                  @php
-                                  $acumuladoOrdenDetalleDiferencia+=($detalle->cantidad_orden_detalle * $detalle->pu_extra)-($detalle->cantidad_orden_detalle * $detalle->pu_contratista_extra);
-                                  @endphp
-                                  $ {{ number_format(($detalle->cantidad_orden_detalle * $detalle->pu_extra)-($detalle->cantidad_orden_detalle * $detalle->pu_contratista_extra), 2) }}
-                              @else
-                                  -
-                              @endif
-                            </td>
-                            <td> 
-                              @if ($detalle->id_partida)
-                                  $ {{ number_format($detalle->cantidad_orden_detalle * $detalle->pu_contratista_partida, 2) }}
-                              @elseif ($detalle->id_extra)
-                                  $ {{ number_format($detalle->cantidad_orden_detalle * $detalle->pu_contratista_extra, 2) }}
-                              @else
-                                  -
-                              @endif
-                            </td>
-                        </tr>
-                        @endforeach
-                      </tbody>
-                    </table>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <!--<a class="btn btn-primary collapsed" data-toggle="collapse" href="#contenido{{$idDeOrden}}" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">ORDEN {{$idDeOrden}}</a>-->
-                    {{$idDeOrden}}
-                  </td>
-                  <td>
+                              </td>
+                              <td> 
+                                @if ($detalle->id_partida)
+                                    $ {{ number_format($detalle->cantidad_orden_detalle * $detalle->pu_contratista_partida, 2) }}
+                                @elseif ($detalle->id_extra)
+                                    $ {{ number_format($detalle->cantidad_orden_detalle * $detalle->pu_contratista_extra, 2) }}
+                                @else
+                                    -
+                                @endif
+                              </td>
+                          </tr>
+                          @endforeach
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <!--<a class="btn btn-primary collapsed" data-toggle="collapse" href="#contenido{{$idDeOrden}}" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">ORDEN {{$idDeOrden}}</a>-->
+                      {{$idDeOrden}}
+                    </td>
+                    <td>
+                      @php
+                      $ordenEspecifico=$todosLosDetallesDeOrdenes->where('id_orden',$idDeOrden)->first();
+                      @endphp
+                      {{ \Carbon\Carbon::parse($ordenEspecifico->fecha_orden)->format('d/m/Y')}}
+                    </td>
+                    <!--<td class="text-right">$ {{number_format($acumuladoOrdenDetalleContratista,2)}}</td>
+                    <td class="text-right">$ {{number_format($acumuladoOrdenDetalleContratista*0.16,2)}}</td>-->
                     @php
-                    $ordenEspecifico=$todosLosDetallesDeOrdenes->where('id_orden',$idDeOrden)->first();
+                    $superTotal+=$acumuladoOrdenDetalleContratista;
                     @endphp
-                    {{$ordenEspecifico->fecha_orden}}
-                  </td>
-                  <td>$ {{number_format($acumuladoOrdenDetalleContratista,2)}}</td>
-                  <td>$ {{number_format($acumuladoOrdenDetalleContratista*0.16,2)}}</td>
-                  <td>$ {{number_format($acumuladoOrdenDetalleContratista*1.16,2)}}</td>
-                  <td>
-                    <button type="button" class="btn btn-sm btn-info view-details-btn"
-                            data-toggle="modal" data-target="#ocDetailsModal"
-                            data-id="{{ $idDeOrden }}"
-                            title="Ver Detalles de la Orden">
-                        <i class="fas fa-eye"></i> Detalles
-                    </button>
-                  </td>
-                </tr>
+                    <td class="text-right">$ {{number_format($acumuladoOrdenDetalleContratista*1.16,2)}}</td>
+                    @if($contratista->anticipos->isNotEmpty())
+                    @php
+                    $totalAmortizacion+=($acumuladoOrdenDetalleContratista*1.16)*($anticipo->porcentaje/100);
+                    @endphp
+                    <td class="text-right">$ {{number_format(($acumuladoOrdenDetalleContratista*1.16)*($anticipo->porcentaje/100),2)}}</td>
+                    @php
+                    $totalAPagar+=($acumuladoOrdenDetalleContratista*1.16)-($acumuladoOrdenDetalleContratista*1.16)*($anticipo->porcentaje/100);
+                    @endphp
+                    <td class="text-right">$ {{number_format(($acumuladoOrdenDetalleContratista*1.16)-($acumuladoOrdenDetalleContratista*1.16)*($anticipo->porcentaje/100),2)}}</td>
+                    @endif
+                    <td>
+                      <button type="button" class="btn btn-sm btn-info view-details-btn"
+                              data-toggle="modal" data-target="#ocDetailsModal"
+                              data-id="{{ $idDeOrden }}"
+                              title="Ver Detalles de la Orden">
+                          <i class="fas fa-eye"></i> DETALLES
+                      </button>
+                      <a href="{{ route('ordenes.pdf', $idDeOrden) }}" class="btn btn-danger btn-sm">
+                          <i class="fas fa-file-pdf"></i> PDF
+                      </a>
+                    </td>
+                  </tr>
                 @endforeach
+                  <tr>
+                    <th colspan="2"></th>
+                    <th class="text-right">$ {{ number_format($superTotal*1.16,2) }}</th>
+                    <th class="text-right">$ {{ number_format(($totalAmortizacion), 2) }}</th>
+                    <th class="text-right">$ {{ number_format(($totalAPagar), 2) }}</th>
+                  </tr>
+                  <tr>
+                    <th colspan="5"></th>
+                  </tr>
+                  <tr>
+                    <th colspan="3"></th>
+                    <th>IMPORTE DEL CONTRATO</th>
+                    <th class="text-right">$ {{ number_format(($totalContratistaImporte*1.16), 2) }}</th>
+                  </tr>
+                  <tr>
+                    <th colspan="3"></th>
+                    @if($contratista->anticipos->isEmpty())
+                    <th>ANTICIPO | No hay anticipo</th>
+                    @else
+                    <th>ANTICIPO | {{ $anticipo->porcentaje  }}%</th>
+                    <th class="text-right"> {{ number_format(($totalContratistaImporte*1.16)*($anticipo->porcentaje/100),2) }}</th>
+                    @endif
+                  </tr>
+                  <tr>
+                    <th colspan="3"></th>
+                    <th>ACUMULADO</th>
+                    <!--<th class="text-right">$ {{ number_format($superTotal,2) }}</th>
+                    <th class="text-right">$ {{ number_format($superTotal*0.16,2) }}</th>-->
+                    <th class="text-right">$ {{ number_format($superTotal*1.16,2) }}</th>
+                  </tr>
+                  <tr>
+                    <th colspan="3"></th>
+                    <th>SALDO</th>
+                    <!--<th class="text-right">$ {{ number_format($superTotal,2) }}</th>
+                    <th class="text-right">$ {{ number_format($superTotal*0.16,2) }}</th>-->
+                    <th class="text-right">$ {{ number_format(($totalContratistaImporte*1.16)-($superTotal*1.16),2) }}</th>
+                  </tr>
+                  <tr>
+                    <th colspan="3"></th>
+                    @if($contratista->anticipos->isEmpty())
+                    <th>ANTICIPO | No hay anticipo</th>
+                    @else
+                    <th>POR AMORTIZAR</th>
+                    <!--<th class="text-right">$ {{ number_format($superTotal,2) }}</th>
+                    <th class="text-right">$ {{ number_format($superTotal*0.16,2) }}</th>-->
+                    <th class="text-right">$ {{ number_format((($totalContratistaImporte*1.16)*($anticipo->porcentaje/100))-$totalAmortizacion,2) }}</th>
+                    @endif
+                  </tr>
                 </table>
               </div>
             @endforeach
@@ -797,7 +939,11 @@
     <div class="modal-dialog modal-xl"> {{-- Puedes ajustar el tamaño del modal --}}
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="ocDetailsModalLabel">Detalles de la Orden de Compra</h5>
+                <h4 class="modal-title" id="ocDetailsModalLabel">{{$proyecto->constructora_proyecto}}</h4>
+                <div>
+                  <table>
+                  </table>
+                </div>
                 <button type="button" class="btn-close btn-close-white" data-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -816,6 +962,39 @@
     </div>
 </div>
 {{-- FIN DEL MODAL GENÉRICO --}}
+
+{{-- MODAL PARA ANTICIPO --}}
+<div class="modal fade" id="anticipoModal" tabindex="-1" role="dialog" aria-labelledby="anticipoModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form id="anticipoForm" method="POST" action="{{ route('anticipos.store') }}">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title" id="anticipoModalLabel">Agregar Anticipo</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id_proyecto" value="{{ $proyecto->id_proyecto }}">
+                    <input type="hidden" name="id_contratista" id="id_contratista_input">
+
+                    <p>Agregar anticipo para el contratista: <strong id="nombre_contratista_display"></strong></p>
+                    
+                    <div class="form-group">
+                        <label for="porcentaje">Porcentaje de Anticipo (%)</label>
+                        <input type="number" name="porcentaje" id="porcentaje" class="form-control" step="0.01" min="0" max="100" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Anticipo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{{-- FIN DEL MODAL ANTICIPO --}}
 
 
 <style>
@@ -856,7 +1035,7 @@
     width: 3% !important;
   }
   .table .col-concepto{
-    width: 40% !important;
+    width: 30% !important;
   }
   .table .col-unidad{
     width: 3% !important;
@@ -912,7 +1091,7 @@
                     <p>Cargando detalles de la orden...</p>
                 </div>
             `);
-            modalTitle.text('Cargando Detalles de la Orden...'); // Título temporal
+            //modalTitle.text('Cargando Detalles de la Orden...'); // Título temporal
 
             // Realiza la llamada AJAX para obtener los detalles
             $.ajax({
@@ -922,7 +1101,7 @@
                     // Inyecta el HTML recibido en el cuerpo del modal
                     modalBody.html(response);
                     // Actualiza el título del modal (puedes ajustarlo si el parcial no devuelve el título específico)
-                    modalTitle.text('Detalles de la Orden de Compra'); // Se actualizará desde el parcial si el partial_modal.blade.php tiene el h4
+                    //modalTitle.text('Detalles de la Orden de Compra'); // Se actualizará desde el parcial si el partial_modal.blade.php tiene el h4
                 },
                 error: function(xhr) {
                     console.error("Error al cargar los detalles de la OC:", xhr.responseText);
@@ -935,8 +1114,114 @@
         // Limpiar el contenido del modal cuando se cierra para evitar mostrar datos viejos
         $('#ocDetailsModal').on('hidden.bs.modal', function () {
             $(this).find('.modal-body').empty(); // Vacía el cuerpo del modal
-            $(this).find('.modal-title').text('Detalles de la Orden de Compra'); // Resetea el título
+            //$(this).find('.modal-title').text(); // Resetea el título
         });
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const selector = document.getElementById('contratistaSelector');
+        const tabList = document.getElementById('myTab');
+
+        // Función unificada para manejar la visibilidad de todos los contenidos
+        function hideAllContent() {
+            // Oculta todos los contenidos de las pestañas de Bootstrap
+            document.querySelectorAll('.tab-pane').forEach(tab => {
+                tab.classList.remove('show', 'active');
+            });
+        }
+
+        // Función para mostrar solo el contenido de un contratista específico
+        function showContratistaContent(contratistaId) {
+            hideAllContent(); // Oculta todo primero
+            
+            const contentToShow = document.getElementById(`contratista-${contratistaId}`);
+            if (contentToShow) {
+                // Muestra la pestaña principal de contratistas
+                $('#contratistas-tab').tab('show');
+                // Y luego muestra el div del contratista seleccionado
+                contentToShow.classList.add('show', 'active');
+            }
+        }
+        
+        // --- 1. Escuchar el evento de cambio del selector ---
+        selector.addEventListener('change', function() {
+            const selectedValue = this.value;
+            // Asegúrate de que el valor no sea la opción por defecto (vacía)
+            if (selectedValue) {
+                showContratistaContent(selectedValue.split('-')[1]);
+            }
+        });
+
+        // --- 2. Escuchar cuando una pestaña principal se activa ---
+        if (tabList) {
+            $(tabList).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
+                const activeTabId = e.target.getAttribute('id');
+                
+                // Si la pestaña activada NO es la de contratistas, resetea el select.
+                if (activeTabId !== 'contratistas-tab') {
+                    selector.value = ''; // Resetea el valor del select a la opción vacía
+                }
+            });
+        }
+        
+        // --- 3. Inicialización: Muestra el contenido de la primera pestaña al cargar ---
+       // const defaultTab = document.getElementById('catalogo-tab');
+        //if (defaultTab) {
+            //defaultTab.click();
+        //}
+
+        //cambiar de panel al mandarlo por url
+        const urlParams = new URLSearchParams(window.location.search);
+        const contratistaIdFromUrl = urlParams.get('id_contratista');
+
+        if (contratistaIdFromUrl) {
+            // Seleccionar el contratista en el dropdown
+            selector.value = `contratista-${contratistaIdFromUrl}`;
+            
+            // Mostrar el contenido del contratista
+            showContratistaContent(contratistaIdFromUrl);
+        } else {
+            // Si no hay ID en la URL, activa la pestaña por defecto
+            const defaultTab = document.getElementById('catalogo-tab');
+            if (defaultTab) {
+                defaultTab.click();
+            }
+        }
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Selecciona la alerta de éxito si existe
+        const successAlert = document.getElementById('success-alert');
+        if (successAlert) {
+            // Oculta la alerta después de 4 segundos
+            setTimeout(() => {
+                successAlert.style.display = 'none';
+            }, 4000); // 4000 milisegundos = 4 segundos
+        }
+
+        // Selecciona la alerta de peligro si existe
+        const dangerAlert = document.getElementById('danger-alert');
+        if (dangerAlert) {
+            // Oculta la alerta después de 4 segundos
+            setTimeout(() => {
+                dangerAlert.style.display = 'none';
+            }, 4000); // 4000 milisegundos = 4 segundos
+        }
+    });
+</script>
+<script>
+    $('#anticipoModal').on('show.bs.modal', function (event) {
+        const button = $(event.relatedTarget); // Botón que abrió el modal
+        const idContratista = button.data('id-contratista');
+        const nombreContratista = button.data('nombre-contratista');
+
+        const modal = $(this);
+        modal.find('.modal-title').text('Agregar Anticipo para ' + nombreContratista);
+        modal.find('#id_contratista_input').val(idContratista);
+        modal.find('#nombre_contratista_display').text(nombreContratista);
     });
 </script>
 @endsection

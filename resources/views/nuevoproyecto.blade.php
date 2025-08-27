@@ -46,8 +46,8 @@
                 <label class="col-md-4 text-md-right text-left">Constructora</label>
                 <div class="col-lg-4 col-md-6">
                   <select class="form-control" name="constructora_proyecto">
-                    <option value="SISEGA">SISEGA</option>
-                    <option value="ANDALUZ">ANDALUZ</option>
+                    <option value="SISEGA CONSTRUCCIONES">SISEGA CONSTRUCCIONES</option>
+                    <option value="URBANIZACIONES ANDALUZ">URBANIZACIONES ANDALUZ</option>
                   </select>
                 </div>
               </div>

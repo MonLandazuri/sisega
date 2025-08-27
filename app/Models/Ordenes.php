@@ -18,6 +18,10 @@ class Ordenes extends Model
         'id_contratista', 
     ];
 
+    protected $casts = [
+        'fecha_orden' => 'datetime',
+    ];
+    
     protected $dates = ['fecha_orden'];
 
     public function contratista()
