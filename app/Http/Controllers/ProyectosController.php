@@ -62,7 +62,6 @@ class ProyectosController extends Controller
             $proyectos = $user->proyectos;
         }
 
-        // Utilizando Eloquent para obtener todos los productos
         //$proyectos = Proyecto::all();
         $totalProyectos = $proyectos->count();
 
@@ -72,7 +71,6 @@ class ProyectosController extends Controller
         $proyectosFinalizados = $proyectos->where('status_proyecto', 'finalizado');
         $totalProyectosFinalizados = $proyectosFinalizados->where('status_proyecto', 'finalizado')->count();
 
-        // También puedes usar otras consultas de Eloquent
         // $productos = Producto::where('activo', true)->orderBy('precio', 'desc')->get();
         // $primerProducto = Producto::first();
         // $productoPorId = Producto::find(1);

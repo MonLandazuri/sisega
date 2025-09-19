@@ -516,6 +516,14 @@
                     <!--<div class="tab-pane fade active show" id="home4" role="tabpanel" aria-labelledby="home-tab4">-->
                       <table class="table table-striped table-bordered">
                         <tr>
+                          <td class="w10"><strong>Residente:</strong></td>
+                          <td colspan="3">
+                            @foreach($proyecto->usuarios as $user)
+                                {{ $user->name }} ({{ $user->email }})
+                            @endforeach
+                          </td>
+                        </tr>
+                        <tr>
                           <td class="w10"><strong>Contratista:</strong></td>
                           <td colspan="3">{{ $contratista->nombre_contratista}}</td>
                         </tr>
@@ -904,7 +912,7 @@
                             <!--<th class="text-right">$ {{ number_format($superTotal,2) }}</th>
                             <th class="text-right">$ {{ number_format($superTotal*0.16,2) }}</th>-->
                             <!--<th class="text-right">$ {{ number_format((($sumaSublistadoTotal*1.16)*($anticipo->porcentaje/100))-$totalAmortizacion,2) }}</th>-->
-                            <th class="text-right">$ {{ number_format((-($totalAmortizacion))+(($sumaSublistadoTotalContratista*1.16)*($anticipo->porcentaje/100)),2) }}</th>
+                            <th class="text-right">$ {{ number_format((($totalAmortizacion))-(($sumaSublistadoTotalContratista*1.16)*($anticipo->porcentaje/100)),2) }}</th>
                             @endif
                           </tr>
                         </tbody>
