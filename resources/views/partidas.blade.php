@@ -870,7 +870,7 @@
                             <th colspan="3"></th>
                             <th>IMPORTE DEL CONTRATO</th>
                             <!--<th class="text-right">$ {{ number_format(($totalContratistaImporte*1.16), 2) }}</th>-->
-                            <th class="text-right">$ {{ number_format(($sumaSublistadoTotal*1.16), 2) }}</th>
+                            <th class="text-right">$ {{ number_format(($sumaSublistadoTotalContratista*1.16), 2) }}</th>
                           </tr>
                           <tr>
                             <th colspan="3"></th>
@@ -878,7 +878,7 @@
                             <th>No hay anticipo</th>
                             @else
                             <th>ANTICIPO | {{ $anticipo->porcentaje  }}%</th>
-                            <th class="text-right">$ {{ number_format(($sumaSublistadoTotal*1.16)*($anticipo->porcentaje/100),2) }}</th>
+                            <th class="text-right">$ {{ number_format(($sumaSublistadoTotalContratista*1.16)*($anticipo->porcentaje/100),2) }}</th>
                             @endif
                           </tr>
                           <tr>
@@ -893,7 +893,7 @@
                             <th>SALDO</th>
                             <!--<th class="text-right">$ {{ number_format($superTotal,2) }}</th>
                             <th class="text-right">$ {{ number_format($superTotal*0.16,2) }}</th>-->
-                            <th class="text-right">$ {{ number_format(($sumaSublistadoTotal*1.16)-($acumuladoOrdenDetalleContratista*1.16),2) }}</th>
+                            <th class="text-right">$ {{ number_format(($sumaSublistadoTotalContratista*1.16)-($acumuladoOrdenDetalleContratista*1.16),2) }}</th>
                           </tr>
                           <tr>
                             <th colspan="3"></th>
@@ -903,7 +903,8 @@
                             <th>POR AMORTIZAR</th>
                             <!--<th class="text-right">$ {{ number_format($superTotal,2) }}</th>
                             <th class="text-right">$ {{ number_format($superTotal*0.16,2) }}</th>-->
-                            <th class="text-right">$ {{ number_format((($sumaSublistadoTotal*1.16)*($anticipo->porcentaje/100))-$totalAmortizacion,2) }}</th>
+                            <!--<th class="text-right">$ {{ number_format((($sumaSublistadoTotal*1.16)*($anticipo->porcentaje/100))-$totalAmortizacion,2) }}</th>-->
+                            <th class="text-right">$ {{ number_format((-($totalAmortizacion))+(($sumaSublistadoTotalContratista*1.16)*($anticipo->porcentaje/100)),2) }}</th>
                             @endif
                           </tr>
                         </tbody>
