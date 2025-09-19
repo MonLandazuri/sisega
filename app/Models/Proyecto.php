@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User; 
 
 class Proyecto extends Model
 {
@@ -27,5 +28,10 @@ class Proyecto extends Model
     public function anticipos()
     {
         return $this->hasMany(Anticipo::class, 'id_proyecto');
+    }
+
+    public function usuarios()
+    {
+        return $this->belongsToMany(User::class, 'proyecto_user', 'proyecto_id', 'user_id');
     }
 }

@@ -79,11 +79,13 @@
                     <input type="hidden" name="precios_extra[{{ $detalle->id_extra }}]" value="{{ $detalle->precio_unitario }}">
                 @endforeach
                 <div class="text-center"><strong>COMENTARIO</strong></div><textarea class="form-control" name="comentario_orden"></textarea><br>
-                <input type="hidden" name="id_orden" value="{{ $id_orden ?? '' }}">
+                <!--<input type="hidden" name="id_orden" value="{{ $id_orden ?? '' }}">-->
                     
                 <input type="hidden" name="id_proyecto" value="{{ $id_proyecto }}">
 
                 <input type="hidden" name="id_contratista" value="{{ $id_contratista }}">
+
+                <input type="hidden" name="fecha_oc" value="{{ $fecha_oc }}">
 
                 <button type="button" class="btn btn-secondary ms-2" onclick="history.back()">
                     <i class="fas fa-arrow-left"></i> Volver

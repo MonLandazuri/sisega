@@ -119,13 +119,13 @@
                                   <td>{{ $archivo->tipo_archivo }}</td>
                                   <td>{{ $archivo->created_at->format('Y-m-d H:i:s') }}</td>
                                   <td>
-                                      <a href="{{ asset('storage/' . $archivo->ruta_archivo) }}" class="btn btn-sm btn-info" target="_blank">
-                                          <i class="fas fa-eye"></i> Abrir
-                                      </a>
-
-                                      {{-- <a href="{{ Storage::url($archivo->ruta_archivo) }}" class="btn btn-sm btn-info" target="_blank">
+                                      {{-- <a href="{{ asset('storage/' . $archivo->ruta_archivo) }}" class="btn btn-sm btn-info" target="_blank">
                                           <i class="fas fa-eye"></i> Abrir
                                       </a> --}}
+
+                                      <a href="{{ Storage::url($archivo->ruta_archivo) }}" class="btn btn-sm btn-info" target="_blank">
+                                          <i class="fas fa-eye"></i> Abrir
+                                      </a>
 
                                       </td>
                               </tr>

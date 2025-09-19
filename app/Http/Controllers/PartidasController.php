@@ -11,6 +11,7 @@ use App\Models\Extra;
 use App\Models\Ordenes;
 use App\Models\Contratista;
 use App\Models\OrdenesDetalles;
+use App\Models\SublistadoContratista;
 use App\Http\Controllers\Controller;
 
 
@@ -24,6 +25,7 @@ class PartidasController extends Controller
         $extras = Extra::where('id_proyecto', $id_proyecto)->get();
         $proyectos = Proyecto::where('id_proyecto', $id_proyecto)->get();
         $ordenes = Ordenes::where('id_proyecto', $id_proyecto)->get();
+        $contratistas = Contratista::all();
         $ids_ordenes = $ordenes->pluck('id_orden')->toArray();
 
         $totales = Partida::where('id_proyecto', $id_proyecto)
@@ -202,6 +204,69 @@ class PartidasController extends Controller
             'id_proyecto'=>$id_proyecto,
         ]);*/
 
+        
+        // Primera parte: Sumatoria de elementos del Catálogo Principal
+        $catalogoAcumulado = DB::table('sublistados_contratistas as sc')
+            ->select(
+                DB::raw("'Partida' AS tipo_referencia"),
+                'sc.id_contratista',
+                'p.id_partida AS id_referencia',
+                'p.no_partida AS no_referencia',
+                'p.concepto_partida AS concepto_referencia',
+                'p.unidad_partida AS unidad_referencia',
+                'p.cantidad_partida AS cantidad_referencia',
+                'p.pu_partida AS pu_base', 
+                'p.pu_contratista_partida AS pu_contratista_base', 
+                DB::raw('SUM(sc.cantidad) AS cantidad_acumulada'),
+                DB::raw('SUM(sc.cantidad * sc.monto) AS importe_acumulado')
+            )
+            ->join('partidas as p', 'sc.id_partida', '=', 'p.id_partida')
+            ->where('sc.id_proyecto', $id_proyecto)
+            ->groupBy(
+                'sc.id_contratista',
+                'p.id_partida',
+                'p.no_partida',
+                'p.concepto_partida',
+                'p.unidad_partida',
+                'p.cantidad_partida',
+                'p.pu_partida',
+                'p.pu_contratista_partida'
+            );
+
+        // Segunda parte: Sumatoria de elementos Extraordinarios
+        $extraordinarioAcumulado = DB::table('sublistados_contratistas as sc')
+            ->select(
+                DB::raw("'Extra' AS tipo_referencia"),
+                'sc.id_contratista',
+                'e.id_extra AS id_referencia',
+                'e.no_extra AS no_referencia',
+                'e.concepto_extra AS concepto_referencia',
+                'e.unidad_extra AS unidad_referencia',
+                'e.cantidad_extra AS cantidad_referencia',
+                'e.pu_extra AS pu_base',
+                'e.pu_contratista_extra AS pu_contratista_base',
+                DB::raw('SUM(sc.cantidad) AS cantidad_acumulada'),
+                DB::raw('SUM(sc.cantidad * sc.monto) AS importe_acumulado')
+            )
+            ->join('extras as e', 'sc.id_extra', '=', 'e.id_extra')
+            ->where('sc.id_proyecto', $id_proyecto)
+            ->groupBy(
+                'sc.id_contratista',
+                'e.id_extra',
+                'e.no_extra',
+                'e.concepto_extra',
+                'e.unidad_extra',
+                'e.cantidad_extra',
+                'e.pu_extra',
+                'e.pu_contratista_extra'
+            );
+
+        // Combinar los resultados de ambos catálogos
+        $sublistadoAcumulado = $catalogoAcumulado
+            ->unionAll($extraordinarioAcumulado)
+            ->get();
+
+
         return view('partidas', 
         compact('acumulados',
                 'partidas',
@@ -217,6 +282,8 @@ class PartidasController extends Controller
                 'id_proyecto',
                 'todosLosDetallesDeOrdenes',
                 'totalContratistas',
+                'contratistas',
+                'sublistadoAcumulado',
             ));
         // O para una API:
         // return response()->json(['partidas' => $partidas]);

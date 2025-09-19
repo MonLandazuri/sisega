@@ -11,24 +11,28 @@
             <li><a class="nav-link" href="{{ route('inicio') }}" ><i class="fas fa-tachometer-alt"></i><span>General</span></a></li>
             <li class="menu-header">Proyectos</li>
             @auth
-                @if (Auth::user()->isAdmin())
-            <li><a class="nav-link" href="{{ route('nuevo.proyecto') }}"><i class="fas fa-folder-plus"></i><span>Nuevo</span></a></li>
-                @endif
+              @if (Auth::user()->isAdmin())
+              <li><a class="nav-link" href="{{ route('nuevo.proyecto') }}"><i class="fas fa-folder-plus"></i><span>Nuevo</span></a></li>
+              @endif
             @endauth
             <li><a class="nav-link" href="{{ route('proyectos') }}"><i class="fas fa-building"></i><span>Proyectos</span></a></li>
 
             <li class="menu-header">Contratistas</li>
             @auth
               @if (Auth::user()->isAdmin())
-            <li><a class="nav-link" href="{{ route('nuevo.contratista') }}"><i class="fas fa-handshake"></i><span>Nuevo</span></a></li>
-                @endif
+              <li><a class="nav-link" href="{{ route('nuevo.contratista') }}"><i class="fas fa-handshake"></i><span>Nuevo</span></a></li>
+              @endif
             @endauth
             <li><a class="nav-link" href="{{ route('contratistas') }}"><i class="fas fa-address-book"></i><span>Contratistas</span></a></li>
             </li>
             
             <li class="menu-header">Usuarios</li>
-            <li><a href="{{ route('usuarios') }}"><i class="fas fa-user"></i><span>Usuarios</span></a></li> 
-            <li><a href="{{ route('usuarios') }}"><i class="fas fa-user-plus"></i><span>Registrar Usuario</span></a></li> 
+            @auth
+              @if (Auth::user()->isAdmin())
+              <li><a href="{{ route('users.create') }}"><i class="fas fa-user-plus"></i><span>Nuevo</span></a></li> 
+              <li><a href="{{ route('usuarios') }}"><i class="fas fa-user"></i><span>Usuarios</span></a></li> 
+              @endif
+            @endauth
             <li><a href="{{ route('usuarios.editar.password') }}"><i class="fas fa-user-lock"></i><span>Cambiar Contraseña</span></a></li> 
           </ul>
 

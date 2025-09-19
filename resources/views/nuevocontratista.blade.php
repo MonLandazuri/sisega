@@ -1,6 +1,17 @@
 @extends('layouts.master')
 
 @section('content')
+
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
 <section class="section">
           <div class="section-header">
             <h1>Nuevo Contratista</h1>
@@ -45,8 +56,7 @@
               <div class="form-group row align-items-center">
                 <label class="col-md-4 text-md-right text-left">Banco del Contratista</label>
                 <div class="col-lg-4 col-md-6">
-                  <input type="text" name="banco_contratista" class="form-control"
-                  placeholder="Ejem. BBVA">
+                  <input type="text" name="banco_contratista" class="form-control" placeholder="Ejem. BBVA">
                 </div>
               </div>
               <div class="form-group row align-items-center">

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\SublistadoContratista;
 
 class Contratista extends Model
 {
@@ -34,5 +35,10 @@ class Contratista extends Model
     public function anticipos()
     {
         return $this->hasMany(Anticipo::class, 'id_contratista');
+    }
+
+    public function sublistados()
+    {
+        return $this->hasMany(SublistadoContratista::class, 'contratista_id');
     }
 }

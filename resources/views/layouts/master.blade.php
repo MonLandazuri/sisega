@@ -85,7 +85,7 @@
   <script src="{{asset('dashboard/assets/modules/jquery-ui/jquery-ui.min.js')}}"></script>
   <script src="{{asset('dashboard/assets/modules/dropzonejs/min/dropzone.min.js')}}"></script>
   <script src="{{asset('dashboard/assets/js/page/components-multiple-upload.js')}}"></script>
-  <script src="{{asset('dashboard/assets/js/page/bootstrap-modal.js')}}"></script>
+  <!-- <script src="{{asset('dashboard/assets/js/page/bootstrap-modal.js')}}"></script>-->
   
 
 

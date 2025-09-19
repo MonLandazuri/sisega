@@ -8,7 +8,7 @@
   <div class="row">
     <div class="col-12">
       @if ($detalles)
-      <div class="card">
+      <!--<div class="card">
         <table class="table table-striped table-extras" id="table-2">
               <thead>                                 
                 <tr>
@@ -75,7 +75,7 @@
                 @endforeach
               </tbody>
         </table>
-      </div>
+      </div>-->
       @endif
 
       <div class="card">
@@ -102,6 +102,29 @@
                 @csrf
             <div class="wizard-pane"> 
               <div class="form-group row align-items-center">
+                
+                <div class="wizard-pane col-8"> 
+                  <div class="form-group row align-items-center">
+                    <label class="col-lg-6 text-md-right text-left">Contratista</label>
+                    <div class="col-lg-6  col-md-6">
+                      <select class="form-control" name="id_contratista">
+                        <option value="0">Selecciona un contratista</option>
+                        @foreach ($contratistas as $contratista)
+                          <option value="{{ $contratista->id_contratista}}">
+                              {{ $contratista->nombre_contratista }} 
+                          </option>
+                        @endforeach
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group row align-items-center">
+                    <label class="col-md-6 text-md-right text-left">Fecha OC</label>
+                    <div class="col-lg-6  col-md-6">
+                      <input type="date" class="form-control" name="fecha_oc">
+                    </div>
+                  </div>
+                </div>
+
                 <div class="col-12">
                   <ul class="nav nav-tabs" id="myTabOpc" role="tablist">
                     <li class="nav-item">
@@ -198,11 +221,14 @@
               <div class="form-group row">
                 <div class="col-md-4">
                   <input type="hidden" name="id_proyecto" class="form-control" value="{{$id_proyecto}}">
-                  <input type="hidden" name="id_orden" class="form-control" value="{{$id_orden}}">
-                  <input type="hidden" name="id_contratista" class="form-control" value="{{$id_contratista}}">
+                  <!--<input type="hidden" name="id_orden" class="form-control" value="">
+                  <input type="hidden" name="id_contratista" class="form-control" value="">-->
                 </div>
                 <div class="col-lg-4 col-md-6 text-right">
-                  <button type="submit" class="btn btn-icon icon-right btn-dark">Siguiente <i class="fa fa-angle-right"></i></button>
+                  <button type="button" class="btn btn-danger ms-2" onclick="history.back()">
+                      <i class="fas fa-times"></i> CANCELAR
+                  </button>
+                  <button type="submit" class="btn btn-icon icon-right btn-dark">REVISAR <i class="fa fa-angle-right"></i></button>
                 </div>
               </div>
             </div>

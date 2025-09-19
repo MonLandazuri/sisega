@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use App\Models\Proyecto;
+use App\Models\User;
 
 class ProyectosController extends Controller
 {
@@ -48,30 +49,49 @@ class ProyectosController extends Controller
 
     public function mostrarProyectos()
     {
-        // Utilizando Eloquent para obtener todos los productos
-        $proyectos = Proyecto::all();
-        $totalProyectos = Proyecto::count();
+        // Obtener el usuario autenticado
+        $user = auth()->user();
 
-        $proyectosActivos = Proyecto::where('status_proyecto', 'activo')->get();
-        $totalProyectosActivos = Proyecto::where('status_proyecto', 'activo')->count();
+        if ($user->is_admin) {
+            // Si el usuario es administrador, mostrar todos los proyectos
+            $proyectos = Proyecto::all();
+            
+        } else {
+            // Si no es administrador, mostrar solo los proyectos asignados a él
+            // Usamos la relación belongsToMany que creamos
+            $proyectos = $user->proyectos;
+        }
+
+        // Utilizando Eloquent para obtener todos los productos
+        //$proyectos = Proyecto::all();
+        $totalProyectos = $proyectos->count();
+
+        $proyectosActivos = $proyectos->where('status_proyecto', 'activo');
+        $totalProyectosActivos = $proyectosActivos->where('status_proyecto', 'activo')->count();
         
-        $proyectosFinalizados = Proyecto::where('status_proyecto', 'finalizado')->get();
-        $totalProyectosFinalizados = Proyecto::where('status_proyecto', 'finalizado')->count();
+        $proyectosFinalizados = $proyectos->where('status_proyecto', 'finalizado');
+        $totalProyectosFinalizados = $proyectosFinalizados->where('status_proyecto', 'finalizado')->count();
 
         // También puedes usar otras consultas de Eloquent
         // $productos = Producto::where('activo', true)->orderBy('precio', 'desc')->get();
         // $primerProducto = Producto::first();
         // $productoPorId = Producto::find(1);
 
+        // Obtener todos los usuarios para la lista de selección
+        $usuarios = User::all();
+
+        // Puedes cargar las relaciones del proyecto que necesites
+        //$proyectos->load('usuarios');
+
         // Pasar los productos a la vista
-        return view('proyectos', [
-            'proyectos' => $proyectos,
-            'totalProyectos'=>$totalProyectos,
-            'proyectosActivos'=>$proyectosActivos,
-            'totalProyectosActivos'=>$totalProyectosActivos,
-            'proyectosFinalizados'=>$proyectosFinalizados,
-            'totalProyectosFinalizados'=>$totalProyectosFinalizados,
-        ]);
+        return view('proyectos', compact(
+                    'proyectos', 
+                    'totalProyectos', 
+                    'proyectosActivos', 
+                    'totalProyectosActivos', 
+                    'proyectosFinalizados', 
+                    'totalProyectosFinalizados', 
+                    'usuarios'));
     }
 
     public function finalizarProyecto(Proyecto $proyecto)
@@ -82,5 +102,39 @@ class ProyectosController extends Controller
                 
         return redirect()->back()->with('success', 'El proyecto ha sido finalizado correctamente.');
 
+    }
+
+    public function actualizarUsuarios(Request $request, Proyecto $proyecto)
+    {
+        $request->validate([
+            'usuarios_residentes' => 'array', // Valida que el input es un array
+            'usuarios_residentes.*' => 'exists:users,id', // Valida que cada ID de usuario existe
+        ]);
+
+        // Sincroniza los usuarios con el proyecto.
+        // Los IDs que no están en el array se desvinculan
+        // y los nuevos IDs se vinculan.
+        $proyecto->usuarios()->sync($request->usuarios_residentes);
+
+        return redirect()->back()->with('success', 'Residentes de proyecto actualizados.');
+    }
+
+    public function show(Proyecto $proyecto)
+    {
+        // Obtener todos los usuarios para la lista de selección
+        $usuarios = User::all();
+
+        // Puedes cargar las relaciones del proyecto que necesites
+        $proyecto->load('usuarios');
+
+        // Pasar el proyecto y la lista de usuarios a la vista
+        return view('proyectos.show', compact('proyecto', 'usuarios'));
+    }
+
+    // En app/Http/Controllers/ProyectoController.php
+    public function getUsuariosAsignados(Proyecto $proyecto)
+    {
+        // Devuelve los IDs de los usuarios asignados en formato JSON
+        return response()->json($proyecto->usuarios->pluck('id'));
     }
 }

@@ -79,7 +79,11 @@
                               <th class="col-dependencia">Dependencia</th>
                               <th class="col-constructora">Constructora</th>
                               <th class="col-fecha">Fecha</th>
+                              @auth
+                              @if (Auth::user()->isAdmin())
                               <th class="col-accion">Acción</th>
+                              @endif
+                              @endauth
                             </tr>
                           </thead>
                           <tbody>   
@@ -106,39 +110,50 @@
                               <td>
                                 {{ \Carbon\Carbon::parse($proyecto->fecha_proyecto)->format('d/m/Y') }}
                               </td>
-                              <td>
-                                <div class="btn-group">
-                                  <button type="button" class="btn btn-danger">Acciones</button>
-                                  <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-expanded="false">
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                  </button>
-                                  <div class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(119px, -2px, 0px); top: 0px; left: 0px; will-change: transform;">
-                                    <a class="dropdown-item" href="{{ route('proyecto.partidas', ['id_proyecto' => $proyecto->id_proyecto]) }}">Ver</a>
-                                    <a href="#" class="dropdown-item" title="Finalizar" onclick="event.preventDefault(); confirmarFinalizar({{ $proyecto->id_proyecto }});">
-                                        Finalizar
-                                    </a>
+                              @auth
+                                @if (Auth::user()->isAdmin())
+                                <td>
+                                  <div class="btn-group">
+                                    <button type="button" class="btn btn-danger">Acciones</button>
+                                    <button type="button" class="btn btn-danger dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-expanded="false">
+                                      <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <div class="dropdown-menu" x-placement="top-start" style="position: absolute; transform: translate3d(119px, -2px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                      <a class="dropdown-item" href="{{ route('proyecto.partidas', ['id_proyecto' => $proyecto->id_proyecto]) }}">Ver</a>
+                                      <a href="#" class="dropdown-item" title="Finalizar" onclick="event.preventDefault(); confirmarFinalizar({{ $proyecto->id_proyecto }});">
+                                          Finalizar
+                                      </a>
+                                      <form id="finalizar-form-{{ $proyecto->id_proyecto }}" action="{{ route('proyectos.finalizar', $proyecto->id_proyecto) }}" method="POST" style="display: none;">
+                                          @csrf
+                                          @method('PATCH')
+                                      </form>
+                                      <script>
+                                          function confirmarFinalizar(proyectoId) {
+                                              // Muestra una ventana de confirmación
+                                              if (confirm('¿Quieres finalizar el Proyecto? Esta acción no se puede deshacer.')) {
+                                                  // Si el usuario confirma, envía el formulario
+                                                  document.getElementById('finalizar-form-' + proyectoId).submit();
+                                              }
+                                          }
+                                      </script>
+                                      <a href="#" 
+                                        class="dropdown-item" 
+                                        data-toggle="modal" 
+                                        data-target="#asignarUsuariosModal"
+                                        data-backdrop="false"
+                                        data-proyecto-id="{{ $proyecto->id_proyecto }}"
+                                        data-proyecto-nombre="{{ $proyecto->nombre_proyecto }}">
+                                          Asignar Residentes
+                                      </a>
 
-                                    <form id="finalizar-form-{{ $proyecto->id_proyecto }}" action="{{ route('proyectos.finalizar', $proyecto->id_proyecto) }}" method="POST" style="display: none;">
-                                        @csrf
-                                        @method('PATCH')
-                                    </form>
-
-                                    <script>
-                                        function confirmarFinalizar(proyectoId) {
-                                            // Muestra una ventana de confirmación
-                                            if (confirm('¿Quieres finalizar el Proyecto? Esta acción no se puede deshacer.')) {
-                                                // Si el usuario confirma, envía el formulario
-                                                document.getElementById('finalizar-form-' + proyectoId).submit();
-                                            }
-                                        }
-                                    </script>
-
+                                    </div>
                                   </div>
-                                </div>
-                                <!--<a href="{{ route('proyecto.partidas', ['id_proyecto' => $proyecto->id_proyecto]) }}" class="btn btn-dark btn-action mr-1" data-toggle="tooltip" title="Ver"><i class="fas fa-eye"></i></a>
-                                <a class="btn btn-danger btn-action mr-1" data-toggle="tooltip" title="Cancelar" data-confirm="¿Quieres Cancelar el Proyecto?" data-confirm-yes="alert('Deleted')"><i class="fas fa-trash"></i></a>
-                                <a class="btn btn-danger btn-action mr-1" data-toggle="tooltip" title="Finalizar" data-confirm="¿Quieres Finalizar el Proyecto?" data-confirm-yes="alert('Deleted')"><i class="fas fa-trash"></i></a>-->
-                              </td>
+                                  <!--<a href="{{ route('proyecto.partidas', ['id_proyecto' => $proyecto->id_proyecto]) }}" class="btn btn-dark btn-action mr-1" data-toggle="tooltip" title="Ver"><i class="fas fa-eye"></i></a>
+                                  <a class="btn btn-danger btn-action mr-1" data-toggle="tooltip" title="Cancelar" data-confirm="¿Quieres Cancelar el Proyecto?" data-confirm-yes="alert('Deleted')"><i class="fas fa-trash"></i></a>
+                                  <a class="btn btn-danger btn-action mr-1" data-toggle="tooltip" title="Finalizar" data-confirm="¿Quieres Finalizar el Proyecto?" data-confirm-yes="alert('Deleted')"><i class="fas fa-trash"></i></a>-->
+                                </td>
+                                @endif
+                              @endauth
                             </tr>
                             @endforeach 
                             @else
@@ -180,15 +195,19 @@
                               <td>
                                 {{ $proyecto->fecha_proyecto->format('d/m/Y') }}
                               </td>
-                              <td>
-                                <div class="btn-group">
-                                    <a class="btn btn-info icon-left" href="{{ route('proyecto.partidas', ['id_proyecto' => $proyecto->id_proyecto]) }}"><i class="fas fa-eye"></i> Ver</a>
-                                    <!--<a class="dropdown-item" title="Finalizar" data-confirm="¿Quieres finalizar el Proyecto?" data-confirm-yes="alert('Deleted')" href="#">Finalizar</a>-->
-                                </div>
-                                <!--<a href="{{ route('proyecto.partidas', ['id_proyecto' => $proyecto->id_proyecto]) }}" class="btn btn-dark btn-action mr-1" data-toggle="tooltip" title="Ver"><i class="fas fa-eye"></i></a>
-                                <a class="btn btn-danger btn-action mr-1" data-toggle="tooltip" title="Cancelar" data-confirm="¿Quieres Cancelar el Proyecto?" data-confirm-yes="alert('Deleted')"><i class="fas fa-trash"></i></a>
-                                <a class="btn btn-danger btn-action mr-1" data-toggle="tooltip" title="Finalizar" data-confirm="¿Quieres Finalizar el Proyecto?" data-confirm-yes="alert('Deleted')"><i class="fas fa-trash"></i></a>-->
-                              </td>
+                              @auth
+                                @if (Auth::user()->isAdmin())
+                                <td>
+                                  <div class="btn-group">
+                                      <a class="btn btn-info icon-left" href="{{ route('proyecto.partidas', ['id_proyecto' => $proyecto->id_proyecto]) }}"><i class="fas fa-eye"></i> Ver</a>
+                                      <!--<a class="dropdown-item" title="Finalizar" data-confirm="¿Quieres finalizar el Proyecto?" data-confirm-yes="alert('Deleted')" href="#">Finalizar</a>-->
+                                  </div>
+                                  <!--<a href="{{ route('proyecto.partidas', ['id_proyecto' => $proyecto->id_proyecto]) }}" class="btn btn-dark btn-action mr-1" data-toggle="tooltip" title="Ver"><i class="fas fa-eye"></i></a>
+                                  <a class="btn btn-danger btn-action mr-1" data-toggle="tooltip" title="Cancelar" data-confirm="¿Quieres Cancelar el Proyecto?" data-confirm-yes="alert('Deleted')"><i class="fas fa-trash"></i></a>
+                                  <a class="btn btn-danger btn-action mr-1" data-toggle="tooltip" title="Finalizar" data-confirm="¿Quieres Finalizar el Proyecto?" data-confirm-yes="alert('Deleted')"><i class="fas fa-trash"></i></a>-->
+                                </td>
+                                @endif
+                              @endauth
                             </tr>
                             @endforeach 
                             @else
@@ -203,6 +222,44 @@
               </div>
             </div>
           </div>
+
+          <div class="modal fade" id="asignarUsuariosModal" tabindex="-1" role="dialog" aria-labelledby="asignarUsuariosModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="asignarUsuariosModalLabel">Asignar Residentes a Proyecto</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form method="POST" id="asignarUsuariosForm">
+                        @csrf
+                        @method('PATCH')
+                        <div class="modal-body">
+                            <input type="hidden" name="proyecto_id" id="modalProyectoId">
+                            <p>Proyecto: <strong id="modalProyectoNombre"></strong></p>
+                            <div class="form-group">
+                                <label for="usuarios_residentes">Seleccionar Usuarios</label>
+                                <select name="usuarios_residentes[]" id="usuarios_residentes" class="form-control" multiple style="height: 150px">
+                                    @foreach($usuarios as $usuario)
+                                        <option value="{{ $usuario->id }}"
+                                              @if($proyectos->isNotEmpty())
+                                             {{ $proyecto->usuarios->contains($usuario->id) ? 'selected' : '' }}>
+                                              {{ $usuario->name }}
+                                              @endif
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 
 </section>
 <style>
@@ -228,4 +285,42 @@
     width: 15% !important;
   }
 </style>
-@endsection()
+@endsection
+@section('scripts')
+
+        <script>
+            $('#asignarUsuariosModal').on('show.bs.modal', function (event) {
+                const button = $(event.relatedTarget);
+                const proyectoId = button.data('proyecto-id');
+                const proyectoNombre = button.data('proyecto-nombre');
+                
+                const modal = $(this);
+                
+                modal.find('#usuarios_residentes').val(null);
+                $.ajax({
+                            url: `/proyectos/${proyectoId}/usuarios-asignados`,
+                            method: 'GET',
+                            success: function(response) {
+                                // 'response' es un array de IDs, por ejemplo: [1, 5, 8]
+                                // Selecciona las opciones correspondientes
+                                modal.find('#usuarios_residentes').val(response);
+                            },
+                            error: function() {
+                                console.error('Error al cargar los usuarios del proyecto.');
+                            }
+                        });
+                // Actualiza el título y el campo oculto
+                modal.find('#asignarUsuariosModalLabel').text('Asignar Residentes a: ' + proyectoNombre);
+                modal.find('#modalProyectoId').val(proyectoId);
+                modal.find('#modalProyectoNombre').text(proyectoNombre);
+                
+                // Actualiza la acción del formulario con el ID del proyecto
+                modal.find('#asignarUsuariosForm').attr('action', `/proyectos/${proyectoId}/actualizar-usuarios`);
+
+                // Aquí deberías hacer una llamada AJAX para obtener los usuarios ya asignados
+                // y seleccionar las opciones correctas en el select
+                // Si no lo haces, solo se mostrará la lista de todos los usuarios
+            });
+        </script>
+
+@endsection

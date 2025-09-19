@@ -29,24 +29,27 @@ class OrdenDeCompraController extends Controller
         ]);    
     }
 
-    public function listadoNuevaOC(Request $request)
+    //public function listadoNuevaOC(Request $request)
+    public function listadoNuevaOC($id_proyecto)
     {
-        $validatedData = $request->validate([
-            'id_proyecto'    => 'required|exists:proyectos,id_proyecto', 
-            'fecha_oc'       => 'required|date',
-            'contratista_oc' => 'required|exists:contratistas,id_contratista', 
-        ]);
+        //$validatedData = $request->validate([
+        //    'id_proyecto'    => 'required|exists:proyectos,id_proyecto', 
+        //    'fecha_oc'       => 'required|date',
+        //    'contratista_oc' => 'required|exists:contratistas,id_contratista', 
+        //]);
 
-        $id_proyecto=$request->input("id_proyecto");
+        $contratistas = Contratista::all();
+
+        //$id_proyecto=$request->input("id_proyecto");
         //$contadorOC=$request->input("contadorOC");
 
-        $ordenCompra = new Ordenes();
-        $ordenCompra->id_proyecto = $request->input("id_proyecto");
-        $ordenCompra->fecha_orden = $request->input("fecha_oc");
-        $ordenCompra->id_contratista = $request->input("contratista_oc");
+        //$ordenCompra = new Ordenes();
+        //$ordenCompra->id_proyecto = $request->input("id_proyecto");
+        //$ordenCompra->fecha_orden = $request->input("fecha_oc");
+        //$ordenCompra->id_contratista = $request->input("contratista_oc");
 
-        $ordenCompra->save();
-        $id_orden=$ordenCompra->id_orden;
+        //$ordenCompra->save();
+        //$id_orden=$ordenCompra->id_orden;
 
         $partidas = Partida::where('id_proyecto', $id_proyecto)->get();
         $extras = Extra::where('id_proyecto', $id_proyecto)->get();
@@ -55,9 +58,10 @@ class OrdenDeCompraController extends Controller
                 'id_proyecto'=>$id_proyecto,
                 'partidas'=>$partidas,
                 'extras'=>$extras,
-                'id_orden'=>$id_orden,
-                'id_contratista'=>$request->input("contratista_oc"),
+                //'id_orden'=>$id_orden,
+                //'id_contratista'=>$request->input("contratista_oc"),
                 'detalles'=>null,
+                'contratistas'=>$contratistas,
         ]);     
     }
 
@@ -65,9 +69,9 @@ class OrdenDeCompraController extends Controller
     {
 
         $id_proyecto = $request->input("id_proyecto");
-        $id_orden = $request->input("id_orden");
+        $fecha_oc = $request->input("fecha_oc");
+        //$id_orden = $request->input("id_orden");
         $id_contratista = $request->input("id_contratista");
-
 
         $cantidadesPartida = $request->input('cantidades_partida',[]);
         $preciosPartida = $request->input('pu_partida', []);
@@ -145,7 +149,7 @@ class OrdenDeCompraController extends Controller
             // 'orden' => $orden, // Si ya estabas editando una orden
             'id_proyecto' => $id_proyecto,
             'id_contratista' => $id_contratista,
-            'id_orden' => $id_orden,
+            'fecha_oc'=>$fecha_oc,
         ]);
     }
 
@@ -158,6 +162,13 @@ class OrdenDeCompraController extends Controller
         $cantidadesExtra=$request->input('cantidades_extra',[]);
         $comentario_orden=$request->input("comentario_orden");
         $id_contratista=$request->input("id_contratista");
+
+        $ordenCompra = new Ordenes();
+        $ordenCompra->id_proyecto = $request->input("id_proyecto");
+        $ordenCompra->fecha_orden = $request->input("fecha_oc");
+        $ordenCompra->id_contratista = $request->input("id_contratista");
+        $ordenCompra->save();
+        $id_orden=$ordenCompra->id_orden;
 
         $ordenMod = Ordenes::find($id_orden);
 

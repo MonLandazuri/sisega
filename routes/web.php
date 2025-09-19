@@ -13,14 +13,14 @@ use App\Http\Controllers\ExcelImportControllerExtra;
 use App\Http\Controllers\ContratistaArchivoController;
 use App\Http\Controllers\PdfController;
 use App\Http\Controllers\AnticipoController;
-
-
+use App\Http\Controllers\SublistadoContratistaController;
 
 Route::get('/proyectos',[ProyectosController::class, 'mostrarProyectos'])->name('proyectos')->middleware('auth');
 Route::get('/nuevo-proyecto',[ProyectosController::class, 'nuevoProyecto'])->name('nuevo.proyecto')->middleware('auth');
 Route::post('/guardar-nuevo-proyecto', [ProyectosController::class, 'guardarNuevoProyecto'])->name('guardar.nuevoproyecto')->middleware('auth');
 Route::patch('/proyectos/{proyecto}/finalizar', [ProyectosController::class, 'finalizarProyecto'])->name('proyectos.finalizar');
-
+Route::patch('/proyectos/{proyecto}/actualizar-usuarios', [ProyectosController::class, 'actualizarUsuarios'])->name('proyectos.actualizarUsuarios');
+Route::get('/proyectos/{proyecto}/usuarios-asignados', [ProyectosController::class, 'getUsuariosAsignados']);
 
 Route::get('/contratistas',[ContratistasController::class, 'mostrarContratistas'])->name('contratistas')->middleware('auth');
 Route::get('/info-contratista/{id_contratista}',[ContratistasController::class, 'infoContratista'])->name('info.contratista')->middleware('auth');
@@ -31,9 +31,14 @@ Route::post('/contratistas/{contratista}/archivos', [ContratistaArchivoControlle
 Route::get('/contratistas/{contratista}/archivos', [ContratistaArchivoController::class, 'index'])->name('contratistas.archivos.index'); 
 Route::delete('/archivos/{contratistaArchivo}', [ContratistaArchivoController::class, 'destroy'])->name('contratistas.archivos.destroy');
 
+Route::get('/contratistas/{id_proyecto}/sublistado', [SublistadoContratistaController::class, 'show'])->name('sublistado.show');
+Route::post('/contratistas/sublistado', [SublistadoContratistaController::class, 'store'])->name('sublistado.store');
+//Route::post('/contratistas/{id_contratista}/proyecto/{id_proyecto}/sublistado', [SublistadoContratistaController::class, 'mostrarSublistado'])->name('sublistado.mostrarsublistado');
+
 Route::get('/partidas/{id_proyecto}',[PartidasController::class, 'mostrarPartidasPorProyecto'])->name('proyecto.partidas')->middleware('auth');
 Route::get('/partidas/nueva-oc/{id_proyecto}',[OrdenDeCompraController::class, 'nuevaOC'])->name('nueva.oc')->middleware('auth');
-Route::post('/partidas/listado-nueva-oc/',[OrdenDeCompraController::class, 'listadoNuevaOC'])->name('listado.nuevaoc')->middleware('auth');
+//Route::post('/partidas/listado-nueva-oc/',[OrdenDeCompraController::class, 'listadoNuevaOC'])->name('listado.nuevaoc')->middleware('auth');
+Route::get('/partidas/listado-nueva-oc/{id_proyecto}',[OrdenDeCompraController::class, 'listadoNuevaOC'])->name('listado.nuevaoc')->middleware('auth');
 Route::post('/partidas/previsualizar-orden/',[OrdenDeCompraController::class, 'revisionNuevaOC'])->name('revision.nuevaoc')->middleware('auth');
 Route::post('/partidas/agregar-nueva-oc/',[OrdenDeCompraController::class, 'agregarNuevaOC'])->name('agregar.nuevaoc')->middleware('auth');
 Route::get('/partidas/nuevo-partida/{id_proyecto}',[PartidasController::class, 'nuevoPartida'])->name('nuevo.partida')->middleware('auth');
@@ -41,7 +46,6 @@ Route::post('/guardar-nuevo-partida', [PartidasController::class, 'guardarNuevoP
 Route::get('/editar-partida/{id_partida}',[PartidasController::class, 'editarPartida'])->name('editar.partida')->middleware('auth');
 Route::post('/guardar-editar-partida', [PartidasController::class, 'guardarEditarPartida'])->name('guardar.editarpartida')->middleware('auth');
 Route::delete('/partidas/eliminar-partida/{partida}', [PartidasController::class, 'eliminarPartida'])->name('partidas.destroy')->middleware('auth');
-
 
 Route::get('/partidas/nuevo-extra/{id_proyecto}',[PartidasController::class, 'nuevoExtra'])->name('nuevo.extra')->middleware('auth');
 Route::post('/guardar-nuevo-extra', [PartidasController::class, 'guardarNuevoExtra'])->name('guardar.nuevoextra')->middleware('auth');
@@ -54,6 +58,8 @@ Route::get('/ordenes/{orden}/pdf', [PdfController::class, 'exportarPDF'])->name(
 Route::post('/anticipos', [AnticipoController::class, 'store'])->name('anticipos.store');
 
 Route::get('/usuarios',[UsuariosController::class, 'index'])->name('usuarios');
+Route::get('/users/create', [UsuariosController::class, 'create'])->name('users.create')->middleware('auth');
+Route::post('/users', [UsuariosController::class, 'store'])->name('users.store')->middleware('auth');
 
 // Ruta para mostrar el formulario de login
 Route::get('/login', [InicioController::class, 'showLoginForm'])->name('login');

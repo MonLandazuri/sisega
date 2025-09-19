@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\Proyecto;
 
 class User extends Authenticatable
 {
@@ -22,9 +23,10 @@ class User extends Authenticatable
     protected $table = 'users';
     protected $fillable = [
         'name',
+        'username',
         'email',
-        'password',
         'role',
+        'password',
     ];
 
     /**
@@ -58,5 +60,10 @@ class User extends Authenticatable
     public function isOperator()
     {
         return $this->role === 'usuario';
+    }
+
+    public function proyectos()
+    {
+        return $this->belongsToMany(Proyecto::class, 'proyecto_user', 'user_id', 'proyecto_id');
     }
 }
