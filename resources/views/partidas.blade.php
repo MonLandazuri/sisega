@@ -6,7 +6,6 @@
   </div>
 
   <div class="card">
-    <div class="">
       @if (session('success'))
           <div class="alert alert-success"  role="alert" id="success-alert">
               {{ session('success') }}
@@ -19,7 +18,7 @@
           </div>
       @endif
       @foreach ($proyectos as $proyecto)  
-      <table class="datos-proyecto">
+      <table class="table table-striped table-bordered datos-proyecto">
         <tr>
           <td class="titulo">Razón Social</td>
           <td><span class="dato">{{ $proyecto->constructora_proyecto}}</span></td>
@@ -36,30 +35,33 @@
           <td class="titulo">Fecha:</td>
           <td><span class="dato"> {{$proyecto->fecha_proyecto->format('d/m/Y')}}</span></td>
         </tr>
+        <tr>
+          <td colspan="2">
+          </td>
+        </tr>
       </table>
       @endforeach
+    <div class="col-4 align-items-cente btn-group" role="group">
+      <a href="{{ route('listado.nuevaoc', ['id_proyecto' => $id_proyecto]) }}" class="btn btn-info icon-left btn-lg" title="Nueva OC">NUEVA OC</a>
+      <a href="{{ route('sublistado.show', $id_proyecto) }}" class="btn btn-dark icon-left btn-lg" title="CREAR SUBLISTADO">CREAR SUBCATALOGO</a>
     </div>
     <div class="card-body">
         @php
         $contadorOC=0;
         @endphp
         <!--<a href="{{ route('nueva.oc', ['id_proyecto' => $id_proyecto]) }}" class="btn btn-info icon-left" title="Nueva OC">NUEVA OC</a>-->
-      <div class="row">
-        <div class="col-2 d-flex align-items-center justify-content-center btn-group" role="group">
-          <a href="{{ route('listado.nuevaoc', ['id_proyecto' => $id_proyecto]) }}" class="btn btn-info icon-left btn-lg" title="Nueva OC">NUEVA OC</a>
-          <a href="{{ route('sublistado.show', $id_proyecto) }}" class="btn btn-dark icon-left btn-lg" title="CREAR SUBLISTADO">CREAR SUBCATALOGO</a>
-        </div>
-      </div>
-      <br>
       <ul class="nav nav-tabs" id="tabsProyecto" role="tablist">
-        <li class="nav-item azul-claro">
+        <li class="nav-item azul-950">
           <a class="nav-link active show" id="catalogo-tab" data-toggle="tab" href="#catalogo" role="tab" aria-controls="catalogo" aria-selected="true">CATALOGO</a>
         </li>
-        <li class="nav-item azul-oscuro">
+        <li class="nav-item azul-800">
           <a class="nav-link" id="extra-tab" data-toggle="tab" href="#extra" role="tab" aria-controls="extra" aria-selected="false">EXTRAORDINARIOS</a>
         </li>
-        <li class="nav-item negro">
+        <li class="nav-item azul-600">
           <a class="nav-link" id="acumulado-tab" data-toggle="tab" href="#acumulado" role="tab" aria-controls="acumulado" aria-selected="false">ACUMULADO</a>
+        </li>
+        <li class="nav-item azul-400">
+          <a class="nav-link" id="insumos-tab" data-toggle="tab" href="#insumos" role="tab" aria-controls="insumos" aria-selected="false">INSUMOS</a>
         </li>
         {{-- @foreach ($totalContratistas as $contratista)
           <li class="nav-item naranja">
@@ -474,6 +476,143 @@
                   </tfoot>
               </table>
           @endif
+        </div>
+
+        <!-- Insumos -->
+        <div class="tab-pane fade show" id="insumos" role="tabpanel" aria-labelledby="insumos-tab">
+          
+          <div class="row">
+            <div class="col-6 d-flex align-items-center justify-content-center btn-group" role="group">
+              <a href="{{ route('nuevo.insumo', ['id_proyecto' => $id_proyecto]) }}" class="btn btn-danger btn-lg icon-left" title="Nuevo Insumo"><i class="fas fa-plus"></i> NUEVO ELEMENTO</a> 
+            </div>
+            <div class="col-6 justify-content-end">
+              <table class="table table-striped">
+                <tr>
+                  <th></th>
+                  <th class="text-center">{{$proyecto->constructora_proyecto}}</th>
+                  <th></th>
+                  <th class="text-center">CONTRATISTA</th>
+                </tr>
+                <tr>
+                  <td>
+                    <h4>SUBTOTAL</h4>
+                  </td>
+                  <td>
+                    <span class="card-body"  id="totalImporte">$ {{ number_format($totalImporteExtra, 2) }}</span>
+                  </td>
+                  <td></td>
+                  <td>
+                    <span class="card-body" id="totalImporte">$ {{ number_format($totalContratistaImporteExtra, 2) }}</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <h4>I.V.A.</h4>
+                  </td>
+                  <td>
+                    <span class="card-body"  id="totalImporte">$ {{ number_format(($totalImporteExtra*0.16), 2) }}</span>
+                  </td>
+                  <td></td>
+                  <td>
+                    <span class="card-body"  id="totalImporte">$ {{ number_format(($totalContratistaImporteExtra*0.16), 2) }}</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <h4>TOTAL</h4>
+                  </td>
+                  <td>
+                    <span class="card-body" id="totalImporte">$ {{ number_format(($totalImporteExtra*1.16), 2) }}</span>
+                  </td>
+                  <td></td>
+                  <td>
+                    <span class="card-body" id="totalImporte">$ {{ number_format(($totalContratistaImporteExtra*1.16), 2) }}</span>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <div class="col-12">
+            <table class="table table-striped table-bordered table-extras" id="table-extras">
+              <thead>                              
+                <tr>
+                  <th rowspan="2" class="text-center col-id">NO</th>
+                  <th rowspan="2" class="col-concepto">CONCEPTO</th>
+                  <th rowspan="2" class="col-unidad">UNIDAD</th>
+                  <th rowspan="2" class="col-cantidad">CANTIDAD</th>
+                  <th colspan="2" class="text-center">{{$proyecto->constructora_proyecto}}</th>
+                  <th colspan="2" class="text-center">CONTRATISTA</th>
+                  <th class="col-pu"></th>
+                </tr>
+                <tr>
+                  <th class="col-importe">PU</th>
+                  <th class="col-importe">TOTAL</th>
+                  <th class="col-importe">PU</th>
+                  <th class="col-importe">TOTAL</th>
+                  <th class="col-pu"></th>
+                </tr>
+              </thead>
+              <tbody>   
+              @if ($insumos->count() > 0)  
+                @foreach ($insumos as $insumo)                              
+                <tr>
+                  <td class="text-center" data-order="{{$extra->id_extra}}">
+                    {{ $insumo->no_extra }}
+                  </td>
+                  <td>
+                    <div data-toggle="tooltip" title="{{ $conceptoExtra=$extra->concepto_extra}}">
+                      {{ substr($conceptoExtra,0,60) }}...
+                    </div>
+                  </td>
+                  <td class="text-center">
+                    {{ $insumo->unidad_extra }}
+                  </td>
+                  <td class="text-right">
+                    {{ number_format($insumo->cantidad_insumo,2) }}
+                  </td>
+                  <td class="text-right">
+                    ${{ number_format($insumo->pu_insumo,2) }}
+                  </td>
+                  <td class="text-right">
+                    ${{ number_format($insumo->cantidad_insumo*$insumo->pu_insumo,2) }}
+                  </td>
+                  <td class="text-right">
+                    ${{ number_format($insumo->pu_contratista_insumo,2) }}
+                  </td>
+                  <td class="text-right">
+                    ${{ number_format($insumo->cantidad_insumo*$insumo->pu_contratista_insumo,2) }}
+                  </td>
+                  <td class="text-center">
+                    @auth
+                      @if (Auth::user()->isAdmin())
+                      <div class="btn-group mb-1" role="group" aria-label="Basic example">
+                        <a class="btn btn-sm btn-info icon-left" href="{{ route('editar.extra', ['id_extra' => $extra->id_extra]) }}" title="Editar Extraordinario"><i class="fas fa-pen"></i></a> 
+                        <button class="btn btn-sm btn-danger"
+                                data-confirm="¿Realmente deseas eliminar el Extraordinario No: {{ $extra->no_extra }}?"
+                                data-confirm-yes="document.getElementById('delete-form-{{ $extra->id_extra }}-extra').submit();"
+                                title="Eliminar Extraordinario">
+                            <i class="fas fa-trash"></i>
+                        </button>
+
+                        <form id="delete-form-{{ $extra->id_extra }}-extra"
+                              action="{{ route('extra.destroy', $extra->id_extra) }}"
+                              method="POST"
+                              style="display: none;">
+                            @csrf
+                            @method('DELETE') 
+                        </form>
+                      </div>
+                      @endif
+                    @endauth
+                  </td>
+                </tr>
+                @endforeach 
+                @else
+                    <p>No hay extras disponibles.</p>
+                @endif
+              </tbody>
+            </table>
+          </div>  
         </div>
 
         <!--Contratistas-->
@@ -1150,20 +1289,36 @@
 
 
 <style>
-  .azul-claro{
-    background: #3abaf4;
+  
+  .azul-950{
+    background: #102741;
     border-radius: 10px 10px 0 0;
   } 
-
-  .azul-claro a:not(.active){
+  .azul-950 a:not(.active){
     color: #FFFFFF !important;
   }
 
-  .azul-oscuro{
-    background: #0050bfff;
+  .azul-800{
+    background: #164876;
     border-radius: 10px 10px 0 0;
   }
-  .azul-oscuro a:not(.active){
+  .azul-800 a:not(.active){
+    color: #FFFFFF !important;
+  }
+
+  .azul-600{
+    background: #1a69af;
+    border-radius: 10px 10px 0 0;
+  }
+  .azul-600 a:not(.active){
+    color: #FFFFFF !important;
+  }
+
+  .azul-400{
+    background: #4fa2e1;
+    border-radius: 10px 10px 0 0;
+  }
+  .azul-400 a:not(.active){
     color: #FFFFFF !important;
   }
 

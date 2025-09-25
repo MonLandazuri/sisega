@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Proyecto;
 use App\Models\Partida;
 use App\Models\Extra;
+use App\Models\Insumo;
 use App\Models\Ordenes;
 use App\Models\Contratista;
 use App\Models\OrdenesDetalles;
@@ -23,6 +24,7 @@ class PartidasController extends Controller
         //$proyecto = Proyecto::findOrFail($id_proyecto);
         $partidas = Partida::where('id_proyecto', $id_proyecto)->get();
         $extras = Extra::where('id_proyecto', $id_proyecto)->get();
+        $insumos = Insumo::where('id_proyecto', $id_proyecto)->get();
         $proyectos = Proyecto::where('id_proyecto', $id_proyecto)->get();
         $ordenes = Ordenes::where('id_proyecto', $id_proyecto)->get();
         $contratistas = Contratista::all();
@@ -173,8 +175,7 @@ class PartidasController extends Controller
         // Combinar los resultados y ordenar
         $acumulados = $partidasAcumuladas
             ->unionAll($extrasAcumulados)
-            ->get();
-                        
+            ->get();     
 
         // Calcular totales generales si los necesitas
         $totalGeneralProyecto = $acumulados->sum('importe_acumulado');
@@ -271,6 +272,7 @@ class PartidasController extends Controller
         compact('acumulados',
                 'partidas',
                 'extras',
+                'insumos',
                 'proyectos',
                 'ordenes',
                 'totalImporte',

@@ -53,6 +53,8 @@ Route::get('/editar-extra/{id_extra}', [PartidasController::class, 'editarExtra'
 Route::post('/guardar-editar-extra', [PartidasController::class, 'guardarEditarExtra'])->name('guardar.editarextra')->middleware('auth');
 Route::delete('/partidas/eliminar-extra/{extra}', [PartidasController::class, 'eliminarExtra'])->name('extra.destroy')->middleware('auth');
 
+Route::get('/partidas/nuevo-insumo/{id_proyecto}',[PartidasController::class, 'nuevoInsumo'])->name('nuevo.insumo')->middleware('auth');
+
 Route::get('/ordenes/{orden}/pdf', [PdfController::class, 'exportarPDF'])->name('ordenes.pdf');
 
 Route::post('/anticipos', [AnticipoController::class, 'store'])->name('anticipos.store');

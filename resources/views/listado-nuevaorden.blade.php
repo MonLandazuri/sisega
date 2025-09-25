@@ -120,7 +120,7 @@
                   <div class="form-group row align-items-center">
                     <label class="col-md-6 text-md-right text-left">Fecha OC</label>
                     <div class="col-lg-6  col-md-6">
-                      <input type="date" class="form-control" name="fecha_oc">
+                      <input type="date" class="form-control" name="fecha_oc" value="{{ now()->format('Y-m-d') }}">
                     </div>
                   </div>
                 </div>

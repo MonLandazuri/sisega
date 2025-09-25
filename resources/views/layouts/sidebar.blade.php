@@ -1,7 +1,7 @@
 <div class="main-sidebar sidebar-style-2">
         <aside id="sidebar-wrapper">
           <div class="sidebar-brand">
-            <a href="index.html"><img src="{{asset('img/logosisega.png')}}" width="150px"/></a>
+            <a href="index.html"><img id="logo_empresa" src="{{asset('img/SISEGA CONSTRUCCIONES.png')}}" width="150px"/></a>
           </div>
           <div class="sidebar-brand sidebar-brand-sm">
             <a href="index.html">S</a>

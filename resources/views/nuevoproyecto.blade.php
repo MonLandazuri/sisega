@@ -45,7 +45,7 @@
               <div class="form-group row align-items-center">
                 <label class="col-md-4 text-md-right text-left">Constructora</label>
                 <div class="col-lg-4 col-md-6">
-                  <select class="form-control" name="constructora_proyecto">
+                  <select class="form-control" name="constructora_proyecto" id="constructora_proyecto">
                     <option value="SISEGA CONSTRUCCIONES">SISEGA CONSTRUCCIONES</option>
                     <option value="URBANIZACIONES ANDALUZ">URBANIZACIONES ANDALUZ</option>
                   </select>
@@ -73,3 +73,26 @@
   </div>
 </section>
 @endsection()
+@section('scripts')
+<script>
+      document.addEventListener('DOMContentLoaded', function() {
+          // Obtenemos los elementos del DOM
+          const constructoraSelect = document.getElementById('constructora_proyecto');
+          const logoImagen = document.getElementById('logo_empresa');
+
+          // Escuchamos el evento 'change' en el select
+          constructoraSelect.addEventListener('change', function() {
+              // Obtenemos el valor (la URL del logo) de la opción seleccionada
+              const logoUrl = "./img/"+this.value+".png";
+
+              // Verificamos que no sea una opción vacía y actualizamos el 'src'
+              if (logoUrl) {
+                  logoImagen.src = logoUrl;
+              } else {
+                  // Si se selecciona la opción vacía, volvemos al logo por defecto
+                  logoImagen.src = "{{ asset('./img/sisega.png') }}";
+              }
+          });
+      });
+</script>
+@endsection
