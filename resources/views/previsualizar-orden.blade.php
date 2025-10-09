@@ -78,6 +78,16 @@
                     <input type="hidden" name="cantidades_extra[{{ $detalle->id_extra }}]" value="{{ $detalle->cantidad }}">
                     <input type="hidden" name="precios_extra[{{ $detalle->id_extra }}]" value="{{ $detalle->precio_unitario }}">
                 @endforeach
+                <div class="form-group">
+                  <label for="otro_campo">
+                      <input type="checkbox" 
+                            @if($iva=="on")
+                            checked="checked"
+                            @endif
+                            name="iva" 
+                            value="{{$iva}}"> Sin IVA
+                  </label>
+              </div>
                 <div class="text-center"><strong>COMENTARIO</strong></div><textarea class="form-control" name="comentario_orden"></textarea><br>
                 <!--<input type="hidden" name="id_orden" value="{{ $id_orden ?? '' }}">-->
                     

@@ -72,6 +72,7 @@ class OrdenDeCompraController extends Controller
         $fecha_oc = $request->input("fecha_oc");
         //$id_orden = $request->input("id_orden");
         $id_contratista = $request->input("id_contratista");
+        $iva = $request->input("iva");
 
         $cantidadesPartida = $request->input('cantidades_partida',[]);
         $preciosPartida = $request->input('pu_partida', []);
@@ -150,6 +151,7 @@ class OrdenDeCompraController extends Controller
             'id_proyecto' => $id_proyecto,
             'id_contratista' => $id_contratista,
             'fecha_oc'=>$fecha_oc,
+            'iva'=>$iva,
         ]);
     }
 
@@ -162,11 +164,16 @@ class OrdenDeCompraController extends Controller
         $cantidadesExtra=$request->input('cantidades_extra',[]);
         $comentario_orden=$request->input("comentario_orden");
         $id_contratista=$request->input("id_contratista");
+        if($request->input("iva")=="on")
+        $iva=FALSE;
+        else
+        $iva=TRUE;
 
         $ordenCompra = new Ordenes();
         $ordenCompra->id_proyecto = $request->input("id_proyecto");
         $ordenCompra->fecha_orden = $request->input("fecha_oc");
         $ordenCompra->id_contratista = $request->input("id_contratista");
+        $ordenCompra->iva = $iva;
         $ordenCompra->save();
         $id_orden=$ordenCompra->id_orden;
 
@@ -175,6 +182,168 @@ class OrdenDeCompraController extends Controller
         $ordenMod->comentario_orden=$comentario_orden;
 
         $ordenMod->save();
+        
+        foreach ($cantidadesPartida as $partidaId => $cantidad) {
+            // Solo procesa las cantidades si son mayores que 0 (o algún otro criterio)
+            if ($cantidad > 0) {
+
+                // Guarda el detalle de la orden
+                OrdenesDetalles::create([
+                    'id_orden' => $id_orden, // Usa el ID de la orden principal
+                    'id_partida' => $partidaId, // El ID de la partida viene de la clave del array
+                    'id_extra' => 0, // Esto es un detalle de partida, no de extra
+                    'cantidad_orden_detalle' => $cantidad,
+                    'iva' => $iva,
+                    // Otros campos de OrdenDetalle si tienes
+                ]);
+            }
+        }
+        foreach ($cantidadesExtra as $extraId => $cantidad) {
+            // Solo procesa las cantidades si son mayores que 0 (o algún otro criterio)
+            if ($cantidad > 0) {
+
+                // Guarda el detalle de la orden
+                OrdenesDetalles::create([
+                    'id_orden' => $id_orden, // Usa el ID de la orden principal
+                    'id_partida' => 0, // El ID de la partida viene de la clave del array
+                    'id_extra' => $extraId, // Esto es un detalle de partida, no de extra
+                    'cantidad_orden_detalle' => $cantidad,
+                    'iva' => $iva,
+                    // Otros campos de OrdenDetalle si tienes
+                ]);
+            }
+        }
+
+        $id_orden_detalle=$id_orden;
+
+        $partidas = Partida::where('id_proyecto', $id_proyecto)->get();
+        $extras = Extra::where('id_proyecto', $id_proyecto)->get();
+        //$ordenDetalleListado = OrdenesDetalles::where('id_orden', $id_orden)->get();
+
+        $detalles = DB::table('ordenes_detalles as od') // Alias 'od' para ordenes_detalle
+            ->select(
+                'od.*', // Selecciona todas las columnas de ordenes_detalle
+                'p.no_partida',
+                'p.id_partida',
+                'p.concepto_partida',
+                'p.unidad_partida',
+                'p.pu_partida',
+                'e.no_extra',
+                'e.id_extra',
+                'e.concepto_extra',
+                'e.unidad_extra',
+                'e.pu_extra'
+            )
+            ->leftJoin('partidas as p', function ($join) {
+                $join->on('od.id_partida', '=', 'p.id_partida')
+                     ->whereNotNull('od.id_partida'); // Solo une si partida_id no es nulo
+            })
+            ->leftJoin('extras as e', function ($join) {
+                $join->on('od.id_extra', '=', 'e.id_extra')
+                     ->whereNotNull('od.id_extra'); // Solo une si extra_id no es nulo
+            })
+            ->where('od.id_orden', $id_orden) // Filtra por la orden de compra específica
+            ->orderBy('p.no_partida','asc')
+            ->orderBy('e.no_extra','asc')
+            ->get();
+
+        return redirect()->route('proyecto.partidas', ["id_proyecto" => $id_proyecto, 'id_contratista' => $id_contratista])->with('success', 'Orden guardada exitosamente.');
+
+        //return view('partidas', compact("detalles","id_proyecto","partidas","extras"));         
+    }
+
+    public function revisionEditarOC($id_proyecto, $id_contratista, $id_orden)
+    {
+
+        // Obtener los detalles de la orden (partidas y extras)
+        $detallesDeLaOrden = $this->obtenerDetallesOrden($id_orden);
+        
+        // Obtener las partidas y extras disponibles para mostrar el catálogo completo
+        $partidasDisponibles = Partida::where('id_proyecto', $id_proyecto)->get();
+        $extrasDisponibles = Extra::where('id_proyecto', $id_proyecto)->get();
+
+        $cantidadesMapeadas = [
+            'partidas' => [],
+            'extras' => [],
+        ];
+
+        foreach ($detallesDeLaOrden as $detalle) {
+            if ($detalle->tipo === 'Partida') {
+                // La clave es el id_referencia (que es el id_partida)
+                $cantidadesMapeadas['partidas'][$detalle->id_referencia] = $detalle->cantidad;
+            } elseif ($detalle->tipo === 'Extra') {
+                // La clave es el id_referencia (que es el id_extra)
+                $cantidadesMapeadas['extras'][$detalle->id_referencia] = $detalle->cantidad;
+            }
+        }
+
+        return view('editar-orden', compact(
+            'id_proyecto',
+            'id_contratista',
+            'id_orden', 
+            'detallesDeLaOrden', 
+            'partidasDisponibles', 
+            'extrasDisponibles',
+            'cantidadesMapeadas',
+        ));
+    }
+
+    private function obtenerDetallesOrden($id_orden)
+    {
+        // Partidas
+        $partidasDeLaOrden = DB::table('ordenes_detalles as od')
+            ->select(
+                DB::raw("'Partida' AS tipo"),
+                'p.id_partida AS id_referencia',
+                'p.no_partida AS numero_referencia',
+                'p.concepto_partida AS concepto',
+                'p.unidad_partida AS unidad',
+                'p.pu_partida AS precio_unitario',
+                'od.cantidad_orden_detalle AS cantidad',
+                DB::raw('od.cantidad_orden_detalle * p.pu_partida AS subtotal')
+            )
+            ->join('partidas as p', 'od.id_partida', '=', 'p.id_partida')
+            ->where('od.id_orden', $id_orden)
+            ->whereNotNull('od.id_partida');
+
+        // Extras
+        $extrasDeLaOrden = DB::table('ordenes_detalles as od')
+            ->select(
+                DB::raw("'Extra' AS tipo"),
+                'e.id_extra AS id_referencia',
+                'e.no_extra AS numero_referencia',
+                'e.concepto_extra AS concepto',
+                'e.unidad_extra AS unidad',
+                'e.pu_extra AS precio_unitario',
+                'od.cantidad_orden_detalle AS cantidad',
+                DB::raw('od.cantidad_orden_detalle * e.pu_extra AS subtotal')
+            )
+            ->join('extras as e', 'od.id_extra', '=', 'e.id_extra')
+            ->where('od.id_orden', $id_orden)
+            ->whereNotNull('od.id_extra');
+
+        return $partidasDeLaOrden->unionAll($extrasDeLaOrden)->get();
+    }
+
+    public function agregarEditarOC(Request $request)
+    {
+
+        $id_proyecto=$request->input("id_proyecto");
+        $id_orden=$request->input("id_orden");
+        $cantidadesPartida=$request->input('cantidad_partida',[]);
+        $cantidadesExtra=$request->input('cantidad_extra',[]);
+        $comentario_orden=$request->input("comentario_orden");
+        $id_contratista=$request->input("id_contratista");
+
+        $ordenMod = Ordenes::find($id_orden);
+
+        $ordenMod->comentario_orden=$comentario_orden;
+
+        $ordenMod->save();
+
+        DB::table('ordenes_detalles')
+        ->where('id_orden', $id_orden)
+        ->delete();
         
         foreach ($cantidadesPartida as $partidaId => $cantidad) {
             // Solo procesa las cantidades si son mayores que 0 (o algún otro criterio)
@@ -204,8 +373,6 @@ class OrdenDeCompraController extends Controller
                 ]);
             }
         }
-
-        $id_orden_detalle=$id_orden;
 
         $partidas = Partida::where('id_proyecto', $id_proyecto)->get();
         $extras = Extra::where('id_proyecto', $id_proyecto)->get();

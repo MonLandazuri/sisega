@@ -141,6 +141,7 @@
                 </tfoot>-->
             </table>
             <input type="hidden" id="id_proyecto" name="id_proyecto" value="{{$id_proyecto}}">
+            <input type="hidden" id="id_sub" name="id_sub" value="{{$id_proyecto}}">
             <div class="form-group row align-items-center">
                 <label class="col-lg-6 text-md-right text-left">Porcentaje de Anticipo(%)</label>
                 <div class="col-lg-6  col-md-6">

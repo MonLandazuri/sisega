@@ -125,6 +125,16 @@
                   </div>
                 </div>
 
+                <div class="wizard-pane col-8"> 
+                  <div class="form-group row align-items-center col-6">
+                    <label class="custom-switch col-md-6 text-md-right text-left">
+                      <input type="checkbox" name="iva" id="iva" class="custom-switch-input">
+                      <span class="custom-switch-indicator"></span>
+                      <span class="custom-switch-description">SIN IVA</span>
+                    </label>
+                  </div>
+                </div>
+
                 <div class="col-12">
                   <ul class="nav nav-tabs" id="myTabOpc" role="tablist">
                     <li class="nav-item">
@@ -276,4 +286,22 @@
     width: 20% !important;
   }
 </style>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const ivaSwitch = document.getElementById('iva');
+
+        // Escuchamos el evento 'change' (cambio) en el checkbox
+        ivaSwitch.addEventListener('change', function() {
+            // Verificamos si el checkbox está marcado o no
+            if (this.checked) {
+                // El switch está ACTIVADO (SIN IVA)
+                alert('¡ADVERTENCIA! Has activado la opción SIN IVA.');
+            } else {
+                // El switch está DESACTIVADO (CON IVA)
+                alert('Opción SIN IVA desactivada. Se calculará el IVA.');
+            }
+        });
+    });
+</script>
 @endsection()
+

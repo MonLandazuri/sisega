@@ -111,6 +111,7 @@ class PartidasController extends Controller
                 ->get();
         }
         
+        //Calculo Acumulados
         $partidasAcumuladas = DB::table('ordenes_detalles as od')
             ->select(
                 DB::raw("'Partida' AS tipo_referencia"),
@@ -123,10 +124,11 @@ class PartidasController extends Controller
                 'p.pu_contratista_partida AS precio_unitario_contratista_base',
                 DB::raw('SUM(od.cantidad_orden_detalle) AS cantidad_acumulada'),
                 DB::raw('SUM(od.cantidad_orden_detalle * p.pu_partida) AS importe_acumulado'),
+                DB::raw('SUM(od.pu_final) AS importe_final'),
                 DB::raw('SUM(od.cantidad_orden_detalle * p.pu_contratista_partida) AS importe_contratista_acumulado')
+
             )
             ->join('partidas as p', 'od.id_partida', '=', 'p.id_partida')
-            // Filtra por órdenes de compra asociadas a este proyecto
             ->join('ordenes as oc', 'od.id_orden', '=', 'oc.id_orden')
             ->where('oc.id_proyecto', $id_proyecto)
             ->whereNotNull('od.id_partida')
@@ -141,7 +143,6 @@ class PartidasController extends Controller
             )
             ->orderBy('numero_referencia');
 
-        // Segunda parte: Acumulado de Extras
         $extrasAcumulados = DB::table('ordenes_detalles as od')
             ->select(
                 DB::raw("'Extra' AS tipo_referencia"),
@@ -154,10 +155,11 @@ class PartidasController extends Controller
                 'e.pu_contratista_extra AS precio_unitario_contratista_base',
                 DB::raw('SUM(od.cantidad_orden_detalle) AS cantidad_acumulada'),
                 DB::raw('SUM(od.cantidad_orden_detalle * e.pu_extra) AS importe_acumulado'),
-                DB::raw('SUM(od.cantidad_orden_detalle * e.pu_contratista_extra) AS importe_contratista_acumulado') // Asumo pu_contratista_extra
+                DB::raw('SUM(od.pu_final) AS importe_final'),
+                DB::raw('SUM(od.cantidad_orden_detalle * e.pu_contratista_extra) AS importe_contratista_acumulado')
+
             )
             ->join('extras as e', 'od.id_extra', '=', 'e.id_extra')
-            // Filtra por órdenes de compra asociadas a este proyecto
             ->join('ordenes as oc', 'od.id_orden', '=', 'oc.id_orden')
             ->where('oc.id_proyecto', $id_proyecto)
             ->whereNotNull('od.id_extra')
@@ -172,10 +174,10 @@ class PartidasController extends Controller
             )
             ->orderBy('numero_referencia');
 
-        // Combinar los resultados y ordenar
         $acumulados = $partidasAcumuladas
             ->unionAll($extrasAcumulados)
             ->get();     
+        //Fin Calculo Acumulados
 
         // Calcular totales generales si los necesitas
         $totalGeneralProyecto = $acumulados->sum('importe_acumulado');
@@ -206,7 +208,7 @@ class PartidasController extends Controller
         ]);*/
 
         
-        // Primera parte: Sumatoria de elementos del Catálogo Principal
+        /* ANTERIOR SUBLISTADO
         $catalogoAcumulado = DB::table('sublistados_contratistas as sc')
             ->select(
                 DB::raw("'Partida' AS tipo_referencia"),
@@ -266,7 +268,72 @@ class PartidasController extends Controller
         $sublistadoAcumulado = $catalogoAcumulado
             ->unionAll($extraordinarioAcumulado)
             ->get();
+        */
+            
+        // Primera parte: Sumatoria de elementos del Catálogo Principal
+        $catalogoAcumulado = DB::table('sublistados_contratistas as sc')
+            ->select(
+                DB::raw("'Partida' AS tipo_referencia"),
+                'sc.id_contratista',
+                'sc.id_sub', // <--- NUEVO: Selecciona el ID del sublistado
+                'p.id_partida AS id_referencia',
+                'p.no_partida AS no_referencia',
+                'p.concepto_partida AS concepto_referencia',
+                'p.unidad_partida AS unidad_referencia',
+                'p.cantidad_partida AS cantidad_referencia',
+                'p.pu_partida AS pu_base', 
+                'p.pu_contratista_partida AS pu_contratista_base', 
+                DB::raw('SUM(sc.cantidad) AS cantidad_acumulada'),
+                DB::raw('SUM(sc.cantidad * sc.monto) AS importe_acumulado')
+            )
+            ->join('partidas as p', 'sc.id_partida', '=', 'p.id_partida')
+            ->where('sc.id_proyecto', $id_proyecto)
+            ->groupBy(
+                'sc.id_contratista',
+                'sc.id_sub', // <--- NUEVO: Agrupa por ID del sublistado
+                'p.id_partida',
+                'p.no_partida',
+                'p.concepto_partida',
+                'p.unidad_partida',
+                'p.cantidad_partida',
+                'p.pu_partida',
+                'p.pu_contratista_partida'
+            );
 
+        // Segunda parte: Sumatoria de elementos Extraordinarios
+        $extraordinarioAcumulado = DB::table('sublistados_contratistas as sc')
+            ->select(
+                DB::raw("'Extra' AS tipo_referencia"),
+                'sc.id_contratista',
+                'sc.id_sub', // <--- NUEVO: Selecciona el ID del sublistado
+                'e.id_extra AS id_referencia',
+                'e.no_extra AS no_referencia',
+                'e.concepto_extra AS concepto_referencia',
+                'e.unidad_extra AS unidad_referencia',
+                'e.cantidad_extra AS cantidad_referencia',
+                'e.pu_extra AS pu_base',
+                'e.pu_contratista_extra AS pu_contratista_base',
+                DB::raw('SUM(sc.cantidad) AS cantidad_acumulada'),
+                DB::raw('SUM(sc.cantidad * sc.monto) AS importe_acumulado')
+            )
+            ->join('extras as e', 'sc.id_extra', '=', 'e.id_extra')
+            ->where('sc.id_proyecto', $id_proyecto)
+            ->groupBy(
+                'sc.id_contratista',
+                'sc.id_sub', // <--- NUEVO: Agrupa por ID del sublistado
+                'e.id_extra',
+                'e.no_extra',
+                'e.concepto_extra',
+                'e.unidad_extra',
+                'e.cantidad_extra',
+                'e.pu_extra',
+                'e.pu_contratista_extra'
+            );
+
+        // Combinar los resultados de ambos catálogos
+        $sublistadoAcumulado = $catalogoAcumulado
+            ->unionAll($extraordinarioAcumulado)
+            ->get();
 
         return view('partidas', 
         compact('acumulados',
@@ -367,7 +434,7 @@ class PartidasController extends Controller
 
         $id_proyecto=$request->input("id_proyecto");
         
-        return redirect()->route('proyecto.partidas',['id_proyecto' => $id_proyecto])->with('success', 'Partida creada exitosamente.');
+        return redirect()->route('proyecto.partidas',['id_proyecto' => $id_proyecto])->with('success', 'Partida editada exitosamente.');
     }
 
     public function eliminarPartida(Partida $partida)
@@ -428,7 +495,7 @@ class PartidasController extends Controller
 
         $id_proyecto=$request->input("id_proyecto");
         
-        return redirect()->route('proyecto.partidas',['id_proyecto' => $id_proyecto])->with('success', 'Partida creada exitosamente.');
+        return redirect()->route('proyecto.partidas',['id_proyecto' => $id_proyecto])->with('success', 'Extraordinario creada exitosamente.');
     }
 
     public function guardarEditarExtra(Request $request)
@@ -460,7 +527,7 @@ class PartidasController extends Controller
 
         $id_proyecto=$request->input("id_proyecto");
         
-        return redirect()->route('proyecto.partidas',['id_proyecto' => $id_proyecto])->with('success', 'Extraordinario creado exitosamente.');
+        return redirect()->route('proyecto.partidas',['id_proyecto' => $id_proyecto])->with('success', 'Extraordinario editado exitosamente.');
     }
 
     public function eliminarExtra(Extra $extra)
@@ -474,5 +541,90 @@ class PartidasController extends Controller
 
         return redirect()->route('proyecto.partidas', ['id_proyecto' => $id_proyecto])
                          ->with('success', 'Extraordinario eliminado exitosamente.');
+    }
+
+    //---INSUMOS
+
+    public function nuevoInsumo($id_proyecto){
+        
+        return view('nuevoinsumo',[
+                'id_proyecto'=>$id_proyecto,
+        ]);
+    }
+
+    public function editarInsumo($id_extra){
+        
+        $extra = Insumo::find($id_extra);
+
+        return view('editarinsumo',[
+                'id_insumo'=>$id_extra,
+                'insumo'=>$extra,
+        ]);
+    }
+
+    
+    public function guardarNuevoInsumo(Request $request)
+    {
+        $request->validate([
+            'no_insumo' => 'required|string|max:255',
+            'concepto_insumo' => 'required|string|max:500',
+            'unidad_insumo' => 'required|string|max:255',
+            'cantidad_insumo' => 'required|numeric',
+            'zonadeuso_insumo' => 'required|string|max:255',
+            'id_proyecto' => 'required|exists:proyectos,id_proyecto',
+        ]);
+        
+        $nuevoInsumo = new Insumo();
+        
+        $nuevoInsumo->id_proyecto=$request->input("id_proyecto");
+        $nuevoInsumo->no_insumo=$request->input("no_insumo");
+        $nuevoInsumo->concepto_insumo=$request->input("concepto_insumo");
+        $nuevoInsumo->unidad_insumo=$request->input("unidad_insumo");
+        $nuevoInsumo->cantidad_insumo=$request->input("cantidad_insumo");
+        $nuevoInsumo->zonadeuso_insumo=$request->input("zonadeuso_insumo");
+
+        $nuevoInsumo->save();
+
+        $id_proyecto=$request->input("id_proyecto");
+        
+        return redirect()->route('proyecto.partidas',['id_proyecto' => $id_proyecto])->with('success', 'Insumo creada exitosamente.');
+    }
+
+    public function guardarEditarInsumo(Request $request)
+    {
+        $request->validate([
+            'no_insumo' => 'required|string|max:255',
+            'concepto_insumo' => 'required|string|max:500',
+            'unidad_insumo' => 'required|string|max:255',
+            'cantidad_insumo' => 'required|numeric',
+            'zonadeuso_insumo' => 'required|string|max:255',
+            'id_proyecto' => 'required|exists:proyectos,id_proyecto',
+        ]);
+        
+        $id_insumo=$request->input("id_insumo");
+
+        $insumo = Insumo::find($id_insumo);
+        
+        $insumo->id_proyecto=$request->input("id_proyecto");
+        $insumo->no_insumo=$request->input("no_insumo");
+        $insumo->concepto_insumo=$request->input("concepto_insumo");
+        $insumo->unidad_insumo=$request->input("unidad_insumo");
+        $insumo->cantidad_insumo=$request->input("cantidad_insumo");
+        $insumo->zonadeuso_insumo=$request->input("zonadeuso_insumo");
+
+        $insumo->save();
+
+        $id_proyecto=$request->input("id_proyecto");
+        
+        return redirect()->route('proyecto.partidas',['id_proyecto' => $id_proyecto])->with('success', 'Insumo editado exitosamente.');
+    }
+
+    public function eliminarInsumo(Insumo $insumo)
+    {
+        $id_proyecto = $insumo->id_proyecto;
+        $insumo->delete(); 
+
+        return redirect()->route('proyecto.partidas', ['id_proyecto' => $id_proyecto])
+                         ->with('success', 'Insumo eliminado exitosamente.');
     }
 }

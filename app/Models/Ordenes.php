@@ -16,6 +16,7 @@ class Ordenes extends Model
         'id_proyecto', 
         'fecha_orden', 
         'id_contratista', 
+        'iva',
     ];
 
     protected $casts = [

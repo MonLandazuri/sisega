@@ -12,21 +12,21 @@ class UsuariosController extends Controller
 {
     public function index(): View
     {
-        return view('usuarios');
+        return view('usuarios.mostrar');
     }
 
     public function mostrarUsuarios()
     {
         $usuarios = User::all();
         
-        return view('usuarios', [
+        return view('usuarios.mostrar', [
             'usuarios' => $usuarios,
         ]);
     }
 
     public function create()
     {
-        return view('users-create');
+        return view('usuarios.crear');
     }
 
     public function store(Request $request)
@@ -51,6 +51,6 @@ class UsuariosController extends Controller
             'is_admin' => $isAdmin,
         ]);
 
-        return redirect()->route('usuarios')->with('success', 'Usuario creado con éxito.');
+        return redirect()->route('usuarios.mostrar')->with('success', 'Usuario creado con éxito.');
     }
 }

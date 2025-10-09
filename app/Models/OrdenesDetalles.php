@@ -15,5 +15,6 @@ class OrdenesDetalles extends Model
         'id_partida', 
         'id_extra', 
         'cantidad_orden_detalle', 
+        'iva', 
     ];
 }

@@ -17,7 +17,7 @@ class Insumo extends Model
         'unidad_insumo', 
         'cantidad_insumo', 
         'pu_insumo', 
-        'pu_contratista_insumo', 
+        'zonadeuso_insumo', 
         'id_proyecto',
         // ... otros campos ...
     ];

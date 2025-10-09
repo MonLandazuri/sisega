@@ -13,11 +13,11 @@ class ContratistasController extends Controller
 {
     public function index(): View
     {
-        return view('contratistas');   //carga la vista dashboard.blade.php
+        return view('contratistas.mostrar'); 
     }
 
     public function nuevoContratista(){
-        return view('nuevocontratista');
+        return view('contratistas.nuevo');
     }
 
     public function guardarNuevoContratista(Request $request)
@@ -42,7 +42,7 @@ class ContratistasController extends Controller
 
         $nuevoContratista->save();
 
-        return redirect()->route('contratistas')->with('success', 'Contratista creado exitosamente.');
+        return redirect()->route('contratistas.mostrar')->with('success', 'Contratista creado exitosamente.');
         // Redirigir a la página de detalles del proyecto recién creado:
         // return redirect()->route('proyectos.show', ['proyecto' => $nuevoProyecto->id])->with('success', 'Proyecto creado exitosamente.');
     
@@ -53,7 +53,7 @@ class ContratistasController extends Controller
         $contratistas = Contratista::all();
         $totalContratistas = Contratista::count();
 
-        return view('contratistas', [
+        return view('contratistas.mostrar', [
             'contratistas' => $contratistas,
             'totalContratistas'=>$totalContratistas,
         ]);
@@ -64,7 +64,7 @@ class ContratistasController extends Controller
         $contratista = Contratista::where('id_contratista',$id_contratista)->get();
         $contratistaArchivos = ContratistaArchivo::where('contratista_id',$id_contratista)->get();
 
-        return view('info-contratista', [
+        return view('contratistas.info', [
             'contratista' => $contratista,
             'contratistaArchivos' => $contratistaArchivos,
         ]);

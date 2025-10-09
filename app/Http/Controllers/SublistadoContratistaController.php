@@ -16,12 +16,12 @@ class SublistadoContratistaController extends Controller
         // Carga el sublistado actual del contratista para mostrarlo en la tabla.
         //$contratista->load('sublistados');
 
-        $contratistasConSublistado = SublistadoContratista::where('id_proyecto', $id_proyecto)
+        /*$contratistasConSublistado = SublistadoContratista::where('id_proyecto', $id_proyecto)
                                                       ->pluck('id_contratista')
-                                                      ->unique();
+                                                      ->unique();*/
 
         // Obtén la lista de contratistas, excluyendo aquellos con un sublistado.
-        $contratistas = Contratista::whereNotIn('id_contratista', $contratistasConSublistado)->get();
+        $contratistas = Contratista::all();
     
         // Obtiene todos los elementos de los catálogos para que el usuario pueda seleccionarlos.
         //$contratistas = Contratista::all();
@@ -49,11 +49,18 @@ class SublistadoContratistaController extends Controller
 
         // Itera sobre los elementos enviados y los crea en la base de datos.
 
+            $ultimoIdSublistado = SublistadoContratista::where('id_contratista', $request->id_contratista)
+            ->where('id_proyecto', $request->id_proyecto)
+            ->latest('id_sub') // Ordena por el ID de forma descendente (el más reciente es el más grande)
+            ->value('id_sub'); // Solo trae el valor de la columna 'id'
+
         foreach ($request->items as $item) {
+
             $data = [
                 'id_contratista' => $request->id_contratista,
                 'id_proyecto' => $request->id_proyecto,
                 'cantidad' => $item['cantidad'],
+                'id_sub' => $ultimoIdSublistado+1,
                 //'monto' => $item['monto'],
             ];
 
@@ -67,12 +74,14 @@ class SublistadoContratistaController extends Controller
             SublistadoContratista::create($data);
 
         }
-            
-        Anticipo::create([
-            'id_proyecto' => $request->id_proyecto,
-            'id_contratista' => $request->id_contratista,
-            'porcentaje' => $request->anticipo,
-        ]);
+
+        if($request->anticipo){
+            Anticipo::create([
+                'id_proyecto' => $request->id_proyecto,
+                'id_contratista' => $request->id_contratista,
+                'porcentaje' => $request->anticipo,
+            ]);
+        }
 
         return redirect()->route('proyecto.partidas', ["id_proyecto" => $request->id_proyecto])->with('success', 'Sublistado guardado exitosamente.');
         //return redirect()->route('sublistado.show', $contratista)->with('success', 'Sublistado guardado con éxito.');

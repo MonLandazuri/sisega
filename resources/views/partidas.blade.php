@@ -403,6 +403,7 @@
                     @php
                     $totalAcumuladoImporte=0;
                     $totalAcumuladoDiferencia=0;
+                    $totalAcumuladoIVA=0;
                     @endphp
                       @foreach($acumulados as $item)
                           <tr>
@@ -438,11 +439,13 @@
                               </td>
                               <td style="display: none">$ {{ number_format($item->precio_unitario_contratista_base, 2) }}</td>
                               <td style="display: none">$ {{ number_format($item->importe_contratista_acumulado, 2) }}</td>
+                              <td style="display: none">{{$item->importe_final}}</td>
                               @php
                               $totalAcumuladoImporte+=($item->cantidad_referencia*$item->precio_unitario_base);
                               $totalAcumuladoDiferencia+=($item->cantidad_referencia*$item->precio_unitario_base) - ($item->cantidad_acumulada*$item->precio_unitario_base);
                               @endphp
                           </tr>
+                    </tr>
                       @endforeach
                   </tbody>
                   <tfoot>
@@ -485,70 +488,17 @@
             <div class="col-6 d-flex align-items-center justify-content-center btn-group" role="group">
               <a href="{{ route('nuevo.insumo', ['id_proyecto' => $id_proyecto]) }}" class="btn btn-danger btn-lg icon-left" title="Nuevo Insumo"><i class="fas fa-plus"></i> NUEVO ELEMENTO</a> 
             </div>
-            <div class="col-6 justify-content-end">
-              <table class="table table-striped">
-                <tr>
-                  <th></th>
-                  <th class="text-center">{{$proyecto->constructora_proyecto}}</th>
-                  <th></th>
-                  <th class="text-center">CONTRATISTA</th>
-                </tr>
-                <tr>
-                  <td>
-                    <h4>SUBTOTAL</h4>
-                  </td>
-                  <td>
-                    <span class="card-body"  id="totalImporte">$ {{ number_format($totalImporteExtra, 2) }}</span>
-                  </td>
-                  <td></td>
-                  <td>
-                    <span class="card-body" id="totalImporte">$ {{ number_format($totalContratistaImporteExtra, 2) }}</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <h4>I.V.A.</h4>
-                  </td>
-                  <td>
-                    <span class="card-body"  id="totalImporte">$ {{ number_format(($totalImporteExtra*0.16), 2) }}</span>
-                  </td>
-                  <td></td>
-                  <td>
-                    <span class="card-body"  id="totalImporte">$ {{ number_format(($totalContratistaImporteExtra*0.16), 2) }}</span>
-                  </td>
-                </tr>
-                <tr>
-                  <td>
-                    <h4>TOTAL</h4>
-                  </td>
-                  <td>
-                    <span class="card-body" id="totalImporte">$ {{ number_format(($totalImporteExtra*1.16), 2) }}</span>
-                  </td>
-                  <td></td>
-                  <td>
-                    <span class="card-body" id="totalImporte">$ {{ number_format(($totalContratistaImporteExtra*1.16), 2) }}</span>
-                  </td>
-                </tr>
-              </table>
-            </div>
           </div>
+          <br>
           <div class="col-12">
-            <table class="table table-striped table-bordered table-extras" id="table-extras">
+            <table class="table table-striped table-bordered table-insumos" id="table-insumos">
               <thead>                              
                 <tr>
-                  <th rowspan="2" class="text-center col-id">NO</th>
-                  <th rowspan="2" class="col-concepto">CONCEPTO</th>
-                  <th rowspan="2" class="col-unidad">UNIDAD</th>
-                  <th rowspan="2" class="col-cantidad">CANTIDAD</th>
-                  <th colspan="2" class="text-center">{{$proyecto->constructora_proyecto}}</th>
-                  <th colspan="2" class="text-center">CONTRATISTA</th>
-                  <th class="col-pu"></th>
-                </tr>
-                <tr>
-                  <th class="col-importe">PU</th>
-                  <th class="col-importe">TOTAL</th>
-                  <th class="col-importe">PU</th>
-                  <th class="col-importe">TOTAL</th>
+                  <th class="text-center col-id">NO</th>
+                  <th class="col-concepto">CONCEPTO</th>
+                  <th class="col-unidad">UNIDAD</th>
+                  <th class="col-cantidad">CANTIDAD</th>
+                  <th class="col-importe">ZONA DE USO</th>
                   <th class="col-pu"></th>
                 </tr>
               </thead>
@@ -556,46 +506,37 @@
               @if ($insumos->count() > 0)  
                 @foreach ($insumos as $insumo)                              
                 <tr>
-                  <td class="text-center" data-order="{{$extra->id_extra}}">
-                    {{ $insumo->no_extra }}
+                  <td class="text-center" data-order="{{$insumo->id_insumo}}">
+                    {{ $insumo->no_insumo }}
                   </td>
                   <td>
-                    <div data-toggle="tooltip" title="{{ $conceptoExtra=$extra->concepto_extra}}">
-                      {{ substr($conceptoExtra,0,60) }}...
+                    <div data-toggle="tooltip" title="{{ $conceptoInsumo=$insumo->concepto_insumo}}">
+                      {{ substr($conceptoInsumo,0,60) }}...
                     </div>
                   </td>
                   <td class="text-center">
-                    {{ $insumo->unidad_extra }}
+                    {{ $insumo->unidad_insumo }}
                   </td>
                   <td class="text-right">
                     {{ number_format($insumo->cantidad_insumo,2) }}
                   </td>
-                  <td class="text-right">
-                    ${{ number_format($insumo->pu_insumo,2) }}
-                  </td>
-                  <td class="text-right">
-                    ${{ number_format($insumo->cantidad_insumo*$insumo->pu_insumo,2) }}
-                  </td>
-                  <td class="text-right">
-                    ${{ number_format($insumo->pu_contratista_insumo,2) }}
-                  </td>
-                  <td class="text-right">
-                    ${{ number_format($insumo->cantidad_insumo*$insumo->pu_contratista_insumo,2) }}
+                  <td class="text-center">
+                    {{ $insumo->zonadeuso_insumo }}
                   </td>
                   <td class="text-center">
                     @auth
                       @if (Auth::user()->isAdmin())
                       <div class="btn-group mb-1" role="group" aria-label="Basic example">
-                        <a class="btn btn-sm btn-info icon-left" href="{{ route('editar.extra', ['id_extra' => $extra->id_extra]) }}" title="Editar Extraordinario"><i class="fas fa-pen"></i></a> 
+                        <a class="btn btn-sm btn-info icon-left" href="{{ route('editar.insumo', ['id_insumo' => $insumo->id_insumo]) }}" title="Editar Insumo"><i class="fas fa-pen"></i></a> 
                         <button class="btn btn-sm btn-danger"
-                                data-confirm="¿Realmente deseas eliminar el Extraordinario No: {{ $extra->no_extra }}?"
-                                data-confirm-yes="document.getElementById('delete-form-{{ $extra->id_extra }}-extra').submit();"
-                                title="Eliminar Extraordinario">
+                                data-confirm="¿Realmente deseas eliminar el Insumo No: {{ $insumo->no_insumo }}?"
+                                data-confirm-yes="document.getElementById('delete-form-{{ $insumo->id_insumo }}-insumo').submit();"
+                                title="Eliminar Insumo">
                             <i class="fas fa-trash"></i>
                         </button>
 
-                        <form id="delete-form-{{ $extra->id_extra }}-extra"
-                              action="{{ route('extra.destroy', $extra->id_extra) }}"
+                        <form id="delete-form-{{ $insumo->id_insumo }}-insumo"
+                              action="{{ route('insumo.destroy', $insumo->id_insumo) }}"
                               method="POST"
                               style="display: none;">
                             @csrf
@@ -608,7 +549,7 @@
                 </tr>
                 @endforeach 
                 @else
-                    <p>No hay extras disponibles.</p>
+                    <p>No hay insumos disponibles.</p>
                 @endif
               </tbody>
             </table>
@@ -708,6 +649,7 @@
                         </tr>
                       </table>
                     </div>
+                    <!-- ANTERIOR SUBLISTADO
                     @php
                     $sublistadoContratista = $sublistadoAcumulado->filter(function ($item) use ($contratista) {
                         // Asegúrate de que tu consulta de DB::raw incluya el 'sc.contratista_id'
@@ -719,7 +661,6 @@
                       <h4>CATÁLOGO</h4>
                     </div>
                     <div class="accordion-body collapse" id="panel-catalogo-{{$contratista->id_contratista}}" data-parent="#accordion" style="">
-                    <!--<div class="tab-pane fade" id="profile4" role="tabpanel" aria-labelledby="profile-tab4">-->
                       @php
                         $sumaSublistadoPu=0;
                         $sumaSublistadoPuContratista=0;
@@ -800,6 +741,105 @@
                         </tfoot>
                       </table>
                       @endif
+                    </div>
+                    ANTERIOR SUBLISTADO-->
+                    @php
+                        // 1. Filtrar por Contratista (como ya lo tienes)
+                        $sublistadoContratista = $sublistadoAcumulado->filter(function ($item) use ($contratista) {
+                            return $item->id_contratista === $contratista->id_contratista;
+                        }); 
+                        
+                        // 2. AGRUPAR LA COLECCIÓN FILTRADA POR id_sub
+                        $sublistadosPorGrupo = $sublistadoContratista->groupBy('id_sub');
+                    @endphp
+
+                    {{-- El resto de tu div de acordeón... --}}
+                    <div class="accordion-header bg-dark" role="button" data-toggle="collapse" data-target="#panel-catalogo-{{$contratista->id_contratista}}" aria-expanded="true">
+                        <h4>CATÁLOGOS</h4>
+                    </div>
+
+                    <div class="accordion-body collapse" id="panel-catalogo-{{$contratista->id_contratista}}" data-parent="#accordion" style="">
+
+                        @if($sublistadosPorGrupo->isEmpty())
+                            <p>Este contratista no tiene elementos en su sublistado.</p>
+                        @else
+                            @foreach ($sublistadosPorGrupo as $idSub => $grupoDeElementos)
+                                <h5 class="mt-4 mb-2">CATALOGO: {{ $idSub }}</h5>
+                                
+                                {{-- Resetear las sumas para CADA SUBLISTADO --}}
+                                @php
+                                    $sumaSublistadoTotal=0;
+                                    $sumaSublistadoTotalContratista=0;
+                                @endphp
+                                
+                                <table class="table contratistas table-bordered table-striped mb-5">
+                                    <thead>
+                                        <tr>
+                                            <th>No.</th>
+                                            <th>CONCEPTO</th>
+                                            <th>UNIDAD</th>
+                                            <th>CANTIDAD</th>
+                                            <th>PU</th>
+                                            <th>PU CONTRATISTA</th>
+                                            <th>TOTAL</th>
+                                            <th>TOTAL CONTRATISTA</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {{-- 4. ITERAR SOBRE LOS ELEMENTOS DENTRO DEL GRUPO --}}
+                                        @foreach ($grupoDeElementos as $sublistado)
+                                            <tr>
+                                                <td>{{$sublistado->no_referencia}}</td>
+                                                <td>
+                                                    {{-- NOTA: La variable $item aquí no está definida. Usar $sublistado --}}
+                                                    <div data-toggle="tooltip" title="{{ $sublistado->concepto_referencia }}"> 
+                                                        {{substr($sublistado->concepto_referencia,0,60)}}
+                                                    </div>
+                                                </td>
+                                                <td>{{$sublistado->unidad_referencia}}</td>
+                                                <td>{{number_format($sublistado->cantidad_acumulada,2)}}</td>
+                                                <td>$ {{number_format($sublistado->pu_base,2)}}</td>
+                                                <td>$ {{number_format($sublistado->pu_contratista_base,2)}}</td>
+                                                <td>
+                                                    @php
+                                                        $totalBase = $sublistado->cantidad_acumulada * $sublistado->pu_base;
+                                                        $sumaSublistadoTotal += $totalBase;
+                                                    @endphp
+                                                    $ {{number_format($totalBase,2)}}
+                                                </td>
+                                                <td>
+                                                    @php
+                                                        $totalContratista = $sublistado->cantidad_acumulada * $sublistado->pu_contratista_base;
+                                                        $sumaSublistadoTotalContratista += $totalContratista;
+                                                    @endphp
+                                                    $ {{number_format($totalContratista,2)}}
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="5"></td>
+                                            <th>SUBTOTAL</th>
+                                            <td>$ {{number_format($sumaSublistadoTotal,2)}}</td>
+                                            <td>$ {{number_format($sumaSublistadoTotalContratista,2)}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="5"></td>
+                                            <th>IVA</th>
+                                            <td>$ {{number_format($sumaSublistadoTotal*0.16,2)}}</td>
+                                            <td>$ {{number_format($sumaSublistadoTotalContratista*0.16,2)}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="5"></td>
+                                            <th>TOTAL</th>
+                                            <td>$ {{number_format($sumaSublistadoTotal*1.16,2)}}</td>
+                                            <td>$ {{number_format($sumaSublistadoTotalContratista*1.16,2)}}</td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            @endforeach {{-- Fin del bucle de grupos (id_sub) --}}
+                        @endif
                     </div>
                     <div class="accordion-header bg-dark" role="button" data-toggle="collapse" data-target="#panel-ordenes-{{$contratista->id_contratista}}" aria-expanded="true">
                       <h4>ORDENES</h4>
@@ -992,15 +1032,20 @@
                             <td></td>
                             @endif
                             <td>
-                              <button type="button" class="btn btn-sm btn-info view-details-btn"
-                                      data-toggle="modal" data-target="#ocDetailsModal"
-                                      data-id="{{ $idDeOrden }}"
-                                      title="Ver Detalles de la Orden">
-                                  <i class="fas fa-eye"></i> DETALLES
-                              </button>
-                              <a href="{{ route('ordenes.pdf', $idDeOrden) }}" class="btn btn-danger btn-sm">
-                                  <i class="fas fa-file-pdf"></i> PDF
-                              </a>
+                              <div class="col-4 align-items-cente btn-group" role="group">
+                                <a href="{{ route('revision.editaroc', [$id_proyecto,$contratista->id_contratista,$idDeOrden]) }}" class="btn btn-warning btn-sm">
+                                    <i class="fas fa-edit"></i> EDITAR
+                                </a>
+                                <button type="button" class="btn btn-sm btn-info view-details-btn"
+                                        data-toggle="modal" data-target="#ocDetailsModal"
+                                        data-id="{{ $idDeOrden }}"
+                                        title="Ver Detalles de la Orden">
+                                    <i class="fas fa-eye"></i> DETALLES
+                                </button>
+                                <a href="{{ route('ordenes.pdf', $idDeOrden) }}" class="btn btn-danger btn-sm">
+                                    <i class="fas fa-file-pdf"></i> PDF
+                                </a>
+                              </div>
                             </td>
                           </tr>
                           @endforeach

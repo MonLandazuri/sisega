@@ -46,6 +46,8 @@ Route::post('/guardar-nuevo-partida', [PartidasController::class, 'guardarNuevoP
 Route::get('/editar-partida/{id_partida}',[PartidasController::class, 'editarPartida'])->name('editar.partida')->middleware('auth');
 Route::post('/guardar-editar-partida', [PartidasController::class, 'guardarEditarPartida'])->name('guardar.editarpartida')->middleware('auth');
 Route::delete('/partidas/eliminar-partida/{partida}', [PartidasController::class, 'eliminarPartida'])->name('partidas.destroy')->middleware('auth');
+Route::get('/partidas/editar-orden/{id_proyecto}/{id_contratista}/{id_orden}',[OrdenDeCompraController::class, 'revisionEditarOC'])->name('revision.editaroc')->middleware('auth');
+Route::post('/partidas/agregar-editar-oc/',[OrdenDeCompraController::class, 'agregarEditarOC'])->name('agregar.editaroc')->middleware('auth');
 
 Route::get('/partidas/nuevo-extra/{id_proyecto}',[PartidasController::class, 'nuevoExtra'])->name('nuevo.extra')->middleware('auth');
 Route::post('/guardar-nuevo-extra', [PartidasController::class, 'guardarNuevoExtra'])->name('guardar.nuevoextra')->middleware('auth');
@@ -54,6 +56,10 @@ Route::post('/guardar-editar-extra', [PartidasController::class, 'guardarEditarE
 Route::delete('/partidas/eliminar-extra/{extra}', [PartidasController::class, 'eliminarExtra'])->name('extra.destroy')->middleware('auth');
 
 Route::get('/partidas/nuevo-insumo/{id_proyecto}',[PartidasController::class, 'nuevoInsumo'])->name('nuevo.insumo')->middleware('auth');
+Route::post('/guardar-nuevo-insumo', [PartidasController::class, 'guardarNuevoInsumo'])->name('guardar.nuevoinsumo')->middleware('auth');
+Route::get('/editar-insumo/{id_insumo}', [PartidasController::class, 'editarInsumo'])->name('editar.insumo')->middleware('auth');
+Route::post('/guardar-editar-insumo', [PartidasController::class, 'guardarEditarInsumo'])->name('guardar.editarinsumo')->middleware('auth');
+Route::delete('/partidas/eliminar-insumo/{insumo}', [PartidasController::class, 'eliminarInsumo'])->name('insumo.destroy')->middleware('auth');
 
 Route::get('/ordenes/{orden}/pdf', [PdfController::class, 'exportarPDF'])->name('ordenes.pdf');
 

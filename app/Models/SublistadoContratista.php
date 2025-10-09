@@ -16,6 +16,7 @@ class SublistadoContratista extends Model
         'id_proyecto', 
         'id_partida', 
         'id_extra', 
+        'id_sub',
         'cantidad', 
         'monto'
     ];
