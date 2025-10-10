@@ -275,7 +275,8 @@ class PartidasController extends Controller
             ->select(
                 DB::raw("'Partida' AS tipo_referencia"),
                 'sc.id_contratista',
-                'sc.id_sub', // <--- NUEVO: Selecciona el ID del sublistado
+                'sc.id_sub', 
+                'sc.iva',
                 'p.id_partida AS id_referencia',
                 'p.no_partida AS no_referencia',
                 'p.concepto_partida AS concepto_referencia',
@@ -290,7 +291,8 @@ class PartidasController extends Controller
             ->where('sc.id_proyecto', $id_proyecto)
             ->groupBy(
                 'sc.id_contratista',
-                'sc.id_sub', // <--- NUEVO: Agrupa por ID del sublistado
+                'sc.id_sub',
+                'sc.iva',
                 'p.id_partida',
                 'p.no_partida',
                 'p.concepto_partida',
@@ -305,7 +307,8 @@ class PartidasController extends Controller
             ->select(
                 DB::raw("'Extra' AS tipo_referencia"),
                 'sc.id_contratista',
-                'sc.id_sub', // <--- NUEVO: Selecciona el ID del sublistado
+                'sc.id_sub',
+                'sc.iva',
                 'e.id_extra AS id_referencia',
                 'e.no_extra AS no_referencia',
                 'e.concepto_extra AS concepto_referencia',
@@ -320,7 +323,8 @@ class PartidasController extends Controller
             ->where('sc.id_proyecto', $id_proyecto)
             ->groupBy(
                 'sc.id_contratista',
-                'sc.id_sub', // <--- NUEVO: Agrupa por ID del sublistado
+                'sc.id_sub',
+                'sc.iva',
                 'e.id_extra',
                 'e.no_extra',
                 'e.concepto_extra',

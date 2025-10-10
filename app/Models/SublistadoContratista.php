@@ -18,6 +18,7 @@ class SublistadoContratista extends Model
         'id_extra', 
         'id_sub',
         'cantidad', 
+        'iva',
         'monto'
     ];
 

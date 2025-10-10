@@ -178,6 +178,7 @@
                 <th>SUBTOTAL</th>
                 <th>${{ number_format($acumuladoOrdenDetalleImporte,2) }}</th>
             </tr>
+            @if($ordenDeCompra->iva)
             <tr>
                 <th>IVA</th>
                 <th>${{ number_format($acumuladoOrdenDetalleImporte*0.16,2) }}</th>
@@ -186,6 +187,7 @@
                 <th>TOTAL</th>
                 <th>${{ number_format($acumuladoOrdenDetalleImporte*1.16,2) }}</th>
             </tr>
+            @endif
         </tfoot>
         </table>  
 @endif

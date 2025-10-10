@@ -29,6 +29,21 @@ class OrdenDeCompraController extends Controller
         ]);    
     }
 
+    private function obtenerSiguienteNoOrden(int $id_proyecto): int
+    {
+        // 1. Buscar el valor MÁXIMO de la columna 'no_orden'
+        //    solo para las órdenes que pertenecen al proyecto actual.
+        $ultimoNoOrden = Ordenes::where('id_proyecto', $id_proyecto)
+                            ->max('no_orden');
+
+        // 2. Si es la primera orden del proyecto (MAX devuelve null), empezamos en 1.
+        //    De lo contrario, incrementamos el último número encontrado.
+        if ($ultimoNoOrden === null) {
+            return 1;
+        }
+
+        return $ultimoNoOrden + 1;
+    }
     //public function listadoNuevaOC(Request $request)
     public function listadoNuevaOC($id_proyecto)
     {
@@ -164,6 +179,8 @@ class OrdenDeCompraController extends Controller
         $cantidadesExtra=$request->input('cantidades_extra',[]);
         $comentario_orden=$request->input("comentario_orden");
         $id_contratista=$request->input("id_contratista");
+        $siguienteNoOrden = $this->obtenerSiguienteNoOrden($id_proyecto);
+
         if($request->input("iva")=="on")
         $iva=FALSE;
         else
@@ -171,6 +188,7 @@ class OrdenDeCompraController extends Controller
 
         $ordenCompra = new Ordenes();
         $ordenCompra->id_proyecto = $request->input("id_proyecto");
+        $ordenCompra->no_orden = $siguienteNoOrden = $this->obtenerSiguienteNoOrden($id_proyecto);
         $ordenCompra->fecha_orden = $request->input("fecha_oc");
         $ordenCompra->id_contratista = $request->input("id_contratista");
         $ordenCompra->iva = $iva;

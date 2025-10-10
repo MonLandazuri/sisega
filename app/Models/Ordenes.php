@@ -13,6 +13,7 @@ class Ordenes extends Model
     protected $primaryKey = 'id_orden';
     protected $fillable = [
         'id_orden',
+        'no_orden',
         'id_proyecto', 
         'fecha_orden', 
         'id_contratista', 

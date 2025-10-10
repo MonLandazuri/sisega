@@ -55,11 +55,15 @@ class SublistadoContratistaController extends Controller
             ->value('id_sub'); // Solo trae el valor de la columna 'id'
 
         foreach ($request->items as $item) {
-
+            if($request->input("iva")=="on")
+                $iva=FALSE;
+            else
+                $iva=TRUE;
             $data = [
                 'id_contratista' => $request->id_contratista,
                 'id_proyecto' => $request->id_proyecto,
                 'cantidad' => $item['cantidad'],
+                'iva' => $iva,
                 'id_sub' => $ultimoIdSublistado+1,
                 //'monto' => $item['monto'],
             ];

@@ -763,6 +763,10 @@
                         @if($sublistadosPorGrupo->isEmpty())
                             <p>Este contratista no tiene elementos en su sublistado.</p>
                         @else
+                            {{-- Resetear las sumas para CADA SUBLISTADO --}}
+                            @php
+                                $sumaSublistadoTotalContratistaSup=0;
+                            @endphp
                             @foreach ($sublistadosPorGrupo as $idSub => $grupoDeElementos)
                                 <h5 class="mt-4 mb-2">CATALOGO: {{ $idSub }}</h5>
                                 
@@ -811,6 +815,8 @@
                                                     @php
                                                         $totalContratista = $sublistado->cantidad_acumulada * $sublistado->pu_contratista_base;
                                                         $sumaSublistadoTotalContratista += $totalContratista;
+                                                        $sumaSublistadoTotalContratistaSup += $totalContratista;
+                                                        $ivaSublistado=$sublistado->iva;
                                                     @endphp
                                                     $ {{number_format($totalContratista,2)}}
                                                 </td>
@@ -824,18 +830,22 @@
                                             <td>$ {{number_format($sumaSublistadoTotal,2)}}</td>
                                             <td>$ {{number_format($sumaSublistadoTotalContratista,2)}}</td>
                                         </tr>
+                                        @if($ivaSublistado)
                                         <tr>
                                             <td colspan="5"></td>
                                             <th>IVA</th>
                                             <td>$ {{number_format($sumaSublistadoTotal*0.16,2)}}</td>
                                             <td>$ {{number_format($sumaSublistadoTotalContratista*0.16,2)}}</td>
                                         </tr>
+                                        @endif
+                                        @if($ivaSublistado)
                                         <tr>
                                             <td colspan="5"></td>
                                             <th>TOTAL</th>
                                             <td>$ {{number_format($sumaSublistadoTotal*1.16,2)}}</td>
                                             <td>$ {{number_format($sumaSublistadoTotalContratista*1.16,2)}}</td>
                                         </tr>
+                                        @endif
                                     </tfoot>
                                 </table>
                             @endforeach {{-- Fin del bucle de grupos (id_sub) --}}
@@ -1000,14 +1010,16 @@
                             </td>
                           </tr>
                           <tr>
+                            @php
+                            $ordenEspecifico=$todosLosDetallesDeOrdenes->where('id_orden',$idDeOrden)->first();
+                            $ordenDatos=$ordenes->where('id_orden',$idDeOrden)->first();
+                            @endphp
                             <td>
                               <!--<a class="btn btn-primary collapsed" data-toggle="collapse" href="#contenido{{$idDeOrden}}" role="button" aria-expanded="false" aria-controls="multiCollapseExample1">ORDEN {{$idDeOrden}}</a>-->
-                              {{$idDeOrden}}
+                              {{-- $idDeOrden--}}
+                              {{ $ordenDatos->no_orden; }}
                             </td>
                             <td>
-                              @php
-                              $ordenEspecifico=$todosLosDetallesDeOrdenes->where('id_orden',$idDeOrden)->first();
-                              @endphp
                               {{ \Carbon\Carbon::parse($ordenEspecifico->fecha_orden)->format('d/m/Y')}}
                             </td>
                             <!--<td class="text-right">$ {{number_format($acumuladoOrdenDetalleContratista,2)}}</td>
@@ -1016,20 +1028,35 @@
                             $superTotal+=$acumuladoOrdenDetalleContratista;
                             $sumaTotalContratista+=$acumuladoOrdenDetalleContratista;
                             @endphp
-                            <td class="text-right">$ {{number_format($acumuladoOrdenDetalleContratista*1.16,2)}}</td>
-                            @if($contratista->anticipos->isNotEmpty())
-                            @php
-                            $totalAmortizacion+=($acumuladoOrdenDetalleContratista*1.16)*($anticipo->porcentaje/100);
-                            @endphp
-                            <td class="text-right">$ {{number_format(($acumuladoOrdenDetalleContratista*1.16)*($anticipo->porcentaje/100),2)}}</td>
-                            @php
-                            $totalAPagar+=($acumuladoOrdenDetalleContratista*1.16)-($acumuladoOrdenDetalleContratista*1.16)*($anticipo->porcentaje/100);
-                            @endphp
-                            <td class="text-right">$ {{number_format(($acumuladoOrdenDetalleContratista*1.16)-($acumuladoOrdenDetalleContratista*1.16)*($anticipo->porcentaje/100),2)}}</td>
+
+                            @if($ordenDatos->iva)
+                              <td class="text-right">$ {{number_format($acumuladoOrdenDetalleContratista*1.16,2)}}</td>
                             @else
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                              <td class="text-right">$ {{number_format($acumuladoOrdenDetalleContratista,2)}}</td>
+                            @endif
+
+                            @if($contratista->anticipos->isNotEmpty())
+                              @if($ordenDatos->iva)
+                                <td class="text-right">$ {{number_format(($acumuladoOrdenDetalleContratista*1.16)*($anticipo->porcentaje/100),2)}}</td>
+                                <td class="text-right">$ {{number_format(($acumuladoOrdenDetalleContratista*1.16)-($acumuladoOrdenDetalleContratista*1.16)*($anticipo->porcentaje/100),2)}}</td>
+                              @else
+                                <td class="text-right">$ {{number_format(($acumuladoOrdenDetalleContratista)*($anticipo->porcentaje/100),2)}}</td>
+                                <td class="text-right">$ {{number_format(($acumuladoOrdenDetalleContratista)-($acumuladoOrdenDetalleContratista)*($anticipo->porcentaje/100),2)}}</td>
+                              @endif
+                              @php
+                                if($ordenDatos->iva){
+                                  $totalAmortizacion+=($acumuladoOrdenDetalleContratista*1.16)*($anticipo->porcentaje/100);
+                                  $totalAPagar+=($acumuladoOrdenDetalleContratista*1.16)-($acumuladoOrdenDetalleContratista*1.16)*($anticipo->porcentaje/100);
+                                }
+                                else{
+                                  $totalAmortizacion+=($acumuladoOrdenDetalleContratista)*($anticipo->porcentaje/100);
+                                  $totalAPagar+=($acumuladoOrdenDetalleContratista)-($acumuladoOrdenDetalleContratista)*($anticipo->porcentaje/100);
+                                }
+                              @endphp
+                            @else
+                              <td></td>
+                              <td></td>
+                              <td></td>
                             @endif
                             <td>
                               <div class="col-4 align-items-cente btn-group" role="group">
@@ -1062,15 +1089,23 @@
                             <th colspan="3"></th>
                             <th>IMPORTE DEL CONTRATO</th>
                             <!--<th class="text-right">$ {{ number_format(($totalContratistaImporte*1.16), 2) }}</th>-->
-                            <th class="text-right">$ {{ number_format(($sumaSublistadoTotalContratista*1.16), 2) }}</th>
+                            @if($ivaSublistado)
+                              <th class="text-right">$ {{ number_format(($sumaSublistadoTotalContratistaSup*1.16), 2) }}</th>
+                            @else
+                              <th class="text-right">$ {{ number_format(($sumaSublistadoTotalContratistaSup), 2) }}</th>
+                            @endif
                           </tr>
                           <tr>
                             <th colspan="3"></th>
                             @if($contratista->anticipos->isEmpty())
-                            <th>No hay anticipo</th>
+                              <th>No hay anticipo</th>
                             @else
-                            <th>ANTICIPO | {{ $anticipo->porcentaje  }}%</th>
-                            <th class="text-right">$ {{ number_format(($sumaSublistadoTotalContratista*1.16)*($anticipo->porcentaje/100),2) }}</th>
+                              <th>ANTICIPO | {{ $anticipo->porcentaje  }}%</th>
+                              @if($ivaSublistado)
+                                <th class="text-right">$ {{ number_format(($sumaSublistadoTotalContratistaSup*1.16)*($anticipo->porcentaje/100),2) }}</th>
+                              @else
+                                <th class="text-right">$ {{ number_format(($sumaSublistadoTotalContratistaSup)*($anticipo->porcentaje/100),2) }}</th>
+                              @endif
                             @endif
                           </tr>
                           <tr>
@@ -1078,14 +1113,22 @@
                             <th>ACUMULADO</th>
                             <!--<th class="text-right">$ {{ number_format($superTotal,2) }}</th>
                             <th class="text-right">$ {{ number_format($superTotal*0.16,2) }}</th>-->
-                            <th class="text-right">$ {{ number_format($acumuladoOrdenDetalleContratista*1.16,2) }}</th>
+                            @if($ivaSublistado)
+                              <th class="text-right">$ {{ number_format($acumuladoOrdenDetalleContratista*1.16,2) }}</th>
+                            @else
+                              <th class="text-right">$ {{ number_format($acumuladoOrdenDetalleContratista,2) }}</th>
+                            @endif
                           </tr>
                           <tr>
                             <th colspan="3"></th>
                             <th>SALDO</th>
                             <!--<th class="text-right">$ {{ number_format($superTotal,2) }}</th>
                             <th class="text-right">$ {{ number_format($superTotal*0.16,2) }}</th>-->
-                            <th class="text-right">$ {{ number_format(($sumaSublistadoTotalContratista*1.16)-($acumuladoOrdenDetalleContratista*1.16),2) }}</th>
+                            @if($ivaSublistado)
+                              <th class="text-right">$ {{ number_format(($sumaSublistadoTotalContratistaSup*1.16)-($acumuladoOrdenDetalleContratista*1.16),2) }}</th>
+                            @else
+                              <th class="text-right">$ {{ number_format(($sumaSublistadoTotalContratistaSup)-($acumuladoOrdenDetalleContratista),2) }}</th>
+                            @endif
                           </tr>
                           <tr>
                             <th colspan="3"></th>
@@ -1096,7 +1139,11 @@
                             <!--<th class="text-right">$ {{ number_format($superTotal,2) }}</th>
                             <th class="text-right">$ {{ number_format($superTotal*0.16,2) }}</th>-->
                             <!--<th class="text-right">$ {{ number_format((($sumaSublistadoTotal*1.16)*($anticipo->porcentaje/100))-$totalAmortizacion,2) }}</th>-->
-                            <th class="text-right">$ {{ number_format((($totalAmortizacion))-(($sumaSublistadoTotalContratista*1.16)*($anticipo->porcentaje/100)),2) }}</th>
+                            @if($ivaSublistado)
+                              <th class="text-right">$ {{ number_format((($totalAmortizacion))-(($sumaSublistadoTotalContratista*1.16)*($anticipo->porcentaje/100)),2) }}</th>
+                            @else
+                              <th class="text-right">$ {{ number_format((($totalAmortizacion))-(($sumaSublistadoTotalContratista)*($anticipo->porcentaje/100)),2) }}</th>
+                            @endif
                             @endif
                           </tr>
                         </tbody>
