@@ -54,7 +54,7 @@
               <div class="form-group row align-items-center">
                 <label class="col-md-4 text-md-right text-left">Fecha Autorización</label>
                 <div class="col-lg-4 col-md-6">
-                  <input type="date" class="form-control" name="fecha_proyecto">
+                  <input type="date" class="form-control" name="fecha_proyecto" value="{{ now()->format('Y-m-d') }}">
                 </div>
               </div>
               <div class="form-group row">

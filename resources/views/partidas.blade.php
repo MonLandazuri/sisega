@@ -63,6 +63,9 @@
         <li class="nav-item azul-400">
           <a class="nav-link" id="insumos-tab" data-toggle="tab" href="#insumos" role="tab" aria-controls="insumos" aria-selected="false">INSUMOS</a>
         </li>
+        <li class="nav-item azul-200">
+          <a class="nav-link" id="global-tab" data-toggle="tab" href="#global" role="tab" aria-controls="global" aria-selected="false">GLOBAL</a>
+        </li>
         {{-- @foreach ($totalContratistas as $contratista)
           <li class="nav-item naranja">
             <a class="nav-link" id="{{ $contratista->id_contratista}}-tab" data-toggle="tab" href="#contratista-{{ $contratista->id_contratista}}" role="tab" aria-controls="acumulado" aria-selected="false">{{ $contratista->nombre_contratista }} <a>
@@ -498,6 +501,7 @@
                   <th class="col-concepto">CONCEPTO</th>
                   <th class="col-unidad">UNIDAD</th>
                   <th class="col-cantidad">CANTIDAD</th>
+                  <th class="col-cantidad">PRECIO</th>
                   <th class="col-importe">ZONA DE USO</th>
                   <th class="col-pu"></th>
                 </tr>
@@ -556,6 +560,33 @@
           </div>  
         </div>
 
+        <!-- Global -->
+        @if($totalContratistas->isEmpty())
+              <p>No se encontraron órdenes de compra para este proyecto.</p>
+          @else
+            @php
+            @endphp
+            <div class="col-12 global-tab-pane tab-pane fade show" id="global" role="tabpanel" aria-labelledby="global-tab">
+            @foreach ($totalContratistas as $contratista)
+              <table class="table table-striped table-bordered">
+                <tr>
+                  <th>CONTRATISTA</td>
+                  <td>{{$contratista->nombre_contratista}}<a href="{{ route('info.contratista', ['id_contratista' => $contratista->id_contratista]) }}">(ver)</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="2">
+                  @php
+                    print_r($contratista);
+                  @endphp
+                  </td>
+                </tr>
+              </table>
+                    
+            @endforeach
+            </div>
+        @endif
+
         <!--Contratistas-->
         @if($totalContratistas->isEmpty())
               <p>No se encontraron órdenes de compra para este proyecto.</p>
@@ -585,15 +616,15 @@
                     </li>
                   </ul>
                 </div>-->
-                <div id="accordion">
+                <div id="accordion-{{$contratista->id_contratista}}">
                   <div class="accordion">
                     <!--<div class="col-12 col-sm-12 col-md-4">-->
                     <div class="accordion-header bg-dark" role="button" data-toggle="collapse" data-target="#panel-datos-{{$contratista->id_contratista}}" aria-expanded="true">
                       <h4>DATOS</h4>
                     </div>
-                    <div class="accordion-body collapse active show" id="panel-datos-{{$contratista->id_contratista}}" data-parent="#accordion" style="">
-                    <!--<div class="tab-content no-padding" id="myTab2Content">-->
-                    <!--<div class="tab-pane fade active show" id="home4" role="tabpanel" aria-labelledby="home-tab4">-->
+                    <div class="accordion-body collapse active show" id="panel-datos-{{$contratista->id_contratista}}" data-parent="#accordion-{{$contratista->id_contratista}}" style="">
+                      <!--<div class="tab-content no-padding" id="myTab2Content">-->
+                      <!--<div class="tab-pane fade active show" id="home4" role="tabpanel" aria-labelledby="home-tab4">-->
                       <table class="table table-striped table-bordered">
                         <tr>
                           <td class="w10"><strong>Residente:</strong></td>
@@ -758,7 +789,7 @@
                         <h4>CATÁLOGOS</h4>
                     </div>
 
-                    <div class="accordion-body collapse" id="panel-catalogo-{{$contratista->id_contratista}}" data-parent="#accordion" style="">
+                    <div class="accordion-body collapse" id="panel-catalogo-{{$contratista->id_contratista}}" data-parent="#accordion-{{$contratista->id_contratista}}" style="">
 
                         @if($sublistadosPorGrupo->isEmpty())
                             <p>Este contratista no tiene elementos en su sublistado.</p>
@@ -854,7 +885,7 @@
                     <div class="accordion-header bg-dark" role="button" data-toggle="collapse" data-target="#panel-ordenes-{{$contratista->id_contratista}}" aria-expanded="true">
                       <h4>ORDENES</h4>
                     </div>
-                    <div class="accordion-body collapse" id="panel-ordenes-{{$contratista->id_contratista}}" data-parent="#accordion" style="">
+                    <div class="accordion-body collapse" id="panel-ordenes-{{$contratista->id_contratista}}" data-parent="#accordion-{{$contratista->id_contratista}}" style="">
                       <!--<div class="tab-pane fade" id="contact4" role="tabpanel" aria-labelledby="contact-tab4">-->
                       <table class="table contratistas table-bordered">
                         <thead>
@@ -1414,6 +1445,13 @@
     color: #FFFFFF !important;
   }
 
+  .azul-200{
+    background: #92c5ec;
+    border-radius: 10px 10px 0 0;
+  }
+  .azul-200 a:not(.active){
+    color: #FFFFFF !important;
+  }
   .negro{
     background: #000000;
     border-radius: 10px 10px 0 0;

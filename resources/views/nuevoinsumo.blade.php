@@ -53,20 +53,27 @@
               <div class="form-group row align-items-center">
                 <label class="col-md-4 text-md-right text-left">UNIDAD</label>
                 <div class="col-lg-4 col-md-6">
-                  <select class="form-control" name="unidad_insumo">
-                    <option value="0">Selecciona una Unidad</option>
-                      <option value="KG">KG</option>
-                      <option value="M2">M2</option>
-                      <option value="M3">M3</option>
-                      <option value="ML">ML</option>
-                      <option value="PZA">PZA</option>
-                  </select>
+                  <input list="unidades_sugeridas" name="unidad_insumo" id="unidad_insumo" class="form-control" required>
+                  <datalist id="unidades_sugeridas">
+                      <option value="ML">
+                      <option value="M2">
+                      <option value="M3">
+                      <option value="KG">
+                      <option value="PZA">
+                      <option value="GLB">
+                  </datalist>
                 </div>
               </div>
               <div class="form-group row align-items-center">
                 <label class="col-md-4 text-md-right text-left">CANTIDAD</label>
                 <div class="col-lg-4 col-md-6">
                   <input type="text" name="cantidad_insumo" class="form-control">
+                </div>
+              </div>
+              <div class="form-group row align-items-center">
+                <label class="col-md-4 text-md-right text-left">PU</label>
+                <div class="col-lg-4 col-md-6">
+                  <input type="text" name="pu_insumo" class="form-control">
                 </div>
               </div>
               <div class="form-group row align-items-center">

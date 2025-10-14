@@ -574,6 +574,7 @@ class PartidasController extends Controller
             'concepto_insumo' => 'required|string|max:500',
             'unidad_insumo' => 'required|string|max:255',
             'cantidad_insumo' => 'required|numeric',
+            'pu_insumo' => 'required|numeric',
             'zonadeuso_insumo' => 'required|string|max:255',
             'id_proyecto' => 'required|exists:proyectos,id_proyecto',
         ]);
@@ -585,6 +586,7 @@ class PartidasController extends Controller
         $nuevoInsumo->concepto_insumo=$request->input("concepto_insumo");
         $nuevoInsumo->unidad_insumo=$request->input("unidad_insumo");
         $nuevoInsumo->cantidad_insumo=$request->input("cantidad_insumo");
+        $nuevoInsumo->pu_insumo=$request->input("pu_insumo");
         $nuevoInsumo->zonadeuso_insumo=$request->input("zonadeuso_insumo");
 
         $nuevoInsumo->save();

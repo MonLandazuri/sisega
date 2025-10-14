@@ -54,34 +54,14 @@
               <div class="form-group row align-items-center">
                 <label class="col-md-4 text-md-right text-left">UNIDAD</label>
                 <div class="col-lg-4 col-md-6">
-                  <select class="form-control" name="unidad_insumo">
-                    <option value="0">Selecciona una Unidad</option>
-                      @if($insumo->unidad_insumo=="KG")
-                        <option value="KG" selected>KG</option>
-                      @else
-                        <option value="KG">KG</option>
-                      @endif
-                      @if($insumo->unidad_insumo=="M2")
-                        <option value="M2" selected>M2</option>
-                      @else
-                        <option value="M2">M2</option>
-                      @endif
-                      @if($insumo->unidad_insumo=="M3")
-                        <option value="M3" selected>M3</option>
-                      @else
-                        <option value="M3">M3</option>
-                      @endif
-                      @if($insumo->unidad_insumo=="ML")
-                        <option value="ML" selected>ML</option>
-                      @else
-                        <option value="ML">ML</option>
-                      @endif
-                      @if($insumo->unidad_insumo=="PZA")
-                        <option value="PZA" selected>PZA</option>
-                      @else
-                        <option value="PZA">PZA</option>
-                      @endif
-                  </select>
+                  <input list="unidades_sugeridas" name="unidad_insumo" id="unidad_insumo" class="form-control" value="{{$insumo->unidad_insumo}}" required>
+                  <datalist id="unidades_sugeridas">
+                      <option value="ML">
+                      <option value="M2">
+                      <option value="KG">
+                      <option value="PZA">
+                      <option value="GLB">
+                  </datalist>
                 </div>
               </div>
               <div class="form-group row align-items-center">
